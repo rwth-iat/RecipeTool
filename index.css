@@ -45,6 +45,7 @@
     border-style:solid;
     border-color:black;
 }
+
 #materials{
     box-sizing: border-box;
     width: 100%;
@@ -91,6 +92,20 @@
 }
 
 .material_element{
+    left: 10%;
+    width: 80%;
+    text-align: center;
+    border-width:1px;
+    border-style:solid;
+    border-color:black;
+
+    /*center this horizontally in the middle*/
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.process_element{
     left: 10%;
     width: 80%;
     text-align: center;

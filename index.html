@@ -26,7 +26,9 @@
 				</div>
 				<div id="processes_window">
 					<div id="processes_heading" class="heading"><h4>Prozessschritte</h4></div>
-					<div id="processes"></div>
+					<div id="processes">
+						<div id="process_1" class="process_element drag_copy" draggable="true" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">Prozessschritt 1</div>
+					</div>
 				</div>
 			</div>
 			<div id="workspace" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"></div>
