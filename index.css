@@ -29,6 +29,7 @@
     width: 20%;
     height: 100%;
     float:left;
+    background-color: lightgray;
 }
 
 /*container for material*/
@@ -36,7 +37,6 @@
     box-sizing: border-box;
     width: 100%;
     height: 50%;
-    background-color: gray;
     float:left;
     vertical-align: top;
     justify-content: center;
@@ -58,7 +58,6 @@
     box-sizing: border-box;
     width: 100%;
     height: 50%;
-    background-color: gray;
     float:left;
     justify-content: center;
     align-items: center;
@@ -73,9 +72,6 @@
     height: 100%;
     overflow: hidden;
     float:left;
-    display: flex; /*needed for center alignment*/
-    justify-content: center; /*align horizontaly in the center*/
-    align-items: center; /*align vertically in the center*/
     border-width:1px;
     border-style:solid;
     border-color:black;
@@ -87,8 +83,7 @@
 
 /*change properties of all class "heading" elements (eg. page heading, material window heading, process heading)*/
 .heading{
-    display: flex; /*needed for center alignment*/
-    justify-content: center; /*align horizontaly in the center*/
+    text-align: center;
 }
 
 .material_element{
