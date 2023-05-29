@@ -1,0 +1,38 @@
+
+<html>
+	<head>
+		<!-- import CSS -->
+		<link rel="stylesheet" type="text/css" href="index.css" />
+
+		<!-- mobile optimization-->
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+	</head>
+	
+	<!-- actual html -->
+	<!-- home -->
+	<div id="main">
+		<div id="top_bar" class="heading"><h3>Verfahrensrezept-Editor</h3></div>
+		<div id="editor">
+			<div id="side_bar" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">
+				<div id="material_window">
+					<div id="material_heading" class="heading"><h4>Materialien</h4></div>
+					<div id="materials">
+						<div id="start_material" class="material_element drag_copy" draggable="true" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">Eingangsmaterial</div>
+						<div class="element_spacer"></div>
+						<div id="intermediate_produkt" class="material_element drag_copy" draggable="true" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">Zwischenprodukt</div>
+						<div class="element_spacer"></div>
+						<div id="final_produkt" class="material_element drag_copy" draggable="true" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">Endprodukt</div>
+					</div>	
+				</div>
+				<div id="processes_window">
+					<div id="processes_heading" class="heading"><h4>Prozessschritte</h4></div>
+					<div id="processes"></div>
+				</div>
+			</div>
+			<div id="workspace" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"></div>
+		</div>
+	</div>
+
+	<!-- import javascript -->
+	<script type="text/javascript" src="index.js"></script>
+</html>
