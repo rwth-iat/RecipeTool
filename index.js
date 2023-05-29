@@ -3,7 +3,7 @@ function dragstart_handler(ev) {
     // Remove all of the drag data
     ev.dataTransfer.clearData();
     // Change the source element's background color to signify drag has started
-    ev.currentTarget.style.border = "1px dashed black";
+    //ev.currentTarget.style.border = "1px dashed black";
     // Add the id of the drag source element to the drag data payload so
     // it is available when the drop event is fired
     ev.dataTransfer.setData("text/plain", ev.target.id);
@@ -77,11 +77,11 @@ function drop_handler(ev) {
     }
 
     // reset the border of the workspace
-    ev.target.style.border = "1px solid black";
+    //ev.target.style.border = "1px solid black";
 }
 
 function dragend_handler(ev) {
      console.log("dragEnd");
      // Restore source's border
-     ev.target.style.border = "1px solid black";
+     //ev.target.style.border = "1px solid black";
 }
