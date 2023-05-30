@@ -1,3 +1,15 @@
+//------------------------------- GENERAL FUNCTIONS ---------------------------------------------------------------------------
+function getParents(elem) {
+    var parents = [];
+    while(elem.parentNode && elem.parentNode.nodeName.toLowerCase() != 'body') {
+      elem = elem.parentNode;
+      parents.push(elem);
+    }
+    return parents;
+  }
+
+
+//------------------------------DRAG AND DROP FUNCTIONS-----------------------------------------------------------------------
 function dragstart_handler(ev) {
     console.log("dragStart");
     // Remove all of the drag data
@@ -71,7 +83,7 @@ function drop_handler(ev) {
     }
 
     //if element is in workspace and gets moved to side_bar it gets removed
-    else if (element.classList.contains("drag_move") && ev.target.id != "workspace") {
+    else if (element.classList.contains("drag_move") && getParents(ev.target).some(parent => parent.id == "side_bar")) {
       console.log("dragged from Workspace, dropped outside Workspace");
       element.remove();
     }

@@ -15,11 +15,8 @@
 
 /*container for the page heading*/
 #top_bar{
-    width: 100vw;
+    width: 100%;
     float:left;
-    border-width:1px;
-    border-style:solid;
-    border-color:black;
 }
 
 /*container for sidebar the materials and processes on the left side of the screen
@@ -41,6 +38,7 @@
     vertical-align: top;
     justify-content: center;
     align-items: center;
+    border-radius: 5px;
     border-width:1px;
     border-style:solid;
     border-color:black;
@@ -61,6 +59,7 @@
     float:left;
     justify-content: center;
     align-items: center;
+    border-radius: 5px;
     border-width:1px;
     border-style:solid;
     border-color:black;
@@ -72,6 +71,7 @@
     height: 100%;
     overflow: hidden;
     float:left;
+    border-radius: 5px;
     border-width:1px;
     border-style:solid;
     border-color:black;
@@ -90,6 +90,7 @@
     left: 10%;
     width: 80%;
     text-align: center;
+    border-radius: 5px;
     border-width:1px;
     border-style:solid;
     border-color:black;
@@ -104,6 +105,7 @@
     left: 10%;
     width: 80%;
     text-align: center;
+    border-radius: 5px;
     border-width:1px;
     border-style:solid;
     border-color:black;
