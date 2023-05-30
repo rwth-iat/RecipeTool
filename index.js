@@ -98,3 +98,99 @@ function dragend_handler(ev) {
      // Restore source's border
      //ev.target.style.border = "1px solid black";
 }
+
+
+//-----------------------------------functions to open standard process definitions-----------------------------------------------
+/*var read_file = async function(path) {
+  promise = fetch(path).then((response) => { return response.json()});
+  let result1  = await promise.then(result => result.data);
+  return result1;
+}*/
+
+
+// function to read in a json file from a specified path
+const read_file = async (path, callback) => {
+  let result  = await fetch(path);
+  //use string literals
+  let result_json = await result.json();
+  let data  = await result_json.data;
+  console.log(result_json);
+  return result_json;
+}
+
+//function to add a process
+const add_process = async (process, name, parent, margin_left, callback) =>{
+  //create a container div 
+  const process_div = document.createElement("div");
+  process_div.id = name;
+  process_div.innerHTML += name;
+  process_div.className = "side_bar_element process_element";
+  process_div.style.width = "auto";
+  process_div.style.height = "auto";
+  process_div.style.marginLeft = (margin_left + 10).toString() + "px";
+  parent.appendChild(process_div);
+}
+
+//function to add a process_package
+const add_process_group = async (process_group, name, parent, margin_left, callback) =>{
+  console.log(process_package)
+  
+  //create a container div 
+  const container_div = document.createElement("div");
+  container_div.id = name;
+  container_div.innerHTML += name;
+  container_div.className = "side_bar_element process_element";
+  container_div.style.width = "auto";
+  container_div.style.height = "auto";
+  //increase the margin with every hirachy level for improved visability
+  container_div.style.marginLeft = (margin_left + 10).toString() + "px";
+  parent.appendChild(container_div);
+
+  //recursivly add process groups and processes to allow for multiple levels of grouping
+  Object.keys(process_group.children).forEach(key => {
+    if (process_group.children[key].type=="process"){
+      add_process(process_group.children[key], key, container_div, margin_left);
+    }else if(process_group.children[key].type=="process_group"){
+      add_process_group(process_group.children[key], key, container_div, margin_left)
+    }
+  })
+}
+
+//function to add a process_package
+const add_process_package = async (process_package, name, callback) =>{
+  margin_left = 10;
+  processes_div = document.getElementById("processes");
+  console.log(process_package);
+  
+  //create a container div 
+  const container_div = document.createElement("div");
+  container_div.id = name;
+  container_div.innerHTML += name;
+  container_div.className = "side_bar_element process_element";
+  container_div.style.width = "200px";
+  container_div.style.height = "auto";
+  container_div.style.marginLeft = margin_left.toString() + "px";
+  processes_div.appendChild(container_div);
+
+  //recursivly add process groups and processes to not require process groups
+  Object.keys(process_package.children).forEach(key => {
+    if (process_package.children[key].type=="process"){
+      add_process(process_package.children[key], key, processes_div, margin_left);
+    }else if(process_package.children[key].type=="process_group"){
+      add_process_group(process_package.children[key], key, processes_div, margin_left)
+    }
+  })
+}
+
+const add_file_package = async (path, callback) =>{
+  let process_package = await read_file(path);
+  Object.keys(process_package).forEach(key => {
+    if(process_package[key].type=="process_package"){
+      add_process_package(process_package[key], key);
+    }
+  });
+}
+
+
+
+let process_package = add_file_package('config/TGL25000.json')

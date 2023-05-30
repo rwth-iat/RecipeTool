@@ -1,0 +1,48 @@
+{
+    "tgl25000":{
+        "type": "process_package",
+        "name": "tgl25000",
+        "children":{
+            "Trennen":{
+                "type":"process_group",
+                "children":{
+                    "Sieben":{
+                        "type":"process"
+                    }
+                }
+            },
+            "Vereinigen":{
+                "type":"process_group",
+                "children":{
+                    "Vermengen":{
+                        "type":"process"
+                    }
+                }
+            },
+            "Zerteilen":{
+                "type":"process_group",
+                "children":{
+                    "Brechen":{
+                        "type":"process"
+                    }
+                }
+            },
+            "Agglomerieren":{
+                "type":"process_group",
+                "children":{
+                    "Rollgranulieren":{
+                        "type":"process"
+                    }
+                }
+            },
+            "Andern der Enthalpie":{
+                "type":"process_group",
+                "children":{
+                    "Erwärmen von Feststoffen":{
+                        "type":"process"
+                    }
+                }
+            }
+        }
+    }
+}
