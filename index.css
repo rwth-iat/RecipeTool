@@ -2,29 +2,30 @@
 #main{
     width: 100vw;
     height: 100vh;
-    overflow:hidden;
-}
-
-#editor{
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    overflow:hidden;
-    display: flex;
+    overflow: hidden;
 }
 
 /*container for the page heading*/
 #top_bar{
-    width: 100%;
+    width: 100vw;
+    height: 10vh;
     float:left;
+}
+
+#editor{
+    box-sizing: border-box;
+    width: 100vw;
+    height: 90vw;
+    overflow:hidden;
+    display: flex;
 }
 
 /*container for sidebar the materials and processes on the left side of the screen
     - using 20vw as 20% of the hole screen but 100% of the height
 */
 #side_bar{
-    width: 20%;
-    height: 100%;
+    width: 20vw;
+    height: 90vh;
     float:left;
     background-color: lightgray;
 }
@@ -32,8 +33,8 @@
 /*container for material*/
 #material_window{
     box-sizing: border-box;
-    width: 100%;
-    height: 50%;
+    width: 20vw;
+    height: 45vh;
     float:left;
     vertical-align: top;
     justify-content: center;
@@ -46,16 +47,14 @@
 
 #materials{
     box-sizing: border-box;
-    width: 100%;
-    height: 100%;
     align-items: center;
 }
 
 /*container for processes*/
 #processes_window{
     box-sizing: border-box;
-    width: 100%;
-    height: 50%;
+    width: 20vw;
+    height: 45vh;
     float:left;
     justify-content: center;
     align-items: center;
@@ -67,8 +66,8 @@
 
 /*container for material*/
 #workspace{
-    width: 80%;
-    height: 100%;
+    width: 80vw;
+    height: 90vh;
     overflow: hidden;
     float:left;
     border-radius: 5px;
@@ -86,9 +85,9 @@
     text-align: center;
 }
 
-.material_element{
-    left: 10%;
-    width: 80%;
+.side_bar_element{
+    width: 200px;
+    height: auto;
     text-align: center;
     border-radius: 5px;
     border-width:1px;
@@ -101,19 +100,15 @@
     margin-right: auto;
 }
 
-.process_element{
-    left: 10%;
-    width: 80%;
+.workspace_element{
+    position: absolute;
+    width: 200px;
+    height: auto;
     text-align: center;
     border-radius: 5px;
     border-width:1px;
     border-style:solid;
     border-color:black;
-
-    /*center this horizontally in the middle*/
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .element_spacer{
