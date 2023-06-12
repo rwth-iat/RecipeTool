@@ -2,6 +2,21 @@ from owlready2 import *
 from flask import Flask, current_app, render_template
 import json
 
+def add_subclasses(input_object, children_classes_list, super_class_name):
+    # initiate input Object
+    input_object[super_class_name] = {
+        "type": "process_package",
+        "name": super_class_name,
+        "children":{}
+    }
+    # generate object from Ontologie 
+    for entry in children_classes_list:
+        entry_str = str(entry).split(".")[-1]
+        input_object[super_class_name]["children"][entry_str] = {"type": "process"}
+
+    return input_object
+
+
 onto_c4i = get_ontology("https://www.w3id.org/basyx/c4i").load()
 #onto_acplt = get_ontology("http://www.acplt.de/Capability").load()   #does not work
 onto_acplt = get_ontology("file://d:/git_repos/Masterarbeit_Editor/config/IAT-Ontologie/Capability_with_Query.owl").load()
@@ -17,20 +32,10 @@ general_capability_effecting_list = list(onto_acplt.GeneralCapabilityEffecting.s
 process_specific_capability_list = list(onto_acplt.ProcessSpecificCapability.subclasses())
 #print(process_specific_capability_list)
 
-# initiate input Object
-name = "acplt"
-input_object = {
-    name:{
-        "type": "process_package",
-        "name": name,
-        "children":{}
-    }
-}
+input_object = {}
+input_object = add_subclasses(input_object, general_capability_effecting_list, "GeneralCapabilityEffecting")
+input_object = add_subclasses(input_object, process_specific_capability_list, "ProcessSpecificCapability")
 
-# generate object from Ontologie 
-for entry in general_capability_effecting_list:
-    entry_str = str(entry).split(".")[-1]
-    input_object[name]["children"][entry_str] = {"type": "process"}
 
 # write object to file
 with open('static/input.json', 'w', encoding='utf-8') as f:
