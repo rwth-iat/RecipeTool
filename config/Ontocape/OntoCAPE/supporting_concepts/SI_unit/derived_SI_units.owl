@@ -1,0 +1,549 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+  <!ENTITY root "file:/C:/OntoCAPE/">
+  <!ENTITY owl  "http://www.w3.org/2002/07/owl">
+  <!ENTITY xsd  "http://www.w3.org/2001/XMLSchema">
+  <!ENTITY rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns">
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema">
+  <!ENTITY system   "&root;OntoCAPE/upper_level/system.owl">
+  <!ENTITY der_dim  "&root;OntoCAPE/supporting_concepts/physical_dimension/derived_dimensions.owl">
+  <!ENTITY der_SI_units "&root;OntoCAPE/supporting_concepts/SI_unit/derived_SI_units.owl">
+  <!ENTITY maths    "&root;OntoCAPE/supporting_concepts/mathematical_relation/mathematical_relation.owl">
+  <!ENTITY phys_dim "&root;OntoCAPE/supporting_concepts/physical_dimension/physical_dimension.owl">
+  <!ENTITY SI_unit  "&root;OntoCAPE/supporting_concepts/SI_unit/SI_unit.owl">
+]>
+
+<rdf:RDF
+    xmlns:SI_unit="&SI_unit;#"
+    xmlns:system="&system;#"
+    xmlns:der_dim="&der_dim;#"
+    xmlns:rdf="&rdf;#"
+    xmlns:xsd="&xsd;#"
+    xmlns="&der_SI_units;#"
+    xmlns:maths="&maths;#"
+    xmlns:rdfs="&rdfs;#"
+    xmlns:owl="&owl;#"
+    xmlns:terms="http://purl.org/dc/terms/"
+    xmlns:phys_dim="&phys_dim;#"
+  xml:base="&der_SI_units;">
+  
+  <owl:Ontology rdf:about="&der_SI_units;">
+    <owl:imports rdf:resource="&der_dim;"/>
+    <owl:imports rdf:resource="&SI_unit;"/>
+    <owl:versionInfo rdf:datatype="&xsd;#string">2.0</owl:versionInfo>
+    <rdfs:comment rdf:datatype="&xsd;#string"
+    >The ontology module 'derived_SI_units' provides some common SI units.
+The following classes, relations, and individuals from other ontology modules are used within 'derived_SI_units':
+
+&lt;owl:Class rdf:about="&maths;#BinaryOperator"/>
+&lt;owl:Class rdf:about="&maths;#Leaf"/>
+&lt;owl:Class rdf:about="&maths;#Node"/>
+&lt;owl:Class rdf:about="&der_dim;#ElectricityAndMagnetism"/>
+&lt;owl:Class rdf:about="&der_dim;#Heat"/>
+&lt;owl:Class rdf:about="&der_dim;#Mechanics"/> 
+&lt;owl:Class rdf:about="&der_dim;#PeriodicPhenomena"/> 
+&lt;owl:Class rdf:about="&der_dim;#SpaceAndTime"/>
+&lt;owl:Class rdf:about="&phys_dim;#BaseDimension"/>
+&lt;owl:Class rdf:about="&phys_dim;#DerivedDimension"/>
+&lt;owl:Class rdf:about="&SI_unit;#PrefixedDerivedUnit"/>
+&lt;owl:Class rdf:about="&SI_unit;#SI_DerivedUnit"/>
+
+&lt;owl:ObjectProperty rdf:about="&maths;#hasLeftChild"/>
+&lt;owl:ObjectProperty rdf:about="&maths;#hasNodeValue"/>
+&lt;owl:ObjectProperty rdf:about="&maths;#hasRightChild"/>
+&lt;owl:ObjectProperty rdf:about="&maths;#leftChildNodeValue"/>
+&lt;owl:ObjectProperty rdf:about="&maths;#rightChildNodeValue"/>
+&lt;owl:ObjectProperty rdf:about="&SI_unit;#isDefinedBy"/>
+&lt;owl:ObjectProperty rdf:about="&system;#hasDimension"/>
+
+&lt;maths:BinaryOperator rdf:about="&maths;#divide"/>
+&lt;maths:BinaryOperator rdf:about="&maths;#plus"/>
+&lt;maths:BinaryOperator rdf:about="&maths;#power"/>
+&lt;maths:BinaryOperator rdf:about="&maths;#times"/>
+&lt;maths:Leaf rdf:about="&phys_dim;#AMOUNT_OF_SUBSTANCE"/>
+&lt;maths:Leaf rdf:about="&SI_unit;#CANDELA"/>
+&lt;maths:Leaf rdf:about="&SI_unit;#KELVIN"/>
+&lt;maths:Leaf rdf:about="&SI_unit;#SI_unit;#KILO-"/>
+&lt;maths:Leaf rdf:about="&SI_unit;#SI_unit;#KILOGRAM"/>
+&lt;maths:Leaf rdf:about="&SI_unit;#SI_unit;#METER"/>
+&lt;maths:Leaf rdf:about="&SI_unit;#SI_unit;#MOLE"/>
+&lt;maths:Leaf rdf:about="&SI_unit;#SI_unit;#SECOND"/>
+&lt;phys_dim:DerivedDimension       rdf:about="&der_dim;#molar_volume"/>
+&lt;phys_dim:DerivedDimension       rdf:about="&der_dim;#molecular_mass"/>
+&lt;der_dim:ElectricityAndMagnetism rdf:about="&der_dim;#electric_charge"/>
+&lt;der_dim:Heat                    rdf:about="&der_dim;#entropy"/>
+&lt;der_dim:Heat                    rdf:about="&der_dim;#thermal_conductivity"/>
+&lt;der_dim:Mechanics               rdf:about="&der_dim;#density"/>
+&lt;der_dim:Mechanics               rdf:about="&der_dim;#dynamic_viscosity"/>
+&lt;der_dim:Mechanics               rdf:about="&der_dim;#force"/>
+&lt;der_dim:Mechanics               rdf:about="&der_dim;#moment_of_force"/>
+&lt;der_dim:Mechanics               rdf:about="&der_dim;#pressure"/>
+&lt;der_dim:Mechanics               rdf:about="&der_dim;#specific_volume"/>
+&lt;der_dim:Mechanics               rdf:about="&der_dim;#specific_entropy"/>
+&lt;der_dim:Mechanics               rdf:about="&der_dim;#surface_tension"/>
+&lt;der_dim:Mechanics               rdf:about="&der_dim;#work"/>
+&lt;der_dim:PeriodicPhenomena       rdf:about="&der_dim;#frequency"/>
+&lt;der_dim:PeriodicPhenomena       rdf:about="&der_dim;#oscillation_phase"/>
+&lt;der_dim:SpaceAndTime            rdf:about="&der_dim;#angular_acceleration"/>
+&lt;der_dim:SpaceAndTime            rdf:about="&der_dim;#angular_velocity"/>
+&lt;der_dim:SpaceAndTime            rdf:about="&der_dim;#area"/>
+&lt;der_dim:SpaceAndTime            rdf:about="&der_dim;#velocity"/>
+&lt;der_dim:SpaceAndTime            rdf:about="&der_dim;#volume"/>
+&lt;phys_dim:FundamentalDimension   rdf:about="&phys_dim;#amount_of_money"/>
+&lt;phys_dim:BaseDimension          rdf:about="&phys_dim;#amount_of_substance"/>
+&lt;phys_dim:BaseDimension          rdf:about="&phys_dim;#length"/>
+&lt;phys_dim:BaseDimension          rdf:about="&phys_dim;#thermodynamic_temperature"/>
+</rdfs:comment>
+<terms:license
+            >Copyright (C) [2009] [Andreas Wiesner]
+                This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+                This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+                You should have received a copy of the GNU General Public License along with this program; if not, see &lt;http://www.gnu.org/licenses/&gt;.
+</terms:license>
+  </owl:Ontology>
+  
+  <SI_unit:SI_DerivedUnit rdf:ID="Hz">
+    <system:hasDimension rdf:resource="&der_dim;#frequency"/>
+    <rdfs:comment rdf:datatype="&xsd;#string"
+    >Hertz</rdfs:comment>
+    <SI_unit:isDefinedBy>
+      <maths:Node rdf:ID="HERTZ">
+        <maths:hasRightChild rdf:resource="&SI_unit;#SECOND"/>
+        <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+        <maths:leftChildNodeValue rdf:datatype="&xsd;#float"
+        >1.0</maths:leftChildNodeValue>
+      </maths:Node>
+    </SI_unit:isDefinedBy>
+  </SI_unit:SI_DerivedUnit>
+  <maths:Node rdf:ID="KILOMETER">
+    <maths:hasRightChild rdf:resource="&SI_unit;#METER"/>
+    <maths:hasLeftChild rdf:resource="&SI_unit;#KILO-"/>
+    <maths:hasNodeValue rdf:resource="&maths;#times"/>
+  </maths:Node>
+  <owl:AllDifferent>
+    <owl:distinctMembers rdf:parseType="Collection">
+      <SI_unit:PrefixedDerivedUnit rdf:ID="km">
+        <SI_unit:isDefinedBy rdf:resource="&der_SI_units;#KILOMETER"/>
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >kilometer</rdfs:comment>
+        <system:hasDimension rdf:resource="&phys_dim;#length"/>
+      </SI_unit:PrefixedDerivedUnit>
+      <SI_unit:PrefixedDerivedUnit rdf:ID="kW">
+        <system:hasDimension rdf:resource="&der_dim;#power"/>
+        <SI_unit:isDefinedBy>
+          <maths:Node rdf:ID="KILOWATT">
+            <maths:hasNodeValue rdf:resource="&maths;#times"/>
+            <maths:hasLeftChild rdf:resource="&SI_unit;#KILO-"/>
+            <maths:hasRightChild>
+              <maths:Node rdf:ID="WATT">
+                <maths:hasLeftChild>
+                  <maths:Node rdf:ID="JOULE">
+                    <maths:hasRightChild rdf:resource="&SI_unit;#METER"/>
+                    <maths:hasNodeValue rdf:resource="&maths;#times"/>
+                    <maths:hasLeftChild>
+                      <maths:Node rdf:ID="NEWTON">
+                        <maths:hasRightChild>
+                          <maths:Node rdf:ID="SECOND_SQUARED">
+                            <maths:hasLeftChild rdf:resource="&SI_unit;#SECOND"/>
+                            <maths:hasNodeValue rdf:resource="&maths;#power"/>
+                            <maths:rightChildNodeValue rdf:datatype=
+                            "&xsd;#string"
+                            >2</maths:rightChildNodeValue>
+                          </maths:Node>
+                        </maths:hasRightChild>
+                        <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+                        <maths:hasLeftChild>
+                          <maths:Node rdf:ID="KILOGRAM_METER">
+                            <maths:hasRightChild rdf:resource="&SI_unit;#METER"/>
+                            <maths:hasNodeValue rdf:resource="&maths;#times"/>
+                            <maths:hasLeftChild rdf:resource="&SI_unit;#KILOGRAM"/>
+                          </maths:Node>
+                        </maths:hasLeftChild>
+                      </maths:Node>
+                    </maths:hasLeftChild>
+                  </maths:Node>
+                </maths:hasLeftChild>
+                <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+                <maths:hasRightChild rdf:resource="&SI_unit;#SECOND"/>
+              </maths:Node>
+            </maths:hasRightChild>
+          </maths:Node>
+        </SI_unit:isDefinedBy>
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >kilowatt</rdfs:comment>
+      </SI_unit:PrefixedDerivedUnit>
+      <SI_unit:PrefixedDerivedUnit rdf:ID="kJ">
+        <SI_unit:isDefinedBy>
+          <maths:Node rdf:ID="KILOJOULE">
+            <maths:hasNodeValue rdf:resource="&maths;#times"/>
+            <maths:hasRightChild rdf:resource="&der_SI_units;#JOULE"/>
+            <maths:hasLeftChild rdf:resource="&SI_unit;#KILO-"/>
+          </maths:Node>
+        </SI_unit:isDefinedBy>
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >kilojoule</rdfs:comment>
+        <system:hasDimension rdf:resource="&der_dim;#work"/>
+      </SI_unit:PrefixedDerivedUnit>
+      <SI_unit:PrefixedDerivedUnit rdf:ID="kmol">
+        <system:hasDimension rdf:resource="&phys_dim;#amount_of_substance"/>
+        <SI_unit:isDefinedBy>
+          <maths:Node rdf:ID="KILOMOLE">
+            <maths:hasRightChild rdf:resource="&SI_unit;#MOLE"/>
+            <maths:hasLeftChild rdf:resource="&SI_unit;#KILO-"/>
+            <maths:hasNodeValue rdf:resource="&maths;#times"/>
+          </maths:Node>
+        </SI_unit:isDefinedBy>
+      </SI_unit:PrefixedDerivedUnit>
+    </owl:distinctMembers>
+  </owl:AllDifferent>
+  <maths:Node rdf:ID="RADIAN_PER_SECOND_SQUARED">
+    <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+    <maths:hasLeftChild>
+      <maths:Node rdf:ID="RADIAN_PER_SECOND">
+        <maths:hasRightChild rdf:resource="&SI_unit;#SECOND"/>
+        <maths:hasLeftChild>
+          <maths:Node rdf:ID="RADIAN">
+            <maths:hasRightChild rdf:resource="&SI_unit;#METER"/>
+            <maths:hasLeftChild rdf:resource="&SI_unit;#METER"/>
+            <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+          </maths:Node>
+        </maths:hasLeftChild>
+        <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+      </maths:Node>
+    </maths:hasLeftChild>
+    <maths:hasRightChild rdf:resource="&SI_unit;#SECOND"/>
+  </maths:Node>
+    
+  <maths:Node rdf:ID="WATT_PER_METER">
+    <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+    <maths:hasRightChild rdf:resource="&SI_unit;#METER"/>
+    <maths:hasLeftChild rdf:resource="&der_SI_units;#WATT"/>
+  </maths:Node>
+  <SI_unit:SI_DerivedUnit rdf:ID="rad_per_s">
+    <rdfs:comment rdf:datatype="&xsd;#string"
+    >radian per second - rad/s</rdfs:comment>
+    <system:hasDimension rdf:resource="&der_dim;#angular_velocity"/>
+    <SI_unit:isDefinedBy rdf:resource="&der_SI_units;#RADIAN_PER_SECOND"/>
+  </SI_unit:SI_DerivedUnit>
+  <SI_unit:SI_DerivedUnit rdf:ID="J">
+    <rdfs:comment rdf:datatype="&xsd;#string"
+    >Joule</rdfs:comment>
+    <SI_unit:isDefinedBy rdf:resource="&der_SI_units;#JOULE"/>
+    <system:hasDimension rdf:resource="&der_dim;#work"/>
+  </SI_unit:SI_DerivedUnit>
+  <SI_unit:SI_DerivedUnit rdf:ID="J_per_K">
+    <system:hasDimension rdf:resource="&der_dim;#entropy"/>
+    <SI_unit:isDefinedBy>
+      <maths:Node rdf:ID="JOULE_PER_KELVIN">
+        <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+        <maths:hasLeftChild rdf:resource="&der_SI_units;#JOULE"/>
+        <maths:hasRightChild rdf:resource="&SI_unit;#KELVIN"/>
+      </maths:Node>
+    </SI_unit:isDefinedBy>
+    <rdfs:comment rdf:datatype="&xsd;#string"
+    >Joule per Kelvin - J/K</rdfs:comment>
+  </SI_unit:SI_DerivedUnit>
+  <maths:Node rdf:ID="COULOMB"/>
+  <maths:Node rdf:ID="KILOGRAM_PER_MOLE">
+    <maths:hasLeftChild rdf:resource="&SI_unit;#KILOGRAM"/>
+    <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+    <maths:hasRightChild rdf:resource="&SI_unit;#MOLE"/>
+  </maths:Node>
+  <SI_unit:SI_DerivedUnit rdf:ID="cubic_m_per_kg">
+    <rdfs:comment rdf:datatype="&xsd;#string"
+    >cubic meter per kilogram- (m.m.m)/kg</rdfs:comment>
+    <system:hasDimension rdf:resource="&der_dim;#specific_volume"/>
+    <SI_unit:isDefinedBy>
+      <maths:Node rdf:ID="CUBIC_METER_PER_KILOGRAM">
+        <maths:hasRightChild rdf:resource="&SI_unit;#KILOGRAM"/>
+        <maths:hasLeftChild>
+          <maths:Node rdf:ID="CUBIC_METER">
+            <maths:hasNodeValue rdf:resource="&maths;#power"/>
+            <maths:rightChildNodeValue rdf:datatype="&xsd;#string"
+            >3</maths:rightChildNodeValue>
+            <maths:hasLeftChild rdf:resource="&SI_unit;#METER"/>
+          </maths:Node>
+        </maths:hasLeftChild>
+        <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+      </maths:Node>
+    </SI_unit:isDefinedBy>
+  </SI_unit:SI_DerivedUnit>
+  <maths:Node rdf:ID="JOULE_PER_KILOGRAM.KELVIN">
+    <maths:hasLeftChild rdf:resource="&der_SI_units;#JOULE_PER_KELVIN"/>
+    <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+    <maths:hasRightChild rdf:resource="&SI_unit;#KILOGRAM"/>
+  </maths:Node>
+  
+
+      <SI_unit:SI_DerivedUnit rdf:ID="Celsius">
+        <SI_unit:isDefinedBy>
+          <maths:Node rdf:ID="CELSIUS">
+            <maths:hasNodeValue rdf:resource="&maths;#plus"/>
+            <maths:rightChildNodeValue rdf:datatype="&xsd;#string"
+            >273.15</maths:rightChildNodeValue>
+            <maths:hasLeftChild rdf:resource="&SI_unit;#KELVIN"/>
+          </maths:Node>
+        </SI_unit:isDefinedBy>
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >°C</rdfs:comment>
+        <system:hasDimension rdf:resource="&phys_dim;#thermodynamic_temperature"/>
+      </SI_unit:SI_DerivedUnit>
+      <SI_unit:SI_DerivedUnit rdf:ID="J_per_kg.K">
+        <system:hasDimension rdf:resource="&der_dim;#specific_entropy"/>
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >Joule per kilogram Kelvin - J/(kg.K)</rdfs:comment>
+        <SI_unit:isDefinedBy rdf:resource="&der_SI_units;#JOULE_PER_KILOGRAM.KELVIN"/>
+      </SI_unit:SI_DerivedUnit>
+      <SI_unit:SI_DerivedUnit rdf:ID="kg_per_cubic_m">
+        <system:hasDimension rdf:resource="&der_dim;#density"/>
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >kilogram per cubic meter - kg/(m.m.m)</rdfs:comment>
+        <SI_unit:isDefinedBy>
+          <maths:Node rdf:ID="KILOGRAM_PER_CUBIC_METER">
+            <maths:hasLeftChild rdf:resource="&SI_unit;#KILOGRAM"/>
+            <maths:hasRightChild rdf:resource="&der_SI_units;#CUBIC_METER"/>
+            <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+          </maths:Node>
+        </SI_unit:isDefinedBy>
+      </SI_unit:SI_DerivedUnit>
+      <SI_unit:SI_DerivedUnit rdf:ID="m.m">
+        <SI_unit:isDefinedBy>
+          <maths:Node rdf:ID="SQUARE_METER">
+            <maths:hasLeftChild rdf:resource="&SI_unit;#METER"/>
+            <maths:rightChildNodeValue rdf:datatype="&xsd;#string"
+            >2</maths:rightChildNodeValue>
+            <maths:hasNodeValue rdf:resource="&maths;#power"/>
+          </maths:Node>
+        </SI_unit:isDefinedBy>
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >square meter - m.m</rdfs:comment>
+        <system:hasDimension rdf:resource="&der_dim;#area"/>
+      </SI_unit:SI_DerivedUnit>
+      <SI_unit:SI_DerivedUnit rdf:ID="m.m.m">
+        <system:hasDimension rdf:resource="&der_dim;#volume"/>
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >cubic meter - m.m.m</rdfs:comment>
+        <SI_unit:isDefinedBy rdf:resource="&der_SI_units;#CUBIC_METER"/>
+      </SI_unit:SI_DerivedUnit>
+      <SI_unit:SI_DerivedUnit rdf:ID="m_per_s">
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >meter per second - m/s</rdfs:comment>
+        <SI_unit:isDefinedBy>
+          <maths:Node rdf:ID="METER_PER_SECOND">
+            <maths:hasLeftChild rdf:resource="&SI_unit;#METER"/>
+            <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+            <maths:hasRightChild rdf:resource="&SI_unit;#SECOND"/>
+          </maths:Node>
+        </SI_unit:isDefinedBy>
+        <system:hasDimension rdf:resource="&der_dim;#velocity"/>
+      </SI_unit:SI_DerivedUnit>
+      <SI_unit:SI_DerivedUnit rdf:ID="N">
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >Newton</rdfs:comment>
+        <SI_unit:isDefinedBy rdf:resource="&der_SI_units;#NEWTON"/>
+        <system:hasDimension rdf:resource="&der_dim;#force"/>
+      </SI_unit:SI_DerivedUnit>
+      <SI_unit:SI_DerivedUnit rdf:ID="N.m">
+        <SI_unit:isDefinedBy>
+          <maths:Node rdf:ID="NEWTON.METER">
+            <maths:hasLeftChild rdf:resource="&der_SI_units;#NEWTON"/>
+            <maths:hasNodeValue rdf:resource="&maths;#times"/>
+            <maths:hasRightChild rdf:resource="&SI_unit;#METER"/>
+          </maths:Node>
+        </SI_unit:isDefinedBy>
+        <system:hasDimension rdf:resource="&der_dim;#moment_of_force"/>
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >Newton meter</rdfs:comment>
+      </SI_unit:SI_DerivedUnit>
+      <SI_unit:SI_DerivedUnit rdf:ID="N_per_m">
+        <SI_unit:isDefinedBy>
+          <maths:Node rdf:ID="NEWTON_PER_METER">
+            <maths:hasRightChild rdf:resource="&SI_unit;#METER"/>
+            <maths:hasLeftChild rdf:resource="&der_SI_units;#NEWTON"/>
+            <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+          </maths:Node>
+        </SI_unit:isDefinedBy>
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >Newton per meter - N/m</rdfs:comment>
+        <system:hasDimension rdf:resource="&der_dim;#surface_tension"/>
+      </SI_unit:SI_DerivedUnit>
+      <SI_unit:SI_DerivedUnit rdf:ID="Pa">
+        <SI_unit:isDefinedBy>
+          <maths:Node rdf:ID="PASCAL">
+            <maths:hasLeftChild rdf:resource="&der_SI_units;#NEWTON"/>
+            <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+            <maths:hasRightChild rdf:resource="&der_SI_units;#SQUARE_METER"/>
+          </maths:Node>
+        </SI_unit:isDefinedBy>
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >Pascal</rdfs:comment>
+        <system:hasDimension rdf:resource="&der_dim;#pressure"/>
+      </SI_unit:SI_DerivedUnit>
+      <SI_unit:SI_DerivedUnit rdf:ID="Pa.s">
+        <SI_unit:isDefinedBy>
+          <maths:Node rdf:ID="PASCAL.SECOND">
+            <maths:hasLeftChild rdf:resource="&der_SI_units;#PASCAL"/>
+            <maths:hasNodeValue rdf:resource="&maths;#times"/>
+            <maths:hasRightChild rdf:resource="&SI_unit;#SECOND"/>
+          </maths:Node>
+        </SI_unit:isDefinedBy>
+        <system:hasDimension rdf:resource="&der_dim;#dynamic_viscosity"/>
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >Pascal second</rdfs:comment>
+      </SI_unit:SI_DerivedUnit>
+      <SI_unit:SI_DerivedUnit rdf:ID="rad">
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >Radian</rdfs:comment>
+        <SI_unit:isDefinedBy rdf:resource="&der_SI_units;#RADIAN"/>
+        <system:hasDimension rdf:resource="&der_dim;#oscillation_phase"/>
+      </SI_unit:SI_DerivedUnit>
+      <SI_unit:SI_DerivedUnit rdf:ID="rad_per_s_squared">
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >radian per second squared - rad/(s.s)</rdfs:comment>
+        <system:hasDimension rdf:resource="&der_dim;#angular_acceleration"/>
+        <SI_unit:isDefinedBy rdf:resource="&der_SI_units;#RADIAN_PER_SECOND_SQUARED"/>
+      </SI_unit:SI_DerivedUnit>
+      <SI_unit:SI_DerivedUnit rdf:ID="W">
+        <system:hasDimension rdf:resource="&der_dim;#power"/>
+        <SI_unit:isDefinedBy rdf:resource="&der_SI_units;#WATT"/>
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >Watt</rdfs:comment>
+      </SI_unit:SI_DerivedUnit>
+      <SI_unit:SI_DerivedUnit rdf:ID="W_per_m.K">
+        <SI_unit:isDefinedBy>
+          <maths:Node rdf:ID="WATT_PER_METER.KELVIN">
+            <maths:hasLeftChild rdf:resource="&der_SI_units;#WATT_PER_METER"/>
+            <maths:hasRightChild rdf:resource="&SI_unit;#KELVIN"/>
+            <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+          </maths:Node>
+        </SI_unit:isDefinedBy>
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >Watt per meter Kelvin - W/(m.K)</rdfs:comment>
+        <system:hasDimension rdf:resource="&der_dim;#thermal_conductivity"/>
+      </SI_unit:SI_DerivedUnit>
+  
+  
+  
+  
+  <SI_unit:SI_DerivedUnit rdf:ID="m.m.m_per_mol">
+    <rdfs:comment rdf:datatype="&xsd;#string"
+    >cubic meter per mole</rdfs:comment>
+    <SI_unit:isDefinedBy>
+      <maths:Node rdf:ID="CUBIC_METER_PER_MOLE">
+        <maths:hasRightChild rdf:resource="&SI_unit;#MOLE"/>
+        <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+        <maths:hasLeftChild rdf:resource="&der_SI_units;#CUBIC_METER"/>
+      </maths:Node>
+    </SI_unit:isDefinedBy>
+    <system:hasDimension rdf:resource="&der_dim;#molar_volume"/>
+  </SI_unit:SI_DerivedUnit>
+  <SI_unit:SI_DerivedUnit rdf:ID="kg_per_kmol">
+    <system:hasDimension rdf:resource="&der_dim;#molecular_mass"/>
+    <SI_unit:isDefinedBy>
+      <maths:Node rdf:ID="KILOGRAM_PER_KILOMOLE">
+        <maths:hasRightChild rdf:resource="&der_SI_units;#KILOMOLE"/>
+        <maths:hasNodeValue rdf:resource="&maths;#divide"/>
+        <maths:hasLeftChild rdf:resource="&SI_unit;#KILOGRAM"/>
+      </maths:Node>
+    </SI_unit:isDefinedBy>
+  </SI_unit:SI_DerivedUnit>
+  
+  <SI_unit:SI_DerivedUnit rdf:ID="kg_per_mol">
+        <SI_unit:isDefinedBy rdf:resource="&der_SI_units;#KILOGRAM_PER_MOLE"/>
+        <system:hasDimension rdf:resource="&der_dim;#molecular_mass"/>
+  </SI_unit:SI_DerivedUnit>
+   
+  <SI_unit:SI_DerivedUnit rdf:ID="C">
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >The coulomb (symbol: C) is the SI unit of electric charge.</rdfs:comment>
+        <system:hasDimension rdf:resource="&der_dim;#electric_charge"/>
+        <SI_unit:isDefinedBy rdf:resource="&der_SI_units;#COULOMB"/>
+  </SI_unit:SI_DerivedUnit>
+ 
+   <SI_unit:SI_DerivedUnit rdf:ID="USD">
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >US Dollar (currency used in American Samoa, British Indian Ocean Territory, Ecuador, El Salvador, Guam, Haiti, Marshall Islands, Micronesia, Northern Mariana Islands, Palau, Panama, Puerto Rico, East Timor, Turks and Caicos Islands, United States, Virgin Islands)</rdfs:comment>
+        <system:hasDimension rdf:resource="&phys_dim;#amount_of_money"/>
+  </SI_unit:SI_DerivedUnit> 
+  
+  <SI_unit:SI_DerivedUnit rdf:ID="EUR">
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >Euro (currency used in Austria, Belgium, Finland, France [except Pacific territories using CFP franc], Germany, Greece, Ireland, Italy, Luxembourg, Netherlands [except Aruba and the Netherlands Antilles using Aruban florin and Antillean guilder respectively], Portugal, Slovenia, Spain, as well as Monaco, San Marino, Vatican City, Andorra, Montenegro, Kosovo)</rdfs:comment>
+        <system:hasDimension rdf:resource="&phys_dim;#amount_of_money"/>
+  </SI_unit:SI_DerivedUnit> 
+    
+  <SI_unit:SI_DerivedUnit rdf:ID="CAD">
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >Canadian Dollar (currency used in Canada)</rdfs:comment>
+        <system:hasDimension rdf:resource="&phys_dim;#amount_of_money"/>
+  </SI_unit:SI_DerivedUnit> 
+ 
+  <SI_unit:SI_DerivedUnit rdf:ID="GBP">
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >Pound Sterling  (currency used in the United Kingdom)</rdfs:comment>
+        <system:hasDimension rdf:resource="&phys_dim;#amount_of_money"/>
+  </SI_unit:SI_DerivedUnit> 
+  
+  <SI_unit:SI_DerivedUnit rdf:ID="CNY">
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >Yuan Renminbi (currency used in mainland China)</rdfs:comment>
+        <system:hasDimension rdf:resource="&phys_dim;#amount_of_money"/>
+  </SI_unit:SI_DerivedUnit> 
+  
+  <SI_unit:SI_DerivedUnit rdf:ID="CHF">
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >Swiss Franc (currency used in Switzerland, Liechtenstein)</rdfs:comment>
+        <system:hasDimension rdf:resource="&phys_dim;#amount_of_money"/>
+  </SI_unit:SI_DerivedUnit> 
+  
+  <SI_unit:SI_DerivedUnit rdf:ID="JPY">
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >Japanese yen (currency used in Japan)</rdfs:comment>
+        <system:hasDimension rdf:resource="&phys_dim;#amount_of_money"/>
+  </SI_unit:SI_DerivedUnit> 
+  
+  <SI_unit:SI_DerivedUnit rdf:ID="RUB">
+        <rdfs:comment rdf:datatype="&xsd;#string"
+        >Russian Ruble (currency used in Russia, Abkhazia, South Ossetia)</rdfs:comment>
+        <system:hasDimension rdf:resource="&phys_dim;#amount_of_money"/>
+  </SI_unit:SI_DerivedUnit> 
+  
+  <owl:AllDifferent>
+    <owl:distinctMembers rdf:parseType="Collection">
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#C"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#Celsius"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#cubic_m_per_kg"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#Hz"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#J"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#J_per_K"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#J_per_kg.K"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#kg_per_cubic_m"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#kg_per_mol"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#kg_per_kmol"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#m.m"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#m.m.m"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#m_per_s"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#m.m.m_per_mol"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#N"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#N.m"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#N_per_m"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#Pa"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#Pa.s"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#rad"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#rad_per_s"/> 
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#rad_per_s_squared"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#W"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#W_per_m.K"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#CAD"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#CHF"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#CNY"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#EUR"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#GBP"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#JPY"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#RUB"/>
+      <SI_unit:SI_DerivedUnit rdf:about="&der_SI_units;#USD"/>
+  </owl:distinctMembers>
+  </owl:AllDifferent>
+
+</rdf:RDF>

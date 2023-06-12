@@ -1,0 +1,38 @@
+{
+    "acplt": {
+        "type": "process_package",
+        "name": "acplt",
+        "children": {
+            "Stirring": {
+                "type": "process"
+            },
+            "Detach": {
+                "type": "process"
+            },
+            "Store": {
+                "type": "process"
+            },
+            "PressureAdjustment": {
+                "type": "process"
+            },
+            "Tempering": {
+                "type": "process"
+            },
+            "Circulation": {
+                "type": "process"
+            },
+            "Draining": {
+                "type": "process"
+            },
+            "ElectricalField": {
+                "type": "process"
+            },
+            "FlowStoping": {
+                "type": "process"
+            },
+            "Pumping": {
+                "type": "process"
+            }
+        }
+    }
+}

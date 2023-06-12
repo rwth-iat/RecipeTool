@@ -1,0 +1,116 @@
+++++++++++++++++++++++++++  Sortierung nach FEA und Komponente +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+PREFIX Basy: <https://www.w3id.org/basyx/c4i#>
+PREFIX Cap: <http://www.acplt.de/Capability#>
+
+
+SELECT ?FEA ?hasComponent 
+	WHERE { ?FEA rdfs:subClassOf ?a.
+		?a owl:someValuesFrom ?hasComponent.
+		?hasComponent rdfs:subClassOf* Cap:Component
+}
+Order by ?FEA ?hasComponent
+#order by ?hasComponent
+++++++++++++++++++++++++++++++ Abgleich von Fähigkeiten und Auswahl von FEAs +++++++++++++++++++++++++++++++++++++++++++++++++++
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+PREFIX Basy: <https://www.w3id.org/basyx/c4i#>
+PREFIX Cap: <http://www.acplt.de/Capability#>
+
+PREFIX Require:  <http://www.acplt.de/Capability#DosingFlow> # Here is the Required Capability
+
+#SELECT
+#DESCRIBE
+#CONSTRUCT
+
+SELECT ?FEA ?INDEX ?INDEX_LIMIT
+WHERE
+{
+
+{SELECT ?FEA  ?INDEX ?INDEX_LIMIT
+WHERE
+{
+{SELECT (MAX(?NUM) AS ?INDEX_LIMIT)		# Index-Limit
+WHERE{
+{
+
+SELECT   
+	(COUNT (?o) AS ?NUM)
+	
+WHERE
+{
+	?hasProcessCapabilitySome owl:someValuesFrom Require:.					# Property: hasCapabilitysome
+	?GeneralCapabilityCombi rdfs:subClassOf ?hasProcessCapabilitySome.				# Axiom: Combi assWithGenCap ist eqal hasProCap
+	?GeneralCapabilityCombi (owl:intersectionOf/rdf:rest*/rdf:first) ?associatedWithCapabilitySome.		# find separat assWithGenCap
+	?associatedWithCapabilitySome owl:onProperty Basy:associatedWithCapability.			#
+	?associatedWithCapabilitySome ?o ?GeneralCapability.				# GenCap: at the same time: 'assWithCap' + 'some'
+	
+
+}
+GROUP BY ?o			#?SubCAP will cause some problem with the classification
+
+}
+}
+}
+
+UNION
+
+{SELECT   ?FEA  (COUNT (?FEA) AS ?INDEX)			# FEAs with Index
+WHERE
+{
+	?hasProcessCapabilitySome owl:someValuesFrom Require:.					# Property: hasCapabilitysome
+	?GeneralCapabilityCombi rdfs:subClassOf ?hasProcessCapabilitySome.				# Axiom: Combi assWithGenCap ist eqal hasProCap
+	?GeneralCapabilityCombi (owl:intersectionOf/rdf:rest*/rdf:first) ?associatedWithCapabilitySome.		# find separat assWithGenCap
+	?associatedWithCapabilitySome owl:onProperty Basy:associatedWithCapability.			#
+	?associatedWithCapabilitySome owl:someValuesFrom ?GeneralCapability.				# GenCap: at the same time: 'assWithCap' + 'some'
+	?hasGeneralCapability owl:someValuesFrom ?GeneralCapability.				#
+	?hasGeneralCapability owl:onProperty Basy:hasCapability.					# Property: hasCapability some GenCap
+	?Component rdfs:subClassOf ?hasGeneralCapability.					#
+	?Component rdfs:subClassOf* Cap:Resource.						# Component: 'hasCapability some GenCap' + 'SubClassOf: Ressource'
+	?hasComp owl:someValuesFrom ?Component.
+	?FEA  rdfs:subClassOf ?hasComp.
+}
+
+GROUP BY ?FEA									#?SubCAP will cause some problem with the classification
+ORDER BY DESC (COUNT (?FEA) )
+}
+
+}
+}
+UNION
+{
+SELECT ?FEA (COUNT (?FEA) AS ?INDEX)				# einzelne Komponente as FEA, like FlowControlledDosingPump hasCapability FPumpL_Test
+WHERE	{
+	?hasGeneralCapability owl:someValuesFrom Require:.		# subject is the required Capability
+	?CheckOne rdfs:subClassOf ?hasGeneralCapability. 		# all subClass of 'hasCapability Capability' --> can be related COMPO --> can be the associated Capabilities looking for further related COMPOs
+	?FEA rdfs:subClassOf ?hasGeneralCapability.
+	?FEA rdfs:subClassOf* Cap:Resource.
+	
+}
+GROUP BY ?FEA
+
+}
+UNION
+{
+SELECT ?FEA (COUNT (?FEA) AS ?INDEX)				# Search for general Capability, output is FEA with multi Komponente contained required Capability
+WHERE	{
+	?hasGeneralCapability owl:someValuesFrom Require:.		# subject is the required Capability
+	?CheckOne rdfs:subClassOf ?hasGeneralCapability. 		# all subClass of 'hasCapability Capability' --> can be related COMPO --> can be the associated Capabilities looking for further related COMPOs
+	?Component rdfs:subClassOf ?hasGeneralCapability.					#
+	?Component rdfs:subClassOf* Cap:Resource.						# Component: 'hasCapability some GenCap' + 'SubClassOf: Ressource'
+	?hasComp owl:someValuesFrom ?Component.
+	?FEA  rdfs:subClassOf ?hasComp.	
+}
+GROUP BY ?FEA
+
+}
+
+
+}

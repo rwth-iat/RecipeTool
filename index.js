@@ -125,9 +125,19 @@ const add_process = async (process, name, parent, margin_left, callback) =>{
   process_div.id = name;
   process_div.innerHTML += name;
   process_div.className = "side_bar_element process_element";
-  process_div.style.width = "auto";
+  process_div.style.width = "200px";
   process_div.style.height = "auto";
   process_div.style.marginLeft = (margin_left + 10).toString() + "px";
+  
+  //make it draggable 
+  //but works for now
+  //(the following stackoverflow comment states that for cross browser interoperability you are better off using a js framework to make things dynamically draggable.)
+  //https://stackoverflow.com/questions/16296029/adding-ondragstart-handler-to-dynamically-created-images
+  process_div.addEventListener('dragstart', dragstart_handler, false);
+  process_div.addEventListener('dragend', dragover_handler, false);
+  process_div.draggable=true 
+
+  //process_div.addEventListener('drop', drop_handler, false);
   parent.appendChild(process_div);
 }
 
@@ -140,7 +150,7 @@ const add_process_group = async (process_group, name, parent, margin_left, callb
   container_div.id = name;
   container_div.innerHTML += name;
   container_div.className = "side_bar_element process_element";
-  container_div.style.width = "auto";
+  container_div.style.width = "200px";
   container_div.style.height = "auto";
   //increase the margin with every hirachy level for improved visability
   container_div.style.marginLeft = (margin_left + 10).toString() + "px";
@@ -193,4 +203,4 @@ const add_file_package = async (path, callback) =>{
 
 
 
-let process_package = add_file_package('config/TGL25000.json')
+let process_package = add_file_package('config/input.json')
