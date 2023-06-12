@@ -62,6 +62,14 @@ function drop_handler(ev) {
         //reset border of the element
         nodeCopy.style.border = "1px solid black";
         
+        //make it draggable 
+        //but works for now
+        //(the following stackoverflow comment states that for cross browser interoperability you are better off using a js framework to make things dynamically draggable.)
+        //https://stackoverflow.com/questions/16296029/adding-ondragstart-handler-to-dynamically-created-images
+        nodeCopy.addEventListener('dragstart', dragstart_handler, false);
+        nodeCopy.addEventListener('dragend', dragover_handler, false);
+        nodeCopy.draggable=true
+
         //add new clone to document
         ev.target.appendChild(nodeCopy);
 
@@ -118,9 +126,41 @@ const read_file = async (path, callback) => {
   return result_json;
 }
 
+  // Synchronously read a text file from the web server with Ajax
+//
+// The filePath is relative to the web page folder.
+// Example:   myStuff = loadFile("Chuuk_data.txt");
+//
+// You can also pass a full URL, like http://sealevel.info/Chuuk1_data.json, but there
+// might be Access-Control-Allow-Origin issues. I found it works okay in Firefox, Edge,
+// or Opera, and works in IE 11 if the server is configured properly, but in Chrome it only
+// works if the domains exactly match (and note that "xyz.com" & "www.xyz.com" don't match).
+// Otherwise Chrome reports an error:
+//
+//   No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin 'http://sealevel.info' is therefore not allowed access.
+//
+// That happens even when "Access-Control-Allow-Origin *" is configured in .htaccess,
+// and even though I verified the headers returned (you can use a header-checker site like
+// http://www.webconfs.com/http-header-check.php to check it). I think it's a Chrome bug.
+function request_file(filePath) {
+  var result = null;
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.open("GET", filePath, false);
+  xmlhttp.send();
+  if (xmlhttp.status==200) {
+    result = xmlhttp.responseText;
+  }
+  return result;
+}
+
 //function to add a process
 const add_process = async (process, name, parent, margin_left, callback) =>{
-  //create a container div 
+  //add spacer div to create whitespace between elements
+  const spacer_div = document.createElement("div");
+  spacer_div.className = "element_spacer";
+  parent.appendChild(spacer_div);
+
+  //create the process div
   const process_div = document.createElement("div");
   process_div.id = name;
   process_div.innerHTML += name;
@@ -139,6 +179,7 @@ const add_process = async (process, name, parent, margin_left, callback) =>{
 
   //process_div.addEventListener('drop', drop_handler, false);
   parent.appendChild(process_div);
+
 }
 
 //function to add a process_package
@@ -179,6 +220,7 @@ const add_process_package = async (process_package, name, callback) =>{
   container_div.className = "side_bar_element process_element";
   container_div.style.width = "200px";
   container_div.style.height = "auto";
+  container_div.style.backgroundColor = "darkgray"
   container_div.style.marginLeft = margin_left.toString() + "px";
   processes_div.appendChild(container_div);
 
@@ -190,11 +232,18 @@ const add_process_package = async (process_package, name, callback) =>{
       add_process_group(process_package.children[key], key, processes_div, margin_left)
     }
   })
+
+  //add spacer element to create whitespace to next process group
+  const spacer_div = document.createElement("div");
+  spacer_div.className = "element_spacer";
+  processes_div.appendChild(spacer_div);
 }
 
 const add_file_package = async (path, callback) =>{
-  let process_package = await read_file(path);
+  let process_package = await request_file(path); //changed read_file to request_file to work in server configuration
+  process_package = JSON.parse(process_package);
   Object.keys(process_package).forEach(key => {
+    console.log(key);
     if(process_package[key].type=="process_package"){
       add_process_package(process_package[key], key);
     }
@@ -203,4 +252,4 @@ const add_file_package = async (path, callback) =>{
 
 
 
-let process_package = add_file_package('config/input.json')
+let process_package = add_file_package("../static/input.json")

@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<!-- import CSS -->
-		<link rel="stylesheet" type="text/css" href="/index.css" />
+		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='index.css')}}" />
 
 		<!-- mobile optimization-->
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -22,6 +22,7 @@
 						<div id="intermediate_produkt" class="material_element side_bar_element" draggable="true" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">Zwischenprodukt</div>
 						<div class="element_spacer"></div>
 						<div id="final_produkt" class="material_element side_bar_element" draggable="true" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">Endprodukt</div>
+						<div class="element_spacer"></div>
 					</div>	
 				</div>
 				<div id="processes_window">
@@ -36,5 +37,5 @@
 	</div>
 
 	<!-- import javascript -->
-	<script type="text/javascript" src="index.js"></script>
+	<script type="text/javascript" src="{{url_for('static', filename='index.js')}}"></script>
 </html>

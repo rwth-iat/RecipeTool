@@ -10,6 +10,10 @@
     width: 100vw;
     height: 10vh;
     float:left;
+    /*border-radius: 5px;
+    border-width:1px;
+    border-style:solid;
+    border-color:black;*/
 }
 
 #editor{
@@ -27,6 +31,7 @@
     width: 20vw;
     height: 90vh;
     float:left;
+    overflow: scroll;
     background-color: lightgray;
 }
 
@@ -34,7 +39,7 @@
 #material_window{
     box-sizing: border-box;
     width: 20vw;
-    height: 45vh;
+    height: auto;
     float:left;
     vertical-align: top;
     justify-content: center;
@@ -54,7 +59,7 @@
 #processes_window{
     box-sizing: border-box;
     width: 20vw;
-    height: 45vh;
+    height: auto;
     float:left;
     justify-content: center;
     align-items: center;
