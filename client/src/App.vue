@@ -5,13 +5,12 @@
 </script>
 
 <template>
-  <header>
-    <topbar/>
-  </header>
-
   <main>
+    <topbar id="top_bar"/>
+    <div id="editor">
       <Sidebar/>
       <workspace/>
+    </div>
   </main>
 </template>
 
@@ -25,6 +24,7 @@
     --light: #f1f5f9;
     --sidebar-width: 300px;
   }
+  /*this blocks makes sure that the menu bar on the left is directly at the rim and no gap appears*/
   * {
     margin: 0;
     padding: 0;
@@ -32,7 +32,7 @@
     font-family: 'Fira sans', sans-serif;
   }
   header{
-    background: var(--grey);
+    background: var(--dark);
   }
   body {
     background: var(--light);
@@ -48,11 +48,26 @@
     display: flex;
     main {
       display: flex;
-      flex: 1 1 0;
-      padding: 2rem;
-      @media (max-width: 1024px) {
-        padding-left: 6rem;
-      }
+      flex-direction: row;
+      height:100vh;
+      width:100vw;      
     }
   }
+  #editor{
+    box-sizing: border-box;
+    width: 100vw;
+    height: 90vw;
+    overflow:hidden;
+    display: flex;
+  }
+  /*container for the page heading*/
+#top_bar{
+    width: 100vw;
+    height: 10vh;
+    float:left;
+    /*border-radius: 5px;
+    border-width:1px;
+    border-style:solid;
+    border-color:black;*/
+}
 </style>

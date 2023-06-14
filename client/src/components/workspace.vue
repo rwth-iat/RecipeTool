@@ -4,7 +4,7 @@ import { ref } from 'vue'
 </script>
 
 <template>
-  <div id="workspace" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"></div>
+  <div id="workspace" @drop="drop_handler(event);" @dragover="dragover_handler(event);"></div>
 </template>
 
 <script>
@@ -109,10 +109,8 @@ function dragend_handler(ev) {
 <style>
     /*container for material*/
     #workspace{
-        width: 80vw;
+        width: 100vw;
         height: 90vh;
-        overflow: hidden;
-        display: flex;
         flex: 1 1 0;
         /*float:left;*/
         border-radius: 5px;
