@@ -19,7 +19,7 @@ def add_subclasses(input_object, children_classes_list, super_class_name):
 
 onto_c4i = get_ontology("https://www.w3id.org/basyx/c4i").load()
 #onto_acplt = get_ontology("http://www.acplt.de/Capability").load()   #does not work
-onto_acplt = get_ontology("file://d:/git_repos/Masterarbeit_Editor/config/IAT-Ontologie/Capability_with_Query.owl").load()
+onto_acplt = get_ontology("file://d:/git_repos/Masterarbeit_Editor/server/config/IAT-Ontologie/Capability_with_Query.owl").load()
 
 # ontocape does not load properly as it trys to get dependencies from root directory "c:/OntoCAPE/OntoCAPE/..."
 # but even actually putting the ontologie there does not work
