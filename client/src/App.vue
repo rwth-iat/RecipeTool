@@ -23,6 +23,7 @@
     --dark-alt: #334155;
     --light: #f1f5f9;
     --sidebar-width: 300px;
+    --topbar-height: 10vh;
   }
   /*this blocks makes sure that the menu bar on the left is directly at the rim and no gap appears*/
   * {
@@ -50,24 +51,21 @@
       display: flex;
       flex-direction: row;
       height:100vh;
-      width:100vw;      
+      width:100vw;
     }
   }
   #editor{
     box-sizing: border-box;
     width: 100vw;
-    height: 90vw;
-    overflow:hidden;
+    height: calc(100vh - var(--topbar-height));
     display: flex;
   }
   /*container for the page heading*/
 #top_bar{
     width: 100vw;
-    height: 10vh;
+    height: var(--topbar-height);
     float:left;
-    /*border-radius: 5px;
-    border-width:1px;
-    border-style:solid;
-    border-color:black;*/
+    text-align: center;
+    background-color: var(--primary);
 }
 </style>
