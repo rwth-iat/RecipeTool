@@ -1,5 +1,6 @@
 <script setup>
     import { ref } from 'vue'
+    import draggable from 'vuedraggable'
     let workspace_items = []
     
     //check if id is 
@@ -17,7 +18,7 @@
         // If element is taken from the side_bar and dropped into the workspace clone the element
         // that way it still is in the side bar to be used multiple times
         //!id_in_arr(workspace_items, id)
-        if(True){
+        if(true){
             //if (element.classList.contains("side_bar_element") && ev.target.id == "workspace") {
             element = document.getElementById(id).outerHTML
             //clone the element
@@ -66,10 +67,25 @@
     }
 </script>
 
+<!-- v-model="materials_list" 
+  							group="element-drag-drop" 
+  							item-key="id"-->
 <template>
-    <div id="workspace" 
-        @drop.prevent="onDrop(event);">
-    </div>
+    <draggable id="workspace"
+                v-model="workspace_items"
+                group="element-drag-drop"
+                item-key="id"
+                @drop.prevent="$event => onDrop($event)"
+                @dragover.prevent
+                @dragenter.prevent>
+					<template #item="{element}">
+						<div class="workspace_element"
+							draggable="true"
+							@dragstart.preventDefault="$event => dragstart($event, key)">
+							{{element.id}}
+						</div>
+					</template>
+    </draggable>
 </template>
 
 <style>

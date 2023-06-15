@@ -24,6 +24,7 @@
     --light: #f1f5f9;
     --sidebar-width: 300px;
     --topbar-height: 10vh;
+    --element-height: 10px;
   }
   /*this blocks makes sure that the menu bar on the left is directly at the rim and no gap appears*/
   * {

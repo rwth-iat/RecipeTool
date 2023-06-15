@@ -7,12 +7,12 @@ def add_subclasses(input_object, children_classes_list, super_class_name):
     input_object[super_class_name] = {
         "type": "process_package",
         "name": super_class_name,
-        "children":{}
+        "children":[]
     }
     # generate object from Ontologie 
     for entry in children_classes_list:
         entry_str = str(entry).split(".")[-1]
-        input_object[super_class_name]["children"][entry_str] = {"type": "process"}
+        input_object[super_class_name]["children"].append({"type": "process", "name":entry_str})
 
     return input_object
 

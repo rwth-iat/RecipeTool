@@ -15,6 +15,7 @@ import { ref } from 'vue'
     float:left;
     text-align: center;
     background-color: --grey;
+    color:white;
     /*border-radius: 5px;
     border-width:1px;
     border-style:solid;

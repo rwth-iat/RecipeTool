@@ -2,10 +2,12 @@
 	import { ref } from 'vue'
 	import logoURL from '../assets/logo.png'
 	import json from '../input/input.json'
+	import draggable from 'vuedraggable'
 
 	let input = json
 	let materials_list = ["Eingangsmaterial", "Zwischenprodukt", "Endprodukt"]
 	const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
+	let templist = []
 
 	const ToggleMenu = () => {
 		is_expanded.value = !is_expanded.value
@@ -14,9 +16,13 @@
 
 	const dragstart = (event, item) =>{
 		console.log("dragstart")
-		event.dataTransfer.dropEffect = "copyMove"
-		event.dataTransfer.effectAllowed = "copyMove"
-		//event.dataTransfer.setData("itemID", item.id)
+		event.dataTransfer.dropEffect = "copy"
+		event.dataTransfer.effectAllowed = "copy"
+		event.dataTransfer.setData("itemID", item)
+		console.log(item)
+		let element = document.getElementById(item).outerHTML
+		console.log(element)
+		//event.dataTransfer.setData("item", item)
 	}
 	const dragend = (event, item) =>{
 		console.log("dragend")
@@ -51,15 +57,19 @@
 			<div id="material_window">
 				<div id="material_heading" class="heading"><h4>Materialien</h4></div>
 				<div class="element_spacer"></div>
-				<div id="materials" v-for="material in materials_list">
-					<div id="start_material" 
-						class="material_element side_bar_element" 
-						draggable="true" 
-						@dragstart.preventDefault="$event => dragstart($event, key)">
-							{{material}}
-					</div>
-					<div class="element_spacer"></div>
-				</div>	
+				<draggable id="materials"
+							v-model="materials_list" 
+  							group="element-drag-drop" 
+  							item-key="id">
+					<template #item="{element}">
+						<div id="{{element}}" 
+						    class="material_element side_bar_element"
+							draggable="true"
+							@dragstart.preventDefault="$event => dragstart($event, element)">
+							{{element}}
+						</div>
+					</template>
+				</draggable>	
 			</div>
 			<div id="processes_window">
 				<div id="processes_heading" class="heading"><h4>Prozessschritte</h4></div>
@@ -68,15 +78,19 @@
 					<div class="side_bar_element" v-for="(process_package, process_package_name) in input">
 						<div class="side_bar_element">{{ process_package_name }}</div>
 						<div class="element_spacer"></div>
-						<div v-for="(value, key) in process_package.children" >
-							<div	id={{key}} 
-									class="side_bar_element"
-									draggable="true" 
-									@dragstart.preventDefault="$event => dragstart($event, key)">
-										{{ key }}
-							</div>
+						<draggable id="drag_process"
+								v-model="process_package.children" 
+  								group="element-drag-drop" 
+  								item-key="id">
+							<template #item="{element}">
+								<div id={{element.name}} class="process_element side_bar_element" 
+									 @dragstart.preventDefault="$event => dragstart($event, element.name)">
+									{{element.name}}
+								</div>
+							</template>
 							<div class="element_spacer"></div>
-						</div>
+						</draggable>
+						<div class="element_spacer"></div>
 					</div>
 				</div>
 			</div>
@@ -96,9 +110,6 @@ aside {
 	min-height: 100vh - var(--topbar-height);
 	padding: 1rem;
 	transition: 0.2s ease-in-out;
-	.flex {
-		flex: 1 1 0%;
-	}
 	.logo {
 		margin-bottom: 1rem;
 		img {
@@ -214,7 +225,7 @@ aside {
     border-color:black;
 }
 .side_bar_element{
-    width: 200px;
+    width: 150px;
     height: auto;
     text-align: center;
     border-radius: 5px;
@@ -231,6 +242,6 @@ aside {
     text-align: center;
 }
 .element_spacer{
-    height: 10px;
+    height: var(--element-height);
 }
 </style>

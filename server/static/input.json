@@ -2,52 +2,65 @@
     "GeneralCapabilityEffecting": {
         "type": "process_package",
         "name": "GeneralCapabilityEffecting",
-        "children": {
-            "Stirring": {
-                "type": "process"
+        "children": [
+            {
+                "type": "process",
+                "name": "Stirring"
             },
-            "Detach": {
-                "type": "process"
+            {
+                "type": "process",
+                "name": "Detach"
             },
-            "Store": {
-                "type": "process"
+            {
+                "type": "process",
+                "name": "Store"
             },
-            "PressureAdjustment": {
-                "type": "process"
+            {
+                "type": "process",
+                "name": "PressureAdjustment"
             },
-            "Tempering": {
-                "type": "process"
+            {
+                "type": "process",
+                "name": "Tempering"
             },
-            "Circulation": {
-                "type": "process"
+            {
+                "type": "process",
+                "name": "Circulation"
             },
-            "Draining": {
-                "type": "process"
+            {
+                "type": "process",
+                "name": "Draining"
             },
-            "ElectricalField": {
-                "type": "process"
+            {
+                "type": "process",
+                "name": "ElectricalField"
             },
-            "FlowStoping": {
-                "type": "process"
+            {
+                "type": "process",
+                "name": "FlowStoping"
             },
-            "Pumping": {
-                "type": "process"
+            {
+                "type": "process",
+                "name": "Pumping"
             }
-        }
+        ]
     },
     "ProcessSpecificCapability": {
         "type": "process_package",
         "name": "ProcessSpecificCapability",
-        "children": {
-            "OperationChangingMaterial": {
-                "type": "process"
+        "children": [
+            {
+                "type": "process",
+                "name": "OperationChangingMaterial"
             },
-            "Dosing": {
-                "type": "process"
+            {
+                "type": "process",
+                "name": "Dosing"
             },
-            "Branching": {
-                "type": "process"
+            {
+                "type": "process",
+                "name": "Branching"
             }
-        }
+        ]
     }
 }
