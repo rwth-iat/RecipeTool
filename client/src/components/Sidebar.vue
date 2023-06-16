@@ -107,7 +107,7 @@ aside {
 	color: var(--light);
 	width: calc(2rem + 32px);
 	overflow-y: scroll;
-	min-height: 100vh - var(--topbar-height);
+	min-height: calc(100vh - var(--topbar-height));
 	padding: 1rem;
 	transition: 0.2s ease-in-out;
 	.logo {
