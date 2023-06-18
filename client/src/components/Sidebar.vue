@@ -14,15 +14,13 @@
 		localStorage.setItem("is_expanded", is_expanded.value)
 	}
 
-	const dragstart = (event, item) =>{
+	const dragstart = (event, id, name, classes) =>{
 		console.log("dragstart")
 		event.dataTransfer.dropEffect = "copy"
 		event.dataTransfer.effectAllowed = "copy"
-		event.dataTransfer.setData("itemID", item)
-		console.log(item)
-		let element = document.getElementById(item).outerHTML
-		console.log(element)
-		//event.dataTransfer.setData("item", item)
+		event.dataTransfer.setData("itemID", id)
+		event.dataTransfer.setData("itemName", name)
+		event.dataTransfer.setData("itemClasses", classes)
 	}
 	const dragend = (event, item) =>{
 		console.log("dragend")
@@ -30,16 +28,15 @@
 		event.dataTransfer.effectAllowed = "copy"
 		//event.dataTransfer.setData("itemID", item.id)
 	}
-	const onDrop = (event) =>{
+	/*const onDrop = (event) =>{
 		event.dataTransfer.dropEffect = 'copy';
 		console.log("drop sidebar")
-	}
+	}*/
 </script>
 
 <template>
 	<aside
 		:class="`${is_expanded ? 'is-expanded' : ''}`"
-		@drop.prevent="onDrop($event)"
 		@dragenter.prevent
 		@dragover.prevent
 	>
@@ -63,9 +60,9 @@
   							item-key="id">
 					<template #item="{element}">
 						<div id="{{element}}" 
-						    class="material_element side_bar_element"
+						    class="material_element sidebar_element"
 							draggable="true"
-							@dragstart.preventDefault="$event => dragstart($event, element)">
+							@dragstart.preventDefault="$event => dragstart($event, 'testId', 'test_name', 'sidebar_element')">
 							{{element}}
 						</div>
 					</template>
@@ -84,7 +81,7 @@
   								item-key="id">
 							<template #item="{element}">
 								<div id={{element.name}} class="process_element side_bar_element" 
-									 @dragstart.preventDefault="$event => dragstart($event, element.name)">
+									 @dragstart.preventDefault="$event => dragstart($event, 'testId', 'testName', 'sidebar_element')"> 
 									{{element.name}}
 								</div>
 							</template>
