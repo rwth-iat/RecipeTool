@@ -58,7 +58,7 @@
 		<div v-show="is_expanded">
 			<div id="material_window">
 				<div id="material_heading">
-					<div style="float:left;">Materialien</div>
+					<div style="float:left;"><h4>Materialien</h4></div>
 					<button @click="toggleAddMaterials">
 						<span class="toggle-icons">+</span>
 					</button>
