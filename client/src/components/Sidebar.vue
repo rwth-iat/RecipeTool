@@ -62,7 +62,7 @@
 						<div id="{{element}}" 
 						    class="material_element sidebar_element"
 							draggable="true"
-							@dragstart.preventDefault="$event => dragstart($event, 'testId', 'test_name', 'sidebar_element')">
+							@dragstart.preventDefault="$event => dragstart($event, 'testId', 'test_name_2', 'sidebar_element')">
 							{{element}}
 						</div>
 					</template>
@@ -81,7 +81,7 @@
   								item-key="id">
 							<template #item="{element}">
 								<div id={{element.name}} class="process_element side_bar_element" 
-									 @dragstart.preventDefault="$event => dragstart($event, 'testId', 'testName', 'sidebar_element')"> 
+									 @dragstart.preventDefault="$event => dragstart($event, 'testId', 'testName_3', 'sidebar_element')"> 
 									{{element.name}}
 								</div>
 							</template>
