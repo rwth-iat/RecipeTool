@@ -2,18 +2,31 @@
 	import { ref } from 'vue'
 	import logoURL from '../assets/logo.png'
 	import json from '../input/input.json'
-	import draggable from 'vuedraggable'
 
 	let input = json
 	let materials_list = [{name:"Eingangsmaterial"}, {name:"Zwischenprodukt"}, {name:"Endprodukt"}]
 	const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
 	let templist = []
 
+	let addMaterialsOpen = ref(false) //variable to show/hide Add Materials diaglog
+	let addProcessesOpen = ref(false) //variable to show/hide Add Processes diaglog
+
+	// function to open/close add Materials window
+	const toggleAddMaterials = () =>{
+		addMaterialsOpen.value = !addMaterialsOpen.value;
+	}
+	// function to open/close add Processes window
+	const toggleAddProcesses = () =>{
+		addProcessesOpen.value = !addProcessesOpen.value;
+	}
+
+	//function to open/close sidebar
 	const ToggleMenu = () => {
 		is_expanded.value = !is_expanded.value
 		localStorage.setItem("is_expanded", is_expanded.value)
 	}
 
+	//when starting to drag an element safe attributes to datatransfer, to access them in workspace component
 	const dragstart = (event, id, name, classes) =>{
 		console.log("dragstart")
 		event.dataTransfer.dropEffect = "copy"
@@ -22,22 +35,10 @@
 		event.dataTransfer.setData("itemName", name)
 		event.dataTransfer.setData("itemClasses", classes)
 	}
-	const dragend = (event, item) =>{
-		console.log("dragend")
-		event.dataTransfer.dropEffect = "copy"
-		event.dataTransfer.effectAllowed = "copy"
-		//event.dataTransfer.setData("itemID", item.id)
-	}
-	const onDrop = (event) =>{
-		event.dataTransfer.dropEffect = 'delete';
-		var workspace_items = event.dataTransfer.getData("workspaceItems")
-		var id = event.dataTransfer.getData("itemID")
-		workspace_items.value.pop(workspace_items.value.find(b => b.id === id))
-		console.log("drop sidebar")
-	}
 </script>
 
 <template>
+	
 	<aside
 		:class="`${is_expanded ? 'is-expanded' : ''}`"
 		@drop="$event => onDrop($event)"
@@ -53,10 +54,15 @@
 				<span class="material-icons">>></span>
 			</button>
 		</div>
-
+		
 		<div v-show="is_expanded">
 			<div id="material_window">
-				<div id="material_heading" class="heading"><h4>Materialien</h4></div>
+				<div id="material_heading">
+					<div style="float:left;">Materialien</div>
+					<button @click="toggleAddMaterials">
+						<span class="toggle-icons">+</span>
+					</button>
+				</div>
 				<div class="element_spacer"></div>
 				<div id="materials"
 							v-for="element in materials_list"
@@ -71,8 +77,17 @@
 					<div class="element_spacer"></div>
 				</div>
 			</div>
+
+			<div class="element_spacer"></div>
+
 			<div id="processes_window">
-				<div id="processes_heading" class="heading"><h4>Prozessschritte</h4></div>
+				<div id="processes_heading">
+					<div style="float:left;"><h4>Prozessschritte</h4></div>
+					<button @click="toggleAddProcesses">
+						<span class="toggle-icons">+</span>
+					</button>
+				</div>
+				<div class="element_spacer"></div>
 				<div id="processes">
 					<!-- into here get the process packages imported via the javascript script-->
 					<div  v-for="(process_package, process_package_name) in input">
@@ -93,10 +108,80 @@
 			</div>
 		</div>
 	</aside>
+
+	<div id="addMaterials" class="settings" v-show="addMaterialsOpen">
+		<div style="display: flex;">
+			<h3 style="float:left;">Add Materials</h3>
+			<button @click="toggleAddMaterials">
+				<span class="close-icons">X</span>
+			</button>
+		</div>
+		<br/>
+		<span>Please enter a valid path to either an Ontologie File or URL</span>
+		<br/>
+		<div>URL:<input type="url" label="URL"/></div>
+		<br/>
+		<div>File:<input type="file" label="filepath"/></div>
+		<br/>
+		<div><input type="submit" label="Submit"/></div>
+	</div>
+
+	<div id="addProcesses" class="settings" v-show="addProcessesOpen">
+		<div style="display: flex;">
+			<h3 style="float:left;">Add Processes</h3>
+			<button @click="toggleAddProcesses">
+				<span class="close-icons">X</span>
+			</button>
+		</div>
+		<br/>
+		<span>Please enter a vlid path to either an Ontologie File or URL</span>
+		<br/>
+		<br/>
+		<div>URL:<input type="url" label="URL"/>  OR    File:<input type="file" label="filepath"/></div>
+		<br/>
+		<div><input type="submit" label="Submit"/></div>
+	</div>
 </template>
 
 
 <style lang="scss" scoped>
+.settings{
+	//position absolute on top of all
+	position: absolute;
+	z-index: 0;
+
+	width: 60vw;
+	height: 60vh;
+
+	//position in middle
+	left: 20vw;
+	top: 20vh;
+
+	background-color: lightgray;
+	//border
+	border-radius: 5px;
+    border-width:1px;
+    border-style:solid;
+    border-color:black;
+
+	justify-content: center;
+	align-items: center;
+}
+
+.toggle-icons {
+	font-size: 1.5rem;
+	color: var(--primary);
+	transition: 0.2s ease-out;
+	float:right;
+}
+
+.close-icons {
+	font-size: 1.5rem;
+	color: red;
+	transition: 0.2s ease-out;
+	float:right;
+}
+
 aside {
 	display: flex;
 	flex-direction: column;
