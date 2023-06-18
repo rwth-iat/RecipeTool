@@ -5,7 +5,7 @@
 	import draggable from 'vuedraggable'
 
 	let input = json
-	let materials_list = ["Eingangsmaterial", "Zwischenprodukt", "Endprodukt"]
+	let materials_list = [{name:"Eingangsmaterial"}, {name:"Zwischenprodukt"}, {name:"Endprodukt"}]
 	const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
 	let templist = []
 
@@ -28,15 +28,19 @@
 		event.dataTransfer.effectAllowed = "copy"
 		//event.dataTransfer.setData("itemID", item.id)
 	}
-	/*const onDrop = (event) =>{
-		event.dataTransfer.dropEffect = 'copy';
+	const onDrop = (event) =>{
+		event.dataTransfer.dropEffect = 'delete';
+		var workspace_items = event.dataTransfer.getData("workspaceItems")
+		var id = event.dataTransfer.getData("itemID")
+		workspace_items.value.pop(workspace_items.value.find(b => b.id === id))
 		console.log("drop sidebar")
-	}*/
+	}
 </script>
 
 <template>
 	<aside
 		:class="`${is_expanded ? 'is-expanded' : ''}`"
+		@drop="$event => onDrop($event)"
 		@dragenter.prevent
 		@dragover.prevent
 	>
@@ -54,39 +58,35 @@
 			<div id="material_window">
 				<div id="material_heading" class="heading"><h4>Materialien</h4></div>
 				<div class="element_spacer"></div>
-				<draggable id="materials"
-							v-model="materials_list" 
-  							group="element-drag-drop" 
-  							item-key="id">
-					<template #item="{element}">
-						<div id="{{element}}" 
-						    class="material_element sidebar_element"
-							draggable="true"
-							@dragstart.preventDefault="$event => dragstart($event, 'testId', 'test_name_2', 'sidebar_element')">
-							{{element}}
-						</div>
-					</template>
-				</draggable>	
+				<div id="materials"
+							v-for="element in materials_list"
+				>
+					<div id="{{element.name}}" 
+						class="material_element sidebar_element"
+						draggable="true"
+						@dragstart.preventDefault="$event => dragstart($event, 'testId', element.name, 'sidebar_element')"
+					>
+							{{element.name}}
+					</div>
+					<div class="element_spacer"></div>
+				</div>
 			</div>
 			<div id="processes_window">
 				<div id="processes_heading" class="heading"><h4>Prozessschritte</h4></div>
 				<div id="processes">
 					<!-- into here get the process packages imported via the javascript script-->
-					<div class="side_bar_element" v-for="(process_package, process_package_name) in input">
-						<div class="side_bar_element">{{ process_package_name }}</div>
+					<div  v-for="(process_package, process_package_name) in input">
+						<div>{{ process_package_name }}</div>
 						<div class="element_spacer"></div>
-						<draggable id="drag_process"
-								v-model="process_package.children" 
-  								group="element-drag-drop" 
-  								item-key="id">
-							<template #item="{element}">
-								<div id={{element.name}} class="process_element side_bar_element" 
-									 @dragstart.preventDefault="$event => dragstart($event, 'testId', 'testName_3', 'sidebar_element')"> 
-									{{element.name}}
-								</div>
-							</template>
+						<div id="child_wrapper" v-for="element in process_package.children">
+							<div id={{element.name}} class="process_element sidebar_element" 
+								@dragstart.preventDefault="$event => dragstart($event, 'testId', element.name, 'sidebar_element')"
+								draggable="true"
+							> 
+								{{element.name}}
+							</div>
 							<div class="element_spacer"></div>
-						</draggable>
+						</div>
 						<div class="element_spacer"></div>
 					</div>
 				</div>
@@ -221,8 +221,8 @@ aside {
     border-style:solid;
     border-color:black;
 }
-.side_bar_element{
-    width: 150px;
+.sidebar_element{
+    width: 200px;
     height: auto;
     text-align: center;
     border-radius: 5px;

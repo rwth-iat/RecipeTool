@@ -3,8 +3,8 @@
     import draggable from 'vuedraggable'
     
     let drag = false
-    const workspace_items = ref([{name:"testName", type:"process"},])
-    //let workspace_items =[{name:"testName", type:"process"},]
+    const workspace_items = ref([])
+
     
     const log = (event) =>{
       console.log(event);
@@ -15,15 +15,17 @@
         return element.id == id;});
     }
 
-    function edit_Workspace_items(name, author, year, rating, id) {
-        var book = workspace_items.find(b => b.id === id);
-        if (book) {
-            book.name = name;
-            book.author = author,
-            book.year = year;
-            book.rating = rating;
+    //function to edit item entry if it already exists and add if not
+    function edit_Workspace_items(id, name, type, x, y) {
+        //check if id already exists
+        var item = workspace_items.value.find(b => b.id === id);
+        if (item) {
+            item.name = name;
+            item.type = type;
+            item.x = x;
+            item.y = y;
         } else {
-            workspace_items.push({ id, name, author, year, rating });
+            workspace_items.value.push({ id, name, type, x, y });
         }
     }
 
@@ -36,31 +38,38 @@
         var name = event.dataTransfer.getData("itemName");
         var classes = event.dataTransfer.getData("itemClasses");
 
+        var x = event.clientX + "px"
+        var y = event.clientY + "px"
 
         // If element is taken from the side_bar and dropped into the workspace clone the element
         // that way it still is in the side bar to be used multiple times
-        //!id_in_arr(workspace_items, id)
         if(classes.includes("sidebar_element")){
             //add new clone to document
-            //ev.target.appendChild(nodeCopy);
-            workspace_items.value.push({"name":name, "type":"process", "x":event.clientX + "px", "y":event.clientY + "px"})
+            //generate a new unique id for the copied element
+            var unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);;
+            workspace_items.value.push({id:unique_id, name:name, type:"process", x:x, y:y})
             console.log("dragged from sidebar, dropped in workspace at absolute position: " + event.clientX.toString() + " " + event.clientY.toString() );
             console.log(workspace_items)
         }
 
-        // if element is in workspace and gets moved to workspace just move it
-        // also check if target is itself so it can be sligthly moved
-        else if (classes.contains("workspace_element") && (ev.target.id == "workspace")) {
-            workspace_items.value.push({"name":name, "type":"process", "x":event.clientX + "px", "y":event.clientY + "px"})
-            // this is the actual "drag code"
-            //element.style.left = ev.clientX +"px";
-            //element.style.top = ev.clientY +"px";
-            //console.log("dragged from workspace, dropped in workspace at absolute position: " + ev.clientX.toString() + " " + ev.clientY.toString() );
-
+        // if its an workspace element move it
+        else if (classes.includes("workspace_element")) {
+            // find element and edit x and y position
+            edit_Workspace_items(id, name, "process", x, y)
+            console.log(workspace_items)
         //reset border of the element
-        element.style.border = "1px solid black";
+        //element.style.border = "1px solid black";
         }
     }
+    const dragstart = (event, id, name, classes) =>{
+		console.log("dragstart")
+		event.dataTransfer.dropEffect = "move"
+		event.dataTransfer.effectAllowed = "move"
+		event.dataTransfer.setData("itemID", id)
+		event.dataTransfer.setData("itemName", name)
+		event.dataTransfer.setData("itemClasses", classes)
+        event.dataTransfer.setData("workspaceItems", workspace_items)
+	}
 </script>
 
 <template>
@@ -69,15 +78,18 @@
             @dragenter.prevent
             @dragover.prevent
     >
-		<div class="workspace_element" v-for="element in workspace_items" :style="{ left: element.x, top: element.y}">
-			{{element.name}}
+		<div class="workspace_element" 
+            v-for="element in workspace_items" 
+            :style="{ left: element.x, top: element.y}"
+            draggable="true"
+            @dragstart="$event => dragstart($event, element.id, element.name, 'workspace_element')"
+            >
+			    {{element.name}}
 		</div>
     </div>
 </template>
-<!--@drop.prevent="$event => onDrop($event)"
-                @dragover.prevent
-                @dragenter.prevent
--->
+
+
 <style>
     /*container for material*/
     #workspace{
