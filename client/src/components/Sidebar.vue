@@ -137,8 +137,9 @@
 		<span>Please enter a vlid path to either an Ontologie File or URL</span>
 		<br/>
 		<br/>
-		<div>URL:<input type="url" label="URL"/>  OR    File:<input type="file" label="filepath"/></div>
+		<div>URL:<input type="url" label="URL"/></div>
 		<br/>
+		<div>File:<input type="file" label="filepath"/></div>
 		<div><input type="submit" label="Submit"/></div>
 	</div>
 </template>
