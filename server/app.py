@@ -18,6 +18,11 @@ def add_subclasses(input_object, children_classes_list, super_class_name):
 
     return input_object
 
+def add_ontology(input_obj={}, path="https://www.w3id.org/basyx/c4i", super_class="GeneralCapabilityEffecting"):
+    onto_c4i = get_ontology(path).load()
+    subclasses_list = list(onto_acplt[super_class].subclasses())
+    input_object = add_subclasses(input_object, subclasses_list, super_class)
+    return input_obj
 
 onto_c4i = get_ontology("https://www.w3id.org/basyx/c4i").load()
 #onto_acplt = get_ontology("http://www.acplt.de/Capability").load()   #does not work
@@ -55,17 +60,7 @@ class CustomFlask(Flask):
         variable_end_string='%%',
     ))
 
-#app = CustomFlask(__name__, static_url_path="/../client", static_folder='../client')  # This replaces your existing "app = Flask(__name__)"
-# static_url_path="/templates/vue_template/static", static_folder='templates/vue_template/static'
-
 app = Flask(__name__)
-
-#app = Flask(__name__, static_url_path="/templates/vue_template/static", static_folder='templates/vue_template/static')
-#vite = Vite(app)
-
-#@app.route('/')
-#def root():
-#    return render_template('vue_template/index.html')
 
 @app.route('/<path:filename>')
 def static_files(filename):
