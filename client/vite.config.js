@@ -6,11 +6,10 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  /*build: {
+  build: {
     base: '',
-    outDir   : '../server/templates/vue_template/',
-    assetsDir : 'static/'
-  },*/
+    outDir   : '../server/static',
+  },
   plugins: [
     vue(),
   ],
