@@ -6,18 +6,18 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  build: {
+  /*build: {
     base: '',
     outDir   : '../server/templates/vue_template/',
     assetsDir : 'static/'
-  },
+  },*/
   plugins: [
     vue(),
   ],
   resolve: {
     alias: {
-      //'@': fileURLToPath(new URL('./src', import.meta.url))
-      '@': path.resolve(__dirname, './src'),
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+      //'@': path.resolve(__dirname, './src'),
     }
   }
 })

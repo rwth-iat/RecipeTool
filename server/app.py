@@ -1,7 +1,8 @@
-from flask import Flask, current_app, render_template
+from flask import Flask, current_app, render_template, send_from_directory, make_response
 from flask_vite import Vite
 from owlready2 import *
 import json
+import mimetypes
 
 def add_subclasses(input_object, children_classes_list, super_class_name):
     # initiate input Object
@@ -54,16 +55,28 @@ class CustomFlask(Flask):
         variable_end_string='%%',
     ))
 
-app = CustomFlask(__name__, static_url_path="/templates/vue_template/static", static_folder='templates/vue_template/static')  # This replaces your existing "app = Flask(__name__)"
+#app = CustomFlask(__name__, static_url_path="/../client", static_folder='../client')  # This replaces your existing "app = Flask(__name__)"
+# static_url_path="/templates/vue_template/static", static_folder='templates/vue_template/static'
 
-#app = Flask(...)
+app = Flask(__name__)
 
 #app = Flask(__name__, static_url_path="/templates/vue_template/static", static_folder='templates/vue_template/static')
 #vite = Vite(app)
 
-@app.route('/')
-def root():
-    return render_template('vue_template/index.html')
+#@app.route('/')
+#def root():
+#    return render_template('vue_template/index.html')
+
+@app.route('/<path:filename>')
+def static_files(filename):
+    response = make_response(send_from_directory(app.static_folder, filename))
+    mimetype, _ = mimetypes.guess_type(filename)
+    response.headers['Content-Type'] = mimetype
+    return response
+
+@app.route("/")
+def index():
+    return app.send_static_file("index.html")
 
 #debug is for testing to make this production ready read:
 # https://zhangtemplar.github.io/flask/
