@@ -1,11 +1,11 @@
 import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path';
 import { defineConfig } from 'vite'
-import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  //this part outputs the generated files directly into the static flask folder
+  //this way after building the vue/vite project we can simply start the flask project
   build: {
     base: '',
     outDir   : '../server/static',
