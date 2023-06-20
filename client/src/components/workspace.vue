@@ -1,6 +1,5 @@
 <script setup>
     import { ref } from 'vue'
-    import draggable from 'vuedraggable'
     
     let drag = false
     const workspace_items = ref([])

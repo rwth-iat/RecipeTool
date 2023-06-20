@@ -1,5 +1,6 @@
-from owlready2 import *
 from flask import Flask, current_app, render_template
+from flask_vite import Vite
+from owlready2 import *
 import json
 
 def add_subclasses(input_object, children_classes_list, super_class_name):
@@ -38,19 +39,31 @@ input_object = add_subclasses(input_object, process_specific_capability_list, "P
 
 
 # write object to file
-with open('static/input.json', 'w', encoding='utf-8') as f:
-    json.dump(input_object, f, ensure_ascii=False, indent=4)
+#with open('static/input.json', 'w', encoding='utf-8') as f:
+#    json.dump(input_object, f, ensure_ascii=False, indent=4)
 
 #ontocape
 #print(list(onto_cape.classes()))
 #print(list(onto_cape.GeneralCapabilityEffecting.subclasses()))
 #print(list(onto_cape.ProcessSpecificCapability.subclasses()))
 
-app = Flask(__name__)
+class CustomFlask(Flask):
+    jinja_options = Flask.jinja_options.copy()
+    jinja_options.update(dict(
+        variable_start_string='%%',  # Default is '{{', I'm changing this because Vue.js uses '{{' / '}}'
+        variable_end_string='%%',
+    ))
 
-@app.route('/index/')
+app = CustomFlask(__name__, static_url_path="/templates/vue_template/static", static_folder='templates/vue_template/static')  # This replaces your existing "app = Flask(__name__)"
+
+#app = Flask(...)
+
+#app = Flask(__name__, static_url_path="/templates/vue_template/static", static_folder='templates/vue_template/static')
+#vite = Vite(app)
+
+@app.route('/')
 def root():
-    return render_template('index.html')
+    return render_template('vue_template/index.html')
 
 #debug is for testing to make this production ready read:
 # https://zhangtemplar.github.io/flask/

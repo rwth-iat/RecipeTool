@@ -119,9 +119,12 @@
 		<br/>
 		<span>Please enter a valid path to either an Ontologie File or URL</span>
 		<br/>
+		<br/>
 		<div>URL:<input type="url" label="URL"/></div>
 		<br/>
 		<div>File:<input type="file" label="filepath"/></div>
+		<br/>
+		<div>Name of Material Super-Class:<input type="text" label="text"/></div>
 		<br/>
 		<div><input type="submit" label="Submit"/></div>
 	</div>
@@ -140,6 +143,9 @@
 		<div>URL:<input type="url" label="URL"/></div>
 		<br/>
 		<div>File:<input type="file" label="filepath"/></div>
+		<br/>
+		<div>Name of Process Super-Class:<input type="text" label="text"/></div>
+		<br/>
 		<div><input type="submit" label="Submit"/></div>
 	</div>
 </template>

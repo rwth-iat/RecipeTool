@@ -1,5 +1,5 @@
 As a complex Ui is needed for the Editor, a Javascript Framework is recommended to handle the complexity.
-    Vue.js was chosen as it is one of the most used Frameworks and recommended for solo Programming, while other frameworks have benefits in Enterprise setting.
+Vue.js was chosen as it is one of the most used Frameworks and recommended for solo Programming, while other frameworks have benefits in Enterprise setting.
 
 Therefore the Projekt will be build on those two main technologies:
     - Python + Flask library for Backend.

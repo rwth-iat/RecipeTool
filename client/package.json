@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --emptyOutDir",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -12,8 +12,7 @@
     "bootstrap-vue": "^2.23.1",
     "sass": "^1.63.3",
     "vue": "^3.3.4",
-    "vue-sidebar-menu": "^5.2.8",
-    "vuedraggable": "^4.1.0"
+    "vue-sidebar-menu": "^5.2.8"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
