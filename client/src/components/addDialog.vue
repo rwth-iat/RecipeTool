@@ -1,64 +1,3 @@
-<template>
-    <div id="addElements" class="settings">
-        <div style="display: flex;">
-            <h3 style="float:left;">Add {{ element_type }}</h3>
-            <button @click="close">
-                <span class="close-icons">X</span>
-            </button>
-        </div>
-        <br/>
-        <form>
-            <span>Select Ontology to add {{ element_type }}: </span>
-            
-            <!--Drop down list of availible ontologys on the server-->
-            <select v-model="current_ontology" name="Ontology" id="ontoSelect" 
-                    @change="readServerOntoClasses(current_ontology)">
-                <option :value="item" v-for="item in serverProcessOntologies">{{ item }}</option>
-                <option value="new">add new to server</option>
-            </select>
-
-            <!-- button to update the drop down list of availible ontologies-->
-            <button @click="readServerOntologies">
-                <span class=reload>&#x21bb;</span>
-            </button>
-
-            <!--Dialog to add a new ontology to the server-->
-            <fieldset v-if="current_ontology === 'new'">
-                <legend>Add new Ontology to server: </legend>
-                <span>Please enter a valid path to either an Ontologie File or URL</span>
-                <br/>
-                <label for="url_input">Select URL: </label>
-                <input type="url" id="url_input"/>
-                <br/>
-                <span>OR</span>
-                <br/>
-                <label for="file_input">Select File: </label>
-                <input type="file" id="file_input"/>
-                <br/>
-                <label for="add_to_server_btt">Add Ontology to Server: </label>
-                <input type="submit" id="add_to_server_btt"/>
-            </fieldset>
-
-            <br/>
-            <span></span>
-            <label for="super_class_select">Select Ontology to add: </label>
-            <select id="super_class_select"
-                    v-model="current_super_class" 
-                    name="super-class">
-                <option v-for="item in onto_classes" :value="item">{{ item }}</option>
-            </select>
-            <br/>
-            <label for="relation_input">Name of Relation: </label>
-            <input id="relation_input" type="text" value="subclass_of"/>
-            <br/>
-            <br/>
-            <button class="button" @click="addElements(current_ontology, current_super_class)">
-                <h5>ADD {{ element_type }} to Sidebar</h5>
-            </button>
-        </form>
-    </div>
-</template>
-
 <script setup>
     import {defineEmits, defineProps, ref, toRefs, reactive} from 'vue'
     import axios from 'axios'
@@ -159,6 +98,69 @@
 
     readServerOntologies()
 </script>
+
+
+
+<template>
+    <div id="addElements" class="settings">
+        <div style="display: flex;">
+            <h3 style="float:left;">Add {{ element_type }}</h3>
+            <button @click="close">
+                <span class="close-icons">X</span>
+            </button>
+        </div>
+        <br/>
+        <form>
+            <span>Select Ontology to add {{ element_type }}: </span>
+            
+            <!--Drop down list of availible ontologys on the server-->
+            <select v-model="current_ontology" name="Ontology" id="ontoSelect" 
+                    @change="readServerOntoClasses(current_ontology)">
+                <option :value="item" v-for="item in serverProcessOntologies">{{ item }}</option>
+                <option value="new">add new to server</option>
+            </select>
+
+            <!-- button to update the drop down list of availible ontologies-->
+            <button @click="readServerOntologies">
+                <span class=reload>&#x21bb;</span>
+            </button>
+
+            <!--Dialog to add a new ontology to the server-->
+            <fieldset v-if="current_ontology === 'new'">
+                <legend>Add new Ontology to server: </legend>
+                <span>Please enter a valid path to either an Ontologie File or URL</span>
+                <br/>
+                <label for="url_input">Select URL: </label>
+                <input type="url" id="url_input"/>
+                <br/>
+                <span>OR</span>
+                <br/>
+                <label for="file_input">Select File: </label>
+                <input type="file" id="file_input"/>
+                <br/>
+                <label for="add_to_server_btt">Add Ontology to Server: </label>
+                <input type="submit" id="add_to_server_btt"/>
+            </fieldset>
+
+            <br/>
+            <span></span>
+            <label for="super_class_select">Select Ontology to add: </label>
+            <select id="super_class_select"
+                    v-model="current_super_class" 
+                    name="super-class">
+                <option v-for="item in onto_classes" :value="item">{{ item }}</option>
+            </select>
+            <br/>
+            <label for="relation_input">Name of Relation: </label>
+            <input id="relation_input" type="text" value="subclass_of"/>
+            <br/>
+            <br/>
+        </form>
+        <button class="button" type='button' @click="addElements(current_ontology, current_super_class)">
+            <h5>ADD {{ element_type }} to Sidebar</h5>
+        </button>
+    </div>
+</template>
 
 <style lang="scss" scoped>
     .settings{

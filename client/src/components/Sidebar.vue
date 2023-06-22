@@ -2,59 +2,18 @@
 	//import vue from 'vue'
 	import { ref } from 'vue'
 	import logoURL from '../assets/logo.png'
-	import json from '../input/input.json'
-	import addDialog from './addDialog.vue'
-	//import vSelect from 'vue-select'
+	import elementWindow from './elementWindow.vue'
 
-	//vue.component('v-select', vSelect)
-
-	let input = json
-	let process_packages = ref({})
-	let material_packages = ref({})
 	const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
-	let templist = []
-
-	let addMaterialsOpen = ref(false) //variable to show/hide Add Materials diaglog
-	let addProcessesOpen = ref(false) //variable to show/hide Add Processes diaglog
-
-	function addProcesses(processes_json){
-		console.log("processes in sidebar")
-		process_packages.value = processes_json
-	}
-
-	function addMaterials(materials_json){
-		console.log("materials in sidebar")
-		material_packages.value = materials_json
-	}
-
-	// function to open/close add Materials window
-	const toggleAddMaterials = () =>{
-		addMaterialsOpen.value = !addMaterialsOpen.value;
-	}
-	// function to open/close add Processes window
-	const toggleAddProcesses = () =>{
-		addProcessesOpen.value = !addProcessesOpen.value;
-	}
 
 	//function to open/close sidebar
 	const ToggleMenu = () => {
 		is_expanded.value = !is_expanded.value
 		localStorage.setItem("is_expanded", is_expanded.value)
 	}
-
-	//when starting to drag an element safe attributes to datatransfer, to access them in workspace component
-	const dragstart = (event, id, name, classes) =>{
-		console.log("dragstart")
-		event.dataTransfer.dropEffect = "copy"
-		event.dataTransfer.effectAllowed = "copy"
-		event.dataTransfer.setData("itemID", id)
-		event.dataTransfer.setData("itemName", name)
-		event.dataTransfer.setData("itemClasses", classes)
-	}
 </script>
 
-<template>
-	
+<template>	
 	<aside
 		:class="`${is_expanded ? 'is-expanded' : ''}`"
 		@drop="$event => onDrop($event)"
@@ -64,7 +23,6 @@
 		<div class="logo">
 			<img :src="logoURL" alt="Vue" /> 
 		</div>
-
 		<div class="menu-toggle-wrap">
 			<button class="menu-toggle" @click="ToggleMenu">
 				<span class="material-icons">>></span>
@@ -72,92 +30,16 @@
 		</div>
 		
 		<div v-show="is_expanded">
-			<div id="material_window">
-				<div id="material_heading">
-					<div style="float:left;"><h4>Materialien</h4></div>
-					<button @click="toggleAddMaterials">
-						<span class="toggle-icons">+</span>
-					</button>
-				</div>
-				<div class="element_spacer"></div>
-				<div id="materials">
-					<!-- into here get the process packages imported via the javascript script-->
-					<div  v-for="(material_package, material_package_name) in material_packages">
-						<div>{{ material_package_name }}</div>
-						<div class="element_spacer"></div>
-						<div id="child_wrapper" v-for="element in material_package.children">
-							<div id={{element.name}} class="material_element sidebar_element" 
-								@dragstart.preventDefault="$event => dragstart($event, 'testId', element.name, 'sidebar_element')"
-								draggable="true"
-							> 
-								{{element.name}}
-							</div>
-							<div class="element_spacer"></div>
-						</div>
-						<div class="element_spacer"></div>
-					</div>
-				</div>
-			</div>
-
 			<div class="element_spacer"></div>
-
-			<div id="processes_window">
-				<div id="processes_heading">
-					<div style="float:left;"><h4>Prozessschritte</h4></div>
-					<button @click="toggleAddProcesses">
-						<span class="toggle-icons">+</span>
-					</button>
-				</div>
+				<elementWindow element_type="Materials"> Test </elementWindow>
 				<div class="element_spacer"></div>
-				<div id="processes">
-					<!-- into here get the process packages imported via the javascript script-->
-					<div  v-for="(process_package, process_package_name) in process_packages">
-						<div>{{ process_package_name }}</div>
-						<div class="element_spacer"></div>
-						<div id="child_wrapper" v-for="element in process_package.children">
-							<div id={{element.name}} class="process_element sidebar_element" 
-								@dragstart.preventDefault="$event => dragstart($event, 'testId', element.name, 'sidebar_element')"
-								draggable="true"
-							> 
-								{{element.name}}
-							</div>
-							<div class="element_spacer"></div>
-						</div>
-						<div class="element_spacer"></div>
-					</div>
-				</div>
-			</div>
+				<elementWindow element_type="Processes"> Test </elementWindow>
 		</div>
 	</aside>
-
-
-	<!-- this Dialog window is opened and closed by the addMaterials button
-		 but can also be closed from inside the components close button.
-		 To realize that we listen to the  @onClose event
-		 	@Close handles what happens when child is closed
-			@data is used as the Ontologies are added in subcomponent but we need the data here 
-	-->
-	<addDialog v-show="addMaterialsOpen" 
-				element_type="Materials"
-				@close="addMaterialsOpen= false"
-				@add="addMaterials">
-	</addDialog>
-	<addDialog v-show="addProcessesOpen"
-				element_type="Processes" 
-				@close="addProcessesOpen= false"
-				@add="addProcesses">
-	</addDialog>
 </template>
 
 
 <style lang="scss" scoped>
-.toggle-icons {
-	font-size: 1.5rem;
-	color: var(--primary);
-	transition: 0.2s ease-out;
-	float:right;
-}
-
 aside {
 	display: flex;
 	flex-direction: column;
@@ -246,60 +128,5 @@ aside {
 		position: absolute;
 		z-index: 99;
 	}
-}
-
-
-/*container for material*/
-#material_window{
-    box-sizing: border-box;
-    width: var(--sidebar-width);
-    height: auto;
-    float:left;
-    vertical-align: top;
-    justify-content: center;
-    align-items: center;
-    border-radius: 5px;
-    border-width:1px;
-    border-style:solid;
-    border-color:black;
-}
-
-#materials{
-    box-sizing: border-box;
-    align-items: center;
-}
-
-/*container for processes*/
-#processes_window{
-    box-sizing: border-box;
-    width: var(--sidebar-width);
-    height: auto;
-    float:left;
-    justify-content: center;
-    align-items: center;
-    border-radius: 5px;
-    border-width:1px;
-    border-style:solid;
-    border-color:black;
-}
-.sidebar_element{
-    width: 200px;
-    height: auto;
-    text-align: center;
-    border-radius: 5px;
-    border-width:1px;
-    border-style:solid;
-    border-color:black;
-
-    /*center this horizontally in the middle*/
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-.heading{
-    text-align: center;
-}
-.element_spacer{
-    height: var(--element-height);
 }
 </style>

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@grapoza/vue-tree": "^5.1.0",
     "vue-select": "^3.20.2"
   }
 }
