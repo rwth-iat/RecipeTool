@@ -9,13 +9,17 @@
 	//vue.component('v-select', vSelect)
 
 	let input = json
-	let process_packages = []
+	let process_packages = ref([])
 	let materials_list = [{name:"Eingangsmaterial"}, {name:"Zwischenprodukt"}, {name:"Endprodukt"}]
 	const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
 	let templist = []
 
 	let addMaterialsOpen = ref(false) //variable to show/hide Add Materials diaglog
 	let addProcessesOpen = ref(false) //variable to show/hide Add Processes diaglog
+
+	function addProcesses(processes_json){
+		process_packages.value = processes_json
+	}
 
 	// function to open/close add Materials window
 	const toggleAddMaterials = () =>{
@@ -137,50 +141,20 @@
 	<!-- this Dialog window is opened and closed by the addMaterials button
 		 but can also be closed from inside the components close button.
 		 To realize that we listen to the  @onClose event
+		 	@Close handles what happens when child is closed
+			@data is used as the Ontologies are added in subcomponent but we need the data here 
 	-->
 	<addDialog v-show="addProcessesOpen" 
-				@close="addProcessesOpen= false">
+				@close="addProcessesOpen= false"
+				@addProcesses="addProcesses">
 	</addDialog>
 </template>
 
 
 <style lang="scss" scoped>
-//style for dropdown select component
-//@import "vue-select/dist/vue-select.css";
-
-.settings{
-	//position absolute on top of all
-	position: absolute;
-	z-index: 0;
-
-	width: 60vw;
-	height: auto;
-
-	//position in middle
-	left: 20vw;
-	top: 20vh;
-
-	background-color: lightgray;
-	//border
-	border-radius: 5px;
-    border-width:1px;
-    border-style:solid;
-    border-color:black;
-
-	justify-content: center;
-	align-items: center;
-}
-
 .toggle-icons {
 	font-size: 1.5rem;
 	color: var(--primary);
-	transition: 0.2s ease-out;
-	float:right;
-}
-
-.close-icons {
-	font-size: 1.5rem;
-	color: red;
 	transition: 0.2s ease-out;
 	float:right;
 }

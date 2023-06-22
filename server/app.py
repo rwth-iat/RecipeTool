@@ -19,12 +19,8 @@ def add_subclasses(input_object, children_classes_list, super_class_name):
 
     return input_object
 
-def add_ontology(input_obj={}, path="https://www.w3id.org/basyx/c4i", super_class="GeneralCapabilityEffecting"):
-    onto = get_ontology(path).load()
-    subclasses_list = list(onto[super_class].subclasses())
-    input_object = add_subclasses(input_object, subclasses_list, super_class)
-    json =  json.dumps(input_object, ensure_ascii=False, indent=4)
-    return json
+#onto = get_ontology(path).load()
+
 
 
 #onto_c4i = get_ontology("https://www.w3id.org/basyx/c4i").load()
@@ -41,14 +37,14 @@ ontologies = {"acplt":onto_acplt}
 
 #acplt
 #print(list(onto_acplt.classes()))
-general_capability_effecting_list = list(onto_acplt.GeneralCapabilityEffecting.subclasses())
+#general_capability_effecting_list = list(onto_acplt.GeneralCapabilityEffecting.subclasses())
 #print(general_capability_effecting_list)
-process_specific_capability_list = list(onto_acplt.ProcessSpecificCapability.subclasses())
+#process_specific_capability_list = list(onto_acplt.ProcessSpecificCapability.subclasses())
 #print(process_specific_capability_list)
 
-input_object = {}
-input_object = add_subclasses(input_object, general_capability_effecting_list, "GeneralCapabilityEffecting")
-input_object = add_subclasses(input_object, process_specific_capability_list, "ProcessSpecificCapability")
+#input_object = {}
+#input_object = add_subclasses(input_object, general_capability_effecting_list, "GeneralCapabilityEffecting")
+#input_object = add_subclasses(input_object, process_specific_capability_list, "ProcessSpecificCapability")
 
 
 # write object to file
@@ -84,7 +80,7 @@ def static_files(filename):
 
 # Method to load an ontology 
 @app.route('/onto',methods = ['POST', 'GET'])
-def onto():
+def get_onto():
    #if get return list of ontologies
    if request.method == 'GET':
       response = make_response(list(ontologies.keys()))
@@ -98,19 +94,23 @@ def onto():
    else:
       response = make_response()
       return response
-       
-@app.route('/onto/<id>/classes')
-def get_classes(id, methods = ['GET']):
-    classes = ontologies[id].classes()
+
+@app.route('/onto/<onto_name>/classes')
+def get_classes(onto_name, methods = ['GET']):
+    classes = list(ontologies[onto_name].classes()) #returns a generator therefore we need list()
+    classes = [item.name for item in classes]
     response = make_response(classes)
     return response
 
-@app.route('/onto/<id>/subclasses')
-def get_subclasses(id, methods = ['GET']):
-    subclasses = list(ontologies[id].subclasses())
-    response = make_response(subclasses)
+@app.route('/onto/<onto_name>/<super_class>/subclasses')
+def add_ontology(onto_name="acplt", super_class="GeneralCapabilityEffecting"):
+    classes_dict = {}
+    onto = ontologies[onto_name]
+    subclasses_list = list(onto[super_class].subclasses())
+    classes_dict = add_subclasses(classes_dict, subclasses_list, super_class)
+    processes =  json.dumps(classes_dict, ensure_ascii=False, indent=4)
+    response = make_response(processes)
     return response
-
 
 #debug is for testing to make this production ready read:
 # https://zhangtemplar.github.io/flask/
