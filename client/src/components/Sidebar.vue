@@ -138,10 +138,12 @@
 			@data is used as the Ontologies are added in subcomponent but we need the data here 
 	-->
 	<addDialog v-show="addMaterialsOpen" 
+				element_type="Materials"
 				@close="addMaterialsOpen= false"
 				@add="addMaterials">
 	</addDialog>
-	<addDialog v-show="addProcessesOpen" 
+	<addDialog v-show="addProcessesOpen"
+				element_type="Processes" 
 				@close="addProcessesOpen= false"
 				@add="addProcesses">
 	</addDialog>
