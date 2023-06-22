@@ -1,9 +1,15 @@
 <script setup>
+	//import vue from 'vue'
 	import { ref } from 'vue'
 	import logoURL from '../assets/logo.png'
 	import json from '../input/input.json'
+	import addDialog from './addDialog.vue'
+	//import vSelect from 'vue-select'
+
+	//vue.component('v-select', vSelect)
 
 	let input = json
+	let process_packages = []
 	let materials_list = [{name:"Eingangsmaterial"}, {name:"Zwischenprodukt"}, {name:"Endprodukt"}]
 	const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
 	let templist = []
@@ -90,7 +96,7 @@
 				<div class="element_spacer"></div>
 				<div id="processes">
 					<!-- into here get the process packages imported via the javascript script-->
-					<div  v-for="(process_package, process_package_name) in input">
+					<div  v-for="(process_package, process_package_name) in process_packages">
 						<div>{{ process_package_name }}</div>
 						<div class="element_spacer"></div>
 						<div id="child_wrapper" v-for="element in process_package.children">
@@ -128,37 +134,27 @@
 		<br/>
 		<div><input type="submit" label="Submit"/></div>
 	</div>
-
-	<div id="addProcesses" class="settings" v-show="addProcessesOpen">
-		<div style="display: flex;">
-			<h3 style="float:left;">Add Processes</h3>
-			<button @click="toggleAddProcesses">
-				<span class="close-icons">X</span>
-			</button>
-		</div>
-		<br/>
-		<span>Please enter a vlid path to either an Ontologie File or URL</span>
-		<br/>
-		<br/>
-		<div>URL:<input type="url" label="URL"/></div>
-		<br/>
-		<div>File:<input type="file" label="filepath"/></div>
-		<br/>
-		<div>Name of Process Super-Class:<input type="text" label="text"/></div>
-		<br/>
-		<div><input type="submit" label="Submit"/></div>
-	</div>
+	<!-- this Dialog window is opened and closed by the addMaterials button
+		 but can also be closed from inside the components close button.
+		 To realize that we listen to the  @onClose event
+	-->
+	<addDialog v-show="addProcessesOpen" 
+				@close="addProcessesOpen= false">
+	</addDialog>
 </template>
 
 
 <style lang="scss" scoped>
+//style for dropdown select component
+//@import "vue-select/dist/vue-select.css";
+
 .settings{
 	//position absolute on top of all
 	position: absolute;
 	z-index: 0;
 
 	width: 60vw;
-	height: 60vh;
+	height: auto;
 
 	//position in middle
 	left: 20vw;

@@ -1,8 +1,9 @@
-from flask import Flask, current_app, render_template, send_from_directory, make_response
+from flask import Flask, current_app, render_template, request, send_from_directory, make_response
 from flask_vite import Vite
 from owlready2 import *
 import json
 import mimetypes
+
 
 def add_subclasses(input_object, children_classes_list, super_class_name):
     # initiate input Object
@@ -19,14 +20,20 @@ def add_subclasses(input_object, children_classes_list, super_class_name):
     return input_object
 
 def add_ontology(input_obj={}, path="https://www.w3id.org/basyx/c4i", super_class="GeneralCapabilityEffecting"):
-    onto_c4i = get_ontology(path).load()
-    subclasses_list = list(onto_acplt[super_class].subclasses())
+    onto = get_ontology(path).load()
+    subclasses_list = list(onto[super_class].subclasses())
     input_object = add_subclasses(input_object, subclasses_list, super_class)
-    return input_obj
+    json =  json.dumps(input_object, ensure_ascii=False, indent=4)
+    return json
 
-onto_c4i = get_ontology("https://www.w3id.org/basyx/c4i").load()
+
+#onto_c4i = get_ontology("https://www.w3id.org/basyx/c4i").load()
 #onto_acplt = get_ontology("http://www.acplt.de/Capability").load()   #does not work
 onto_acplt = get_ontology("file://d:/git_repos/Masterarbeit_Editor/server/config/IAT-Ontologie/Capability_with_Query.owl").load()
+
+#Init ontologies
+ontologies = {"acplt":onto_acplt}
+
 
 # ontocape does not load properly as it trys to get dependencies from root directory "c:/OntoCAPE/OntoCAPE/..."
 # but even actually putting the ontologie there does not work
@@ -62,6 +69,12 @@ class CustomFlask(Flask):
 
 app = Flask(__name__)
 
+# Main Website
+@app.route("/")
+def index():
+    return app.send_static_file("index.html")
+
+# Make the other static files availible. When index.html is opened from the route above the javascript and css and logo etc can get loaded by the client
 @app.route('/<path:filename>')
 def static_files(filename):
     response = make_response(send_from_directory(app.static_folder, filename))
@@ -69,9 +82,35 @@ def static_files(filename):
     response.headers['Content-Type'] = mimetype
     return response
 
-@app.route("/")
-def index():
-    return app.send_static_file("index.html")
+# Method to load an ontology 
+@app.route('/onto',methods = ['POST', 'GET'])
+def onto():
+   #if get return list of ontologies
+   if request.method == 'GET':
+      response = make_response(list(ontologies.keys()))
+      return response
+   #if post add new ontology 
+   elif request.method == 'POST':
+      user = request.args.get('nm')
+      response = make_response()
+      return response
+   #if not post or get give back error
+   else:
+      response = make_response()
+      return response
+       
+@app.route('/onto/<id>/classes')
+def get_classes(id, methods = ['GET']):
+    classes = ontologies[id].classes()
+    response = make_response(classes)
+    return response
+
+@app.route('/onto/<id>/subclasses')
+def get_subclasses(id, methods = ['GET']):
+    subclasses = list(ontologies[id].subclasses())
+    response = make_response(subclasses)
+    return response
+
 
 #debug is for testing to make this production ready read:
 # https://zhangtemplar.github.io/flask/
