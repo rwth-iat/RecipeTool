@@ -9,8 +9,8 @@
 	//vue.component('v-select', vSelect)
 
 	let input = json
-	let process_packages = ref([])
-	let materials_list = [{name:"Eingangsmaterial"}, {name:"Zwischenprodukt"}, {name:"Endprodukt"}]
+	let process_packages = ref({})
+	let material_packages = ref({})
 	const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
 	let templist = []
 
@@ -18,7 +18,13 @@
 	let addProcessesOpen = ref(false) //variable to show/hide Add Processes diaglog
 
 	function addProcesses(processes_json){
+		console.log("processes in sidebar")
 		process_packages.value = processes_json
+	}
+
+	function addMaterials(materials_json){
+		console.log("materials in sidebar")
+		material_packages.value = materials_json
 	}
 
 	// function to open/close add Materials window
@@ -74,17 +80,22 @@
 					</button>
 				</div>
 				<div class="element_spacer"></div>
-				<div id="materials"
-							v-for="element in materials_list"
-				>
-					<div id="{{element.name}}" 
-						class="material_element sidebar_element"
-						draggable="true"
-						@dragstart.preventDefault="$event => dragstart($event, 'testId', element.name, 'sidebar_element')"
-					>
-							{{element.name}}
+				<div id="materials">
+					<!-- into here get the process packages imported via the javascript script-->
+					<div  v-for="(material_package, material_package_name) in material_packages">
+						<div>{{ material_package_name }}</div>
+						<div class="element_spacer"></div>
+						<div id="child_wrapper" v-for="element in material_package.children">
+							<div id={{element.name}} class="material_element sidebar_element" 
+								@dragstart.preventDefault="$event => dragstart($event, 'testId', element.name, 'sidebar_element')"
+								draggable="true"
+							> 
+								{{element.name}}
+							</div>
+							<div class="element_spacer"></div>
+						</div>
+						<div class="element_spacer"></div>
 					</div>
-					<div class="element_spacer"></div>
 				</div>
 			</div>
 
@@ -119,34 +130,20 @@
 		</div>
 	</aside>
 
-	<div id="addMaterials" class="settings" v-show="addMaterialsOpen">
-		<div style="display: flex;">
-			<h3 style="float:left;">Add Materials</h3>
-			<button @click="toggleAddMaterials">
-				<span class="close-icons">X</span>
-			</button>
-		</div>
-		<br/>
-		<span>Please enter a valid path to either an Ontologie File or URL</span>
-		<br/>
-		<br/>
-		<div>URL:<input type="url" label="URL"/></div>
-		<br/>
-		<div>File:<input type="file" label="filepath"/></div>
-		<br/>
-		<div>Name of Material Super-Class:<input type="text" label="text"/></div>
-		<br/>
-		<div><input type="submit" label="Submit"/></div>
-	</div>
+
 	<!-- this Dialog window is opened and closed by the addMaterials button
 		 but can also be closed from inside the components close button.
 		 To realize that we listen to the  @onClose event
 		 	@Close handles what happens when child is closed
 			@data is used as the Ontologies are added in subcomponent but we need the data here 
 	-->
+	<addDialog v-show="addMaterialsOpen" 
+				@close="addMaterialsOpen= false"
+				@add="addMaterials">
+	</addDialog>
 	<addDialog v-show="addProcessesOpen" 
 				@close="addProcessesOpen= false"
-				@addProcesses="addProcesses">
+				@add="addProcesses">
 	</addDialog>
 </template>
 

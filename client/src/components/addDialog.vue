@@ -53,7 +53,7 @@
     import { ref } from 'vue'
     import axios from 'axios'
 
-    const emit = defineEmits(['close', 'addProcesses'])
+    const emit = defineEmits(['close', 'add'])
 
     //for dropdown
     const current_ontology = ref('')
@@ -79,7 +79,7 @@
 			})
   			.catch(error => {
     			// handle error
-    			console.log(error)
+    			console.log(error.response)
   			})
 	}
 
@@ -87,10 +87,11 @@
         emit('close')
     }
     function addProcesses(ontoName, className){
+        console.log("adding started")
         console.log(ontoName + className)
         let processes_json = addOnto(ontoName, className)
         console.log(processes_json)
-        emit('addProcesses', processes_json)
+        emit('add', processes_json)
     }
 
 	function readServerOntoClasses(name){
@@ -106,7 +107,7 @@
 			})
   			.catch(error => {
     			// handle error
-    			console.log(error)
+    			console.log(error.response)
   			})
         }
 	}
@@ -120,7 +121,7 @@
 			})
   			.catch(error => {
     			// handle error
-    			console.log(error)
+    			console.log(error.response)
   			})
 	}
     function addOnto(ontoName, className){
@@ -129,11 +130,11 @@
     			// handle success
     			console.log(response.data)
 				response.data
-                emit('addProcesses', response.data) 
+                emit('add', response.data) 
 			})
   			.catch(error => {
     			// handle error
-    			console.log(error)
+    			console.log(error.response)
   			})
 	}
 
