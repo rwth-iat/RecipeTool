@@ -1,8 +1,12 @@
-from flask import Flask, current_app, render_template, request, send_from_directory, make_response
-from flask_vite import Vite
-from owlready2 import *
+#utils
 import json
+import os
 import mimetypes
+#webserver
+from flask import Flask, flash, redirect, request, send_from_directory, make_response, url_for
+from werkzeug.utils import secure_filename
+#ontologies
+from owlready2 import *
 
 
 def add_subclasses(input_object, children_classes_list, super_class_name):
@@ -63,7 +67,14 @@ class CustomFlask(Flask):
         variable_end_string='%%',
     ))
 
+
+UPLOAD_FOLDER = './ontologies'
+ALLOWED_EXTENSIONS = {'owl'}
+
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = 'super secret key'
+app.config['SESSION_TYPE'] = 'filesystem'
 
 # Main Website
 @app.route("/")
@@ -112,7 +123,41 @@ def add_ontology(onto_name="acplt", super_class="GeneralCapabilityEffecting"):
     response = make_response(processes)
     return response
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        print("upload startet")
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            print("no file given")
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            print("filename is empty string")
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            print("file allowed")
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('download_file', name=filename))
+        print("file not allowed")
+    make_response("file not allowed or no post request")
+    
+@app.route('/uploads/<name>')
+def download_file(name):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], name)
+
+
 #debug is for testing to make this production ready read:
 # https://zhangtemplar.github.io/flask/
 if __name__ == '__main__':
+  
   app.run(debug=True, ssl_context='adhoc')

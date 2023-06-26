@@ -19,12 +19,14 @@
 	const serverProcessOntologies = ref([""])
 	const onto_classes = ref([])
     const current_Elements = ref({})
+    const current_file = ref({})
 
 	const client = axios.create({
     	//baseURL: process.env.VUE_APP_BASE_URL
 		baseURL: ''
 	});
 
+    //get all names/ids of the ontologies present at the server
     function readServerOntologies(){
 		client.get('/onto')
 			.then(response => {
@@ -44,6 +46,7 @@
     function close(){
         emit('close')
     }
+
     function addElements(ontoName, className){
         console.log("adding started")
         console.log(ontoName + className)
@@ -52,6 +55,8 @@
         emit('add', elements_json)
     }
 
+    // get all classes from Ontology.
+    // They will be displayed in Dropdown menu to choose a super class when adding Processes/Materials.
 	function readServerOntoClasses(name){
         if (name!=="new"){
             client.get('/onto/'+name+'/classes')
@@ -82,6 +87,8 @@
     			console.log(error.response)
   			})
 	}
+
+    //function to add materials/Processes from Ontology to the Editor
     function addOnto(ontoName, className){
 		client.get('/onto/'+ontoName+'/'+className+'/subclasses')
 			.then(response => {
@@ -95,6 +102,34 @@
     			console.log(error.response)
   			})
 	}
+
+    function onFileChange($event) {
+            const target = $event.target;
+            if (target && target.files) {
+                current_file.value = target.files[0];
+            }
+        }
+
+    //function to upload Ontologie to the server 
+    function addOntoToServer(name, file){
+        var formData = new FormData();
+        formData.append("file", file);
+        console.log("test")
+        client.post('/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then(response => {
+    			// handle success
+    			console.log(response.data)
+				console.log("test")
+			})
+  			.catch(error => {
+    			// handle error
+    			console.log(error.response)
+  			})
+    }
 
     readServerOntologies()
 </script>
@@ -136,14 +171,15 @@
                 <span>OR</span>
                 <br/>
                 <label for="file_input">Select File: </label>
-                <input type="file" id="file_input"/>
+                <input @change="$event => onFileChange($event)" type="file" id="file_input" enctype=multipart/form-data/>
                 <br/>
                 <label for="add_to_server_btt">Add Ontology to Server: </label>
-                <input type="submit" id="add_to_server_btt"/>
+                <button class="button" type='button' @click="addOntoToServer('test.owl', current_file)">
+                    <h5>ADD Ontology to Server</h5>
+                </button>
             </fieldset>
 
             <br/>
-            <span></span>
             <label for="super_class_select">Select Ontology to add: </label>
             <select id="super_class_select"
                     v-model="current_super_class" 
@@ -175,7 +211,7 @@
         left: 20vw;
         top: 20vh;
 
-        background-color: lightgray;
+        background-color: var(--dark-alt);
         //border
         border-radius: 5px;
         border-width:1px;
@@ -193,6 +229,7 @@
     }
 
     .reload {
+        color: var(--primary);
         font-family: Lucida Sans Unicode;
         font-size: large;
     }
@@ -200,10 +237,11 @@
     .button{
         margin-left: 10px;
         margin-bottom: 10px;
+        color: white;
         //border
         border-radius: 5px;
         border-width:1px;
         border-style:solid;
-        border-color:black;
+        border-color:white;
     }
 </style>
