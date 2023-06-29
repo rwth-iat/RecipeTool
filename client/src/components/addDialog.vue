@@ -115,7 +115,7 @@
         var formData = new FormData();
         formData.append("file", file);
         console.log("test")
-        client.post('/upload', formData, {
+        client.post('/onto', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
