@@ -1,10 +1,47 @@
 <script setup>
-    import { ref } from 'vue'
-    
+    import { ref, onMounted, onUpdated } from 'vue'
+    import { newInstance, ready } from "@jsplumb/browser-ui"
+
+
     let drag = false
     const workspace_items = ref([])
-
     
+    // to access the workspace DOM element in vue we create a ref with the same name and on mount we set the value by focus()
+    // only after that we are able to access the value, therefore we add the jsplumb code after that
+    const workspace = ref(null)
+    const test1 = ref(null)
+    const test2 = ref(null)
+    //const DOM_workspace_items = ref(null)
+    onMounted(() => {
+        workspace.value.focus()
+        //DOM_workspace_items.value.focus()
+        test1.value.focus()
+        test2.value.focus()
+
+        ready(()=>{        
+            const instance = newInstance({
+                container: workspace.value
+            })
+            console.log(instance)
+            
+            function addEndpoints(element){
+                instance.addEndpoint(element, { source:true, anchor:"Right", endpoint:'Dot'})
+                instance.addEndpoint(element, { target:true, anchor:"Left", endpoint:'Dot'})
+            }
+
+            addEndpoints(test1.value)
+            addEndpoints(test2.value)
+
+            function update_plumber(){
+                //for(){
+
+                //}
+                //instance.addEndpoint(element, { source:true, endpoint:'Dot'})
+            }
+        })
+    })
+    
+
     const log = (event) =>{
       console.log(event);
     }
@@ -73,6 +110,7 @@
 
 <template>
     <div    id="workspace"
+            ref="workspace"
             @drop="$event => onDrop($event)"
             @dragenter.prevent
             @dragover.prevent
@@ -85,13 +123,40 @@
             >
 			    {{element.name}}
 		</div>
+
+        <div id="test1" 
+            ref="test1"
+            class="workspace_element" 
+            draggable="true"
+            @dragstart="$event => dragstart($event, 'test1', 'test1', 'workspace_element')"
+            >
+                Test1
+        </div>
+
+        <div id="test2" 
+            ref="test2"
+            class="workspace_element" 
+            draggable="true"
+            @dragstart="$event => dragstart($event, 'test2', 'test2', 'workspace_element')"
+            >
+                Test2
+        </div>
     </div>
 </template>
 
 
 <style>
+    #test1{
+        left: 500px;
+        top: 300px;
+    }
+    #test2{
+        left: 800px;
+        top: 300px;
+    }
     /*container for material*/
     #workspace{
+        position: relative;
         width: 100vw;
         height: 100vh - var(--topbar-height);
         flex: 1 1 0;
