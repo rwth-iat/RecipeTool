@@ -1,5 +1,5 @@
 <script setup>
-    import {defineEmits, defineProps, ref, toRefs, reactive} from 'vue'
+    import {ref, toRefs, reactive} from 'vue'
     import axios from 'axios'
 
     //we define a prop elementtype so that we can use this component for materials and Processes 
@@ -202,7 +202,7 @@
     .settings{
         //position absolute on top of all
         position: absolute;
-        z-index: 0;
+        z-index: 5;
 
         width: 60vw;
         height: auto;
