@@ -19,7 +19,34 @@
 	
     //sample data
     //let input = json
-	let element_packages = ref({})
+	let element_packages = ref({
+	"OperationChangingMaterial": {
+		"type": "process_package",
+		"name": "OperationChangingMaterial",
+		"children": [
+			{
+				"type": "process",
+				"name": "Combining"
+			},
+			{
+				"type": "process",
+				"name": "Separating"
+			},
+			{
+				"type": "process",
+				"name": "Agglomerating"
+			},
+			{
+				"type": "process",
+				"name": "Dividing"
+			},
+			{
+				"type": "process",
+				"name": "Changing_the_enthalpy"
+			}
+		]
+	}
+})
     //element_packages.value = input
 
 	let addElementsOpen = ref(false) //variable to show/hide Add Elements diaglog
