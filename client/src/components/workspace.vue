@@ -6,11 +6,7 @@ const workspace_items = ref([]);
 let instance = null;
 const jsplumbElementEndpoints = ref({});
 
-let drag = false;
-
 const workspace = ref(null);
-const test1 = ref(null);
-const test2 = ref(null);
 
 onMounted(() => {
   workspace.value.focus();
@@ -18,23 +14,14 @@ onMounted(() => {
   instance = newInstance({
     container: workspace.value
   });
-
-  ready(() => {
-    function addEndpoints(element) {
-      instance.addEndpoint(element, { source: true, anchor: "Right", endpoint: 'Dot' });
-      instance.addEndpoint(element, { target: true, anchor: "Left", endpoint: 'Dot' });
-    }
-
-    addEndpoints(test1.value);
-    addEndpoints(test2.value);
-  });
 });
 
 async function addJsPlumbEndpoint(element, itemId) {
   await nextTick();
 
   if (element) {
-    instance.addEndpoint(element);
+    instance.addEndpoint(element, { source: true, anchor: "Right",  endpoint: { type:"Dot"} });
+    instance.addEndpoint(element, { target: true, anchor: "Left",   endpoint: { type:"Dot"} });
 
     jsplumbElementEndpoints.value[itemId] = element;
   }
@@ -74,8 +61,10 @@ const onDrop = (event) => {
   var name = event.dataTransfer.getData("itemName");
   var classes = event.dataTransfer.getData("itemClasses");
 
-  var x = event.clientX + "px";
-  var y = event.clientY + "px";
+  //get mouse postion and substrac workspace position to get relative position as workspace elemenets are positioned relative (is needed for jsplumb)
+  var rect = event.target.getBoundingClientRect();
+  var x = event.clientX - rect.left + "px"; //x position within the element.
+  var y = event.clientY - rect.top  + "px";
 
   if (classes.includes("sidebar_element")) {
     var unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
@@ -87,45 +76,17 @@ const onDrop = (event) => {
     console.log(workspace_items);
   }
 };
-
-const dragstart = (event, id, name, classes) => {
-  console.log("dragstart");
-  event.dataTransfer.dropEffect = "move";
-  event.dataTransfer.effectAllowed = "move";
-  event.dataTransfer.setData("itemID", id);
-  event.dataTransfer.setData("itemName", name);
-  event.dataTransfer.setData("itemClasses", classes);
-  event.dataTransfer.setData("workspaceItems", workspace_items);
-};
 </script>
 
 <template>
   <div id="workspace" ref="workspace" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent>
-    <div class="workspace_element" v-for="item in workspace_items" :key="item.id" :ref="addJsPlumbEndpoint">
+    <div class="workspace_element" v-for="item in workspace_items" :key="item.id" :ref="addJsPlumbEndpoint" :style="{left:item.x, top:item.y}">
       {{ item.name }}
-    </div>
-
-    <div id="test1" ref="test1" class="workspace_element" draggable="true" @dragstart="$event => dragstart($event, 'test1', 'test1', 'workspace_element')">
-      Test1
-    </div>
-
-    <div id="test2" ref="test2" class="workspace_element" draggable="true" @dragstart="$event => dragstart($event, 'test2', 'test2', 'workspace_element')">
-      Test2
     </div>
   </div>
 </template>
 
 <style>
-  #test1 {
-    left: 500px;
-    top: 300px;
-  }
-
-  #test2 {
-    left: 800px;
-    top: 300px;
-  }
-
   #workspace {
     position: relative;
     width: 100vw;
