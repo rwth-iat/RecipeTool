@@ -38,6 +38,10 @@ function updateItemList(newItems) {
 
 watch(workspace_items, updateItemList, { deep: true });
 
+function export_batchml(){
+  connections = instance.getAllConnections();
+  console.log(connections)
+}
 const log = (event) => {
   console.log(event);
 };
@@ -54,6 +58,7 @@ function editWorkspaceItems(id, name, type, x, y) {
   }
 }
 
+// TODO: check if this interfers with js plumb drag and drop as it may be called on every drop event
 const onDrop = (event) => {
   console.log("Drop");
   event.preventDefault();
@@ -66,20 +71,22 @@ const onDrop = (event) => {
   var x = event.clientX - rect.left + "px"; //x position within the element.
   var y = event.clientY - rect.top  + "px";
 
+  // if it is a sidebar element add new item to workspace list. Drag and drop of workspace elements is handled by jsplumb
   if (classes.includes("sidebar_element")) {
     var unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
     workspace_items.value.push({ id: unique_id, name: name, type: "process", x: x, y: y });
     console.log("dragged from sidebar, dropped in workspace at absolute position: " + event.clientX.toString() + " " + event.clientY.toString());
     console.log(workspace_items);
-  } else if (classes.includes("workspace_element")) {
-    editWorkspaceItems(id, name, "process", x, y);
-    console.log(workspace_items);
   }
 };
 </script>
 
+<!--Draw all workspace elements. Connections are drawn by jsplumb in the background-->
 <template>
   <div id="workspace" ref="workspace" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent>
+    <button @click="export_batchml">
+      <span class="toggle-icons">export</span>
+    </button>
     <div class="workspace_element" v-for="item in workspace_items" :key="item.id" :ref="addJsPlumbEndpoint" :style="{left:item.x, top:item.y}">
       {{ item.name }}
     </div>
