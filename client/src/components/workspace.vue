@@ -12,15 +12,18 @@ onMounted(() => {
   workspace.value.focus();
 
   instance = newInstance({
-    container: workspace.value
+    container: workspace.value,
+    connectionOverlays: [{ type:"Arrow", options:{location:1}}] //sets the default connection to an arrow from source to target
   });
 });
 
 // add endpoints and attach the element id as data to the endpoint. 
 // When exporting to xml we can iterate through the connections and when accessing the source Endpoint and Target endpoint we can now read the corresponding element
 async function addJsPlumbEndpoint(element, itemId) {
-  await nextTick();
+  await nextTick(); // we need this for smooth rendering
 
+  // add source and target endpoint. That way the element is automatically added to jsplumb
+  // if elements are managed by js plumb that also does the drag/drop functionality 
   if (element) {
     const sourceEndpoint = instance.addEndpoint(element, {
       source: true,
@@ -42,6 +45,7 @@ async function addJsPlumbEndpoint(element, itemId) {
   }
 }
 
+//if a new item is added automatically add endpoints to new items
 function updateItemList(newItems) {
   newItems.forEach(item => {
     const elementRef = jsplumbElementEndpoints.value[item.id];
@@ -50,7 +54,6 @@ function updateItemList(newItems) {
     }
   });
 }
-
 watch(workspace_items, updateItemList, { deep: true });
 
 
@@ -116,19 +119,6 @@ function export_batchml() {
   pom.classList.add('dragout');
 
   pom.click();
-}
-
-
-function editWorkspaceItems(id, name, type, x, y) {
-  var item = workspace_items.value.find(b => b.id === id);
-  if (item) {
-    item.name = name;
-    item.type = type;
-    item.x = x;
-    item.y = y;
-  } else {
-    workspace_items.value.push({ id, name, type, x, y });
-  }
 }
 
 // TODO: check if this interfers with js plumb drag and drop as it may be called on every drop event
