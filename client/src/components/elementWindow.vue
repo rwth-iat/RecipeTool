@@ -10,43 +10,68 @@
     });
     const { element_type } = toRefs(props);
     
+
+
+    let element_packages = ref({})
+
     var element_class = "" 
-    if(element_type ==="Processes"){
+    if(element_type.value === "Processes"){
         element_class = "process_element sidebar_element"
-    }else{
+        element_packages.value = {"OperationChangingMaterial": {
+                                        "type": "process_package",
+                                        "name": "OperationChangingMaterial",
+                                        "children": [
+                                            {
+                                                "type": "process",
+                                                "name": "Combining"
+                                            },
+                                            {
+                                                "type": "process",
+                                                "name": "Separating"
+                                            },
+                                            {
+                                                "type": "process",
+                                                "name": "Agglomerating"
+                                            },
+                                            {
+                                                "type": "process",
+                                                "name": "Dividing"
+                                            },
+                                            {
+                                                "type": "process",
+                                                "name": "Changing_the_enthalpy"
+                                            }
+                                        ]
+                                    }
+                                }
+    }else if (element_type.value ==="Materials"){
         element_class = "material_element sidebar_element"
+        element_packages = {"Grundmaterialien": {
+                                "type": "materials_package",
+                                "name": "foundation_materials",
+                                "children": [
+                                    {
+                                        "type": "material",
+                                        "name": "Eingangsmaterial"
+                                    },
+                                    {
+                                        "type": "material",
+                                        "name": "Zwischenprodukt"
+                                    },
+                                    {
+                                        "type": "material",
+                                        "name": "Endprodukt"
+                                    }
+                                ]
+                            }
+                        }
+    }else{
+        console.log("unknown element type: " + element_type)
     }
 	
     //sample data
     //let input = json
-	let element_packages = ref({
-	"OperationChangingMaterial": {
-		"type": "process_package",
-		"name": "OperationChangingMaterial",
-		"children": [
-			{
-				"type": "process",
-				"name": "Combining"
-			},
-			{
-				"type": "process",
-				"name": "Separating"
-			},
-			{
-				"type": "process",
-				"name": "Agglomerating"
-			},
-			{
-				"type": "process",
-				"name": "Dividing"
-			},
-			{
-				"type": "process",
-				"name": "Changing_the_enthalpy"
-			}
-		]
-	}
-})
+	
     //element_packages.value = input
 
 	let addElementsOpen = ref(false) //variable to show/hide Add Elements diaglog
@@ -88,7 +113,7 @@
                 <div class="element_spacer"></div>
                 <div id="child_wrapper" v-for="element in elements_package.children">
                     <div id={{element.name}} :class=element_class 
-                        @dragstart.preventDefault="$event => dragstart($event, 'testId', element.name, 'sidebar_element')"
+                        @dragstart.preventDefault="$event => dragstart($event, 'testId', element.name, element_class)"
                         draggable="true"
                     >
                         {{element.name}}

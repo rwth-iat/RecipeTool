@@ -24,12 +24,12 @@ async function addJsPlumbEndpoint(element, itemId) {
   if (element) {
     const sourceEndpoint = instance.addEndpoint(element, {
       source: true,
-      anchor: "Right",
+      anchor: "Bottom",
       endpoint: { type: "Dot" }
     });
     const targetEndpoint = instance.addEndpoint(element, {
       target: true,
-      anchor: "Left",
+      anchor: "Top",
       endpoint: { type: "Dot" }
     });
 
@@ -138,6 +138,15 @@ const onDrop = (event) => {
   var id = event.dataTransfer.getData("itemID");
   var name = event.dataTransfer.getData("itemName");
   var classes = event.dataTransfer.getData("itemClasses");
+  
+  var type 
+  if (classes.includes("material_element")){
+    type = "material"
+  }else if (classes.includes("process_element")){
+    type = "process"
+  }else{
+    console.log("neither material nor process")
+  }
 
   //get mouse postion and substrac workspace position to get relative position as workspace elemenets are positioned relative (is needed for jsplumb)
   var rect = event.target.getBoundingClientRect();
@@ -148,7 +157,7 @@ const onDrop = (event) => {
   if (classes.includes("sidebar_element")) {
     var unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
     //var unique_id = id;
-    workspace_items.value.push({ id: unique_id, name: name, type: "process", x: x, y: y });
+    workspace_items.value.push({ id: unique_id, name: name, type: type, x: x, y: y });
     console.log("dragged from sidebar, dropped in workspace at absolute position: " + event.clientX.toString() + " " + event.clientY.toString());
     console.log(workspace_items);
   }
@@ -161,13 +170,31 @@ const onDrop = (event) => {
     <button @click="export_batchml">
       <span class="toggle-icons">export</span>
     </button>
-    <div class="workspace_element" v-for="item in workspace_items" :key="item.id" :ref="addJsPlumbEndpoint" :style="{left:item.x, top:item.y}" :id="item.id">
+    <div :class="'workspace_element ' + item.type" v-for="item in workspace_items" :key="item.id" :ref="addJsPlumbEndpoint" :style="{left:item.x, top:item.y}" :id="item.id">
       {{ item.name }}
     </div>
   </div>
 </template>
 
 <style>
+  .material{
+    background-color:#fff;
+    border:1px solid black;    
+    height:100px;
+    border-radius:50%;
+    -moz-border-radius:50%;
+    -webkit-border-radius:50%;
+    width:100px;
+  }
+  .process{
+    width: 200px;
+    height: 30px;
+    border-radius: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+  }
+
   #workspace {
     position: relative;
     width: 100vw;
@@ -181,14 +208,12 @@ const onDrop = (event) => {
     background-image: radial-gradient(circle, #000 1px, rgba(0, 0, 0, 0) 1px);
   }
 
+
   .workspace_element {
+    display: flex;
     position: absolute;
-    width: 200px;
-    height: auto;
     text-align: center;
-    border-radius: 5px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: black;
+    justify-content: center;
+    align-items: center;
   }
 </style>
