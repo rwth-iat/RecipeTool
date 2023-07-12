@@ -110,7 +110,12 @@ def upload_file():
     if file and allowed_file(file.filename):
         print("file allowed")
         filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+
+        #add to ontologies dict
+        onto = get_ontology(filepath).load()
+        ontologies[filename] = onto
         return redirect(url_for('download_file', name=filename))
     print("file not allowed")
     make_response("file not allowed or no post request")
