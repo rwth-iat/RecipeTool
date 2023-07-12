@@ -2,16 +2,17 @@
 import { ref, onMounted, onUpdated, watch, nextTick } from 'vue';
 import { newInstance, ready } from "@jsplumb/browser-ui";
 
+// when an element is dropped into the workspace workspace_items 
 const workspace_items = ref([]);
-let instance = null;
-const jsplumbElementEndpoints = ref({});
 
-//need this skip unwrap as using "npm run dev" ref of a v-for will not work. This skips the unwrapping which will otherwise cause an error  
+let instance = null; //the jsplumb instance, this is a library which handles the drag and drop as well as the connections 
+const workspace = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
+
+//need this as the developer server "npm run dev" will run into error using a normal ref of a v-for. This skips the unwrapping
 const jsplumbElements = ref([]);
 var skipUnwrap = { jsplumbElements }
+//object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
 const managedElements = ref({})
-
-const workspace = ref(null);
 
 onMounted(() => {
   workspace.value.focus();
