@@ -6,11 +6,16 @@ const workspace_items = ref([]);
 let instance = null;
 const jsplumbElementEndpoints = ref({});
 
+//need this skip unwrap as using "npm run dev" ref of a v-for will not work. This skips the unwrapping which will otherwise cause an error  
+const jsplumbElements = ref([]);
+var skipUnwrap = { jsplumbElements }
+const managedElements = ref({})
+
 const workspace = ref(null);
 
 onMounted(() => {
   workspace.value.focus();
-
+  console.log(jsplumbElements.value)
   instance = newInstance({
     container: workspace.value,
     connectionOverlays: [{ type:"Arrow", options:{location:1}}] //sets the default connection to an arrow from source to target
@@ -19,9 +24,11 @@ onMounted(() => {
 
 // add endpoints and attach the element id as data to the endpoint. 
 // When exporting to xml we can iterate through the connections and when accessing the source Endpoint and Target endpoint we can now read the corresponding element
-async function addJsPlumbEndpoint(element, itemId) {
-  await nextTick(); // we need this for smooth rendering
-
+async function addJsPlumbEndpoints(element, item) {
+  console.log("entered addJSEndpoints")
+  console.log(element)
+  console.log(item)
+  //await nextTick(); // we need this for smooth rendering
   // add source and target endpoint. That way the element is automatically added to jsplumb
   // if elements are managed by js plumb that also does the drag/drop functionality 
   if (element) {
@@ -35,9 +42,7 @@ async function addJsPlumbEndpoint(element, itemId) {
       anchor: "Top",
       endpoint: { type: "Dot" }
     });
-
-    // Save the endpoint IDs to the workspace_items list
-    const item = workspace_items.value.find(item => item.id === itemId);
+    // Save the endpoint IDs to the workspace_items list That way exporting the xml is easier as all connections can be easily read
     if (item) {
       item.sourceEndpointId = sourceEndpoint.id;
       item.targetEndpointId = targetEndpoint.id;
@@ -45,12 +50,18 @@ async function addJsPlumbEndpoint(element, itemId) {
   }
 }
 
+
 //if a new item is added automatically add endpoints to new items
-function updateItemList(newItems) {
-  newItems.forEach(item => {
-    const elementRef = jsplumbElementEndpoints.value[item.id];
-    if (!elementRef) {
-      addJsPlumbEndpoint(elementRef, item.id);
+async function updateItemList(newItems) {
+  console.debug("workspace_items updated, watcher triggered")
+  await nextTick(); //wait for next tick to ensure that the newly added items of the workspace item list are actually rendered
+  newItems.forEach(item => { //iterate through items
+    const elementRef = jsplumbElements.value.find(element => {return element.id === item.id}); //find the corresponding DOM element
+    if (!managedElements.value[item.id]) {    //check if there are any new items and run the following:
+       addJsPlumbEndpoints(elementRef, item)  // add endpoints
+       elementRef.style.left = item.x+"px";   //set x to x saved in Ondrop event
+       elementRef.style.top = item.y+"px";    //set y to y saved in Ondrop event
+       managedElements.value[item.id] = true  //mark as already managed to run this only once
     }
   });
 }
@@ -107,13 +118,12 @@ function export_batchml() {
   // You can now use the xmlString as needed, e.g., save it to a file
   console.log(xmlString);
 
-  var filename = "file.xml";
+  //automatically start download
+  var filename = "Verfahrensrezept.xml";
   var pom = document.createElement('a');
   var bb = new Blob([xmlString], {type: 'text/plain'});
-
   pom.setAttribute('href', window.URL.createObjectURL(bb));
   pom.setAttribute('download', filename);
-
   pom.dataset.downloadurl = ['text/plain', pom.download, pom.href].join(':');
   pom.draggable = true; 
   pom.classList.add('dragout');
@@ -140,8 +150,8 @@ const onDrop = (event) => {
 
   //get mouse postion and substrac workspace position to get relative position as workspace elemenets are positioned relative (is needed for jsplumb)
   var rect = event.target.getBoundingClientRect();
-  var x = event.clientX - rect.left + "px"; //x position within the element.
-  var y = event.clientY - rect.top  + "px";
+  var x = event.clientX - rect.left; //+ "px"  x position within the element.
+  var y = event.clientY - rect.top;
 
   // if it is a sidebar element add new item to workspace list. Drag and drop of workspace elements is handled by jsplumb
   if (classes.includes("sidebar_element")) {
@@ -160,7 +170,7 @@ const onDrop = (event) => {
     <button @click="export_batchml">
       <span class="toggle-icons">export</span>
     </button>
-    <div :class="'workspace_element ' + item.type" v-for="item in workspace_items" :key="item.id" :ref="addJsPlumbEndpoint" :style="{left:item.x, top:item.y}" :id="item.id">
+    <div :class="'workspace_element ' + item.type" v-for="item in workspace_items" :key="item.id" :ref=" skipUnwrap.jsplumbElements" :id="item.id">
       {{ item.name }}
     </div>
   </div>
