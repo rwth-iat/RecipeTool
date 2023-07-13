@@ -15,6 +15,7 @@
 
     //for the dropdown menus we need some reative variables which get dynamically populated
     const current_ontology = ref('')
+    const addOption = ref('')
     const current_super_class = ref('')
 	const serverProcessOntologies = ref([""])
 	const onto_classes = ref([])
@@ -146,7 +147,7 @@
         </div>
         <br/>
         <form>
-            <span>Select Ontology to add {{ element_type }}: </span>
+            <span>Select Ontology: </span>
             
             <!--Drop down list of availible ontologys on the server-->
             <select v-model="current_ontology" name="Ontology" id="ontoSelect" 
@@ -161,40 +162,46 @@
             </button>
 
             <!--Dialog to add a new ontology to the server-->
-            <fieldset v-if="current_ontology === 'new'">
-                <legend>Add new Ontology to server: </legend>
-                <span>Please enter a valid path to either an Ontologie File or URL</span>
+            <div v-if="current_ontology === 'new'">
+                <span>Choose a File or URL</span>
+                <select v-model="addOption" id="addOption" >
+                    <option value="file">File</option>
+                    <option value="url">URL</option>
+                </select>
                 <br/>
-                <label for="url_input">Select URL: </label>
-                <input type="url" id="url_input"/>
-                <br/>
-                <span>OR</span>
-                <br/>
-                <label for="file_input">Select File: </label>
-                <input @change="$event => onFileChange($event)" type="file" id="file_input" enctype=multipart/form-data/>
+                <div v-if="addOption==='url'">
+                    <label for="url_input">Select URL: </label>
+                    <input type="url" id="url_input"/>
+                </div>
+                <div v-else-if="addOption==='file'">
+                    <label for="file_input">Select File: </label>
+                    <input @change="$event => onFileChange($event)" type="file" id="file_input" enctype=multipart/form-data/>
+                </div>
                 <br/>
                 <label for="add_to_server_btt">Add Ontology to Server: </label>
                 <button class="button" type='button' @click="addOntoToServer('test.owl', current_file)">
                     <h5>ADD Ontology to Server</h5>
                 </button>
-            </fieldset>
+            </div>
 
-            <br/>
-            <label for="super_class_select">Select Ontology to add: </label>
-            <select id="super_class_select"
-                    v-model="current_super_class" 
-                    name="super-class">
-                <option v-for="item in onto_classes" :value="item">{{ item }}</option>
-            </select>
-            <br/>
-            <label for="relation_input">Name of Relation: </label>
-            <input id="relation_input" type="text" value="subclass_of"/>
-            <br/>
-            <br/>
+            <div v-else>
+                <br/>
+                <label for="super_class_select">Select Name of Superclass: </label>
+                <select id="super_class_select"
+                        v-model="current_super_class" 
+                        name="super-class">
+                    <option v-for="item in onto_classes" :value="item">{{ item }}</option>
+                </select>
+                <br/>
+                <label for="relation_input">Name of Relation: </label>
+                <input id="relation_input" type="text" value="subclass_of"/>
+                <br/>
+                <br/>
+                <button class="button" type='button' @click="addElements(current_ontology, current_super_class)">
+                    <h5>ADD {{ element_type }} to Sidebar</h5>
+                </button>
+            </div>
         </form>
-        <button class="button" type='button' @click="addElements(current_ontology, current_super_class)">
-            <h5>ADD {{ element_type }} to Sidebar</h5>
-        </button>
     </div>
 </template>
 
