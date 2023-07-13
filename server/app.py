@@ -162,6 +162,7 @@ def get_onto():
           rgb: ['Ontocap', 'acplt']
     """
     #if get return list of ontologies
+    ontologies = load_ontologies()
     response = make_response(list(ontologies.keys()))
     return response
 
@@ -255,5 +256,4 @@ def allowed_file(filename):
 # https://zhangtemplar.github.io/flask/
 if __name__ == '__main__':
   ontologies = load_ontologies()
-  print(ontologies)
   app.run(debug=True, ssl_context='adhoc')
