@@ -25,21 +25,43 @@ def add_subclasses(input_object, children_classes_list, super_class_name):
 
     return input_object
 
+def load_ontologies():
+    ontologies = {}
+    for filename in os.listdir(UPLOAD_FOLDER):
+        if filename.endswith('.owl'):
+            #with open(os.path.join(UPLOAD_FOLDER, filename), 'r') as file:
+            #    ontologies[filename] = file.read()
+            ontologies[filename] = get_ontology(os.path.join(app.config['UPLOAD_FOLDER'], filename)).load()
+    return ontologies
+
 #onto_c4i = get_ontology("https://www.w3id.org/basyx/c4i").load()
 #onto_acplt = get_ontology("http://www.acplt.de/Capability").load()   #does not work
-onto_acplt = get_ontology("file://d:/git_repos/Masterarbeit_Editor/server/config/IAT-Ontologie/Capability_with_Query.owl").load()
+#onto_acplt = get_ontology("file://d:/git_repos/Masterarbeit_Editor/server/config/IAT-Ontologie/Capability_with_Query.owl").load()
 
 #Init ontologies
-ontologies = {"acplt":onto_acplt}
+#ontologies = {"acplt":onto_acplt}
+
+ontologies = {}
 
 
-UPLOAD_FOLDER = './ontologies'
+UPLOAD_FOLDER = './ontologies/'
 ALLOWED_EXTENSIONS = {'owl'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SWAGGER'] = {
+    'uiversion': 3,
+    "specs_route": "/apidocs/",
+    'title': 'General Recipe Editor',
+    "description": "API for providing the general recipe editor, ontology management and ontology operations",
+    "version": "0.0.1",
+    "contact": {
+      "name": "Sebastian Ulrich",
+      "email": "sebastian.ulrich@rwth-aachen.de"
+    }
+}
 
 swagger = Swagger(app)
 
@@ -48,6 +70,8 @@ swagger = Swagger(app)
 def editor():
     """Endpoint to the Graphical Editor for General Recipes.
     ---
+    tags:
+      - General Recipe Editor
     responses:
       200:
         description: The html file of the Graphical Editor UI.
@@ -62,6 +86,8 @@ def static_files(filename):
     """Endpoint to serve the static files to the server.
         This is needed in order for the Graphical Editor to work, as index.html links to the css and JS file in static folder.
     ---
+    tags:
+      - General Recipe Editor
     parameters:
       - name: filename
         in: path
@@ -83,6 +109,8 @@ def static_files(filename):
 def upload_file():
     """Endpoint to upload a new ontologie to the server.
     ---
+    tags:
+      - Ontology Management 
     parameters:
       - name: file
         in: path
@@ -125,6 +153,8 @@ def upload_file():
 def get_onto():
     """Endpoint returning the list of Ontology names currently present at the server.
     ---
+    tags:
+      - Ontology Management
     responses:
       200:
         description: A list of the currently available Ontologies
@@ -135,10 +165,35 @@ def get_onto():
     response = make_response(list(ontologies.keys()))
     return response
 
+@app.route('/onto/<path:filename>')
+def download_onto(filename):
+    """Endpoint to download an ontologie from the server.
+    ---
+    tags:
+      - Ontology Management
+    parameters:
+      - name: filename
+        in: path
+        type: string
+        required: true
+        default: c4i.owl
+    responses:
+      200:
+        description: 
+        examples:
+          rgb: ['red', 'green', 'blue']
+    """
+    response = make_response(send_from_directory(app.config["UPLOAD_FOLDER"], filename))
+    mimetype, _ = mimetypes.guess_type(filename)
+    response.headers['Content-Type'] = mimetype
+    return response
+
 @app.route('/onto/<onto_name>/classes')
 def get_classes(onto_name, methods = ['GET']):
     """Endpoint returning the list of classes present at the Ontology specified in <onto_name>.
     ---
+    tags:
+      - Ontology Operations
     parameters:
       - name: onto_name
         in: path
@@ -163,6 +218,8 @@ def get_classes(onto_name, methods = ['GET']):
 def add_ontology(onto_name="acplt", super_class="GeneralCapabilityEffecting"):
     """Endpoint to get all subclasses of a class in the given ontology.
     ---
+    tags:
+      - Ontology Operations
     parameters:
       - name: onto_name
         in: path
@@ -192,28 +249,11 @@ def allowed_file(filename):
     
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-    
-@app.route('/onto/<name>')
-def download_file(name):
-    """Endpoint to download an ontologie from the server.
-    ---
-    parameters:
-      - name: name
-        in: path
-        type: string
-        required: true
-        default: acplt
-    responses:
-      200:
-        description: 
-        examples:
-          rgb: ['red', 'green', 'blue']
-    """
-    return send_from_directory(app.config["UPLOAD_FOLDER"], name)
 
 
 #debug is for testing to make this production ready read:
 # https://zhangtemplar.github.io/flask/
 if __name__ == '__main__':
-  
+  ontologies = load_ontologies()
+  print(ontologies)
   app.run(debug=True, ssl_context='adhoc')
