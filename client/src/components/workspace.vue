@@ -24,6 +24,23 @@ onMounted(() => {
   });
 });
 
+function addSourceEndpoint(element){
+  const sourceEndpoint = instance.addEndpoint(element, {
+      source: true,
+      anchor: "Bottom",
+      endpoint: { type: "Dot" }
+    });
+    return sourceEndpoint
+}
+function addTargetEndpoint(element){
+  const targetEndpoint = instance.addEndpoint(element, {
+      target: true,
+      anchor: "Top",
+      endpoint: { type: "Dot" }
+    });
+  return targetEndpoint
+}
+
 // add endpoints and attach the element id as data to the endpoint. 
 // When exporting to xml we can iterate through the connections and when accessing the source Endpoint and Target endpoint we can now read the corresponding element
 async function addJsPlumbEndpoints(element, item) {
@@ -34,16 +51,28 @@ async function addJsPlumbEndpoints(element, item) {
   // add source and target endpoint. That way the element is automatically added to jsplumb
   // if elements are managed by js plumb that also does the drag/drop functionality 
   if (element) {
-    const sourceEndpoint = instance.addEndpoint(element, {
-      source: true,
-      anchor: "Bottom",
-      endpoint: { type: "Dot" }
-    });
-    const targetEndpoint = instance.addEndpoint(element, {
-      target: true,
-      anchor: "Top",
-      endpoint: { type: "Dot" }
-    });
+    var sourceEndpoint = {}
+    var targetEndpoint = {}
+    if(item.type === "material"){
+      if(item.name === "Eingangsmaterial"){
+        sourceEndpoint = addSourceEndpoint(element)
+        targetEndpoint = {id: ''}
+      }else if(item.name === "Zwischenprodukt"){
+        sourceEndpoint = addSourceEndpoint(element)
+        targetEndpoint = addTargetEndpoint(element)
+      }else if(item.name === "Endprodukt"){
+        sourceEndpoint = {id: ''}
+        targetEndpoint = addTargetEndpoint(element)
+      }else{
+        console.error("unknown material type: " + item.name)
+      }
+    }else if(item.type === "process"){
+      sourceEndpoint = addSourceEndpoint(element)
+      targetEndpoint = addTargetEndpoint(element)
+    }else{
+        console.error("unknown type: " + item.type)
+    }
+
     // Save the endpoint IDs to the workspace_items list That way exporting the xml is easier as all connections can be easily read
     if (item) {
       item.sourceEndpointId = sourceEndpoint.id;

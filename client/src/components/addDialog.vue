@@ -157,7 +157,7 @@
             </select>
 
             <!-- button to update the drop down list of availible ontologies-->
-            <button @click="readServerOntologies">
+            <button type='button' @click="readServerOntologies">
                 <span class=reload>&#x21bb;</span>
             </button>
 
