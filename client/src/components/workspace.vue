@@ -19,6 +19,7 @@ onMounted(() => {
   console.log(jsplumbElements.value)
   instance = newInstance({
     container: workspace.value,
+    maxConnections: -1,
     connectionOverlays: [{ type:"Arrow", options:{location:1}}] //sets the default connection to an arrow from source to target
   });
 });
