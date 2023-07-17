@@ -11,10 +11,23 @@ from flasgger import Swagger
 #ontologies
 from owlready2 import *
 
+def recursivly_add_subclasses(super_class, onto):
+    output_obj = {
+            "name": str(super_class).split(".")[-1],
+            "children": []
+            }
+    if onto[super_class] != None:
+      subclasses_list = list(onto[super_class].subclasses())
+      if subclasses_list != []:
+        for subclass in subclasses_list:
+          child = recursivly_add_subclasses(subclass, onto)
+          output_obj["children"].append(child)
+    return output_obj
+
+
 def add_subclasses(input_object, children_classes_list, super_class_name):
     # initiate input Object
     input_object[super_class_name] = {
-        "type": "process_package",
         "name": super_class_name,
         "children":[]
     }
@@ -256,4 +269,6 @@ def allowed_file(filename):
 # https://zhangtemplar.github.io/flask/
 if __name__ == '__main__':
   ontologies = load_ontologies()
+  output = recursivly_add_subclasses("GeneralCapabilityEffecting", ontologies["Capability_with_Query.owl"])
+  print(output)
   app.run(debug=True, ssl_context='adhoc')

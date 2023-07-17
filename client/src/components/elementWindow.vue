@@ -3,6 +3,7 @@
 	import { ref, toRefs } from 'vue'
 	import json from '../input/input.json'
 	import addDialog from './addDialog.vue'
+    import Recursive_component from './RecursiveComponent.vue';
 
     //we define a prop elementtype so that we can use this component for materials and Processes 
     const props = defineProps({
@@ -17,56 +18,33 @@
     var element_class = "" 
     if(element_type.value === "Processes"){
         element_class = "process_element sidebar_element"
-        element_packages.value = {"GeneralCapabilityEffecting": {
-                                        "type": "process_package",
-                                        "name": "GeneralCapabilityEffecting",
-                                        "children": [
-                                            {
-                                                "type": "process",
-                                                "name": "Draining"
+        element_packages.value = [{
+                                    "name": "GeneralCapabilityEffecting",
+                                    "children":[{
+                                            "name": "Draining",
+                                            "children":[
+                                                {
+                                                "type":"process",
+                                                "name":"test1",
+                                                "children":[
+                                                    {
+                                                        "name":"test2",
+                                                        "type":"process"
+                                                    }
+                                                ]}
+                                                ]
                                             },
                                             {
                                                 "type": "process",
                                                 "name": "Pumping"
-                                            },
-                                            {
-                                                "type": "process",
-                                                "name": "Stirring"
-                                            },
-                                            {
-                                                "type": "process",
-                                                "name": "Detach"
-                                            },
-                                            {
-                                                "type": "process",
-                                                "name": "Store"
-                                            },
-                                            {
-                                                "type": "process",
-                                                "name": "PressureAdjustment"
-                                            },
-                                            {
-                                                "type": "process",
-                                                "name": "Tempering"
-                                            },
-                                            {
-                                                "type": "process",
-                                                "name": "Circulation"
-                                            },
-                                            {
-                                                "type": "process",
-                                                "name": "ElectricalField"
-                                            },
-                                            {
-                                                "type": "process",
-                                                "name": "Flowstoping"
                                             }
                                         ]
-                                    }
-                                }
+                                }]
     }else if (element_type.value ==="Materials"){
         element_class = "material_element sidebar_element"
-        element_packages = {"Grundmaterialien": {
+        element_packages = [{
+                            "name":"Grundmaterialien",
+                            "children":[{
                                 "type": "materials_package",
                                 "name": "foundation_materials",
                                 "children": [
@@ -83,8 +61,8 @@
                                         "name": "Endprodukt"
                                     }
                                 ]
-                            }
-                        }
+                            }]
+                        }]
     }else{
         console.log("unknown element type: " + element_type)
     }
@@ -128,6 +106,9 @@
         <div class="element_spacer"></div>
         <div id="elements">
             <!-- into here get the process packages imported via the javascript script-->
+            <Recursive_component :items=element_packages :indentationLevel="0">
+            </Recursive_component>
+            <!--
             <div  v-for="(elements_package, elements_package_name) in element_packages">
                 <div>{{ elements_package_name }}</div>
                 <div class="element_spacer"></div>
@@ -142,6 +123,7 @@
                 </div>
                 <div class="element_spacer"></div>
             </div>
+            -->
         </div>
     </div>
     <!--
