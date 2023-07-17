@@ -17,29 +17,49 @@
     var element_class = "" 
     if(element_type.value === "Processes"){
         element_class = "process_element sidebar_element"
-        element_packages.value = {"OperationChangingMaterial": {
+        element_packages.value = {"GeneralCapabilityEffecting": {
                                         "type": "process_package",
-                                        "name": "OperationChangingMaterial",
+                                        "name": "GeneralCapabilityEffecting",
                                         "children": [
                                             {
                                                 "type": "process",
-                                                "name": "Combining"
+                                                "name": "Draining"
                                             },
                                             {
                                                 "type": "process",
-                                                "name": "Separating"
+                                                "name": "Pumping"
                                             },
                                             {
                                                 "type": "process",
-                                                "name": "Agglomerating"
+                                                "name": "Stirring"
                                             },
                                             {
                                                 "type": "process",
-                                                "name": "Dividing"
+                                                "name": "Detach"
                                             },
                                             {
                                                 "type": "process",
-                                                "name": "Changing_the_enthalpy"
+                                                "name": "Store"
+                                            },
+                                            {
+                                                "type": "process",
+                                                "name": "PressureAdjustment"
+                                            },
+                                            {
+                                                "type": "process",
+                                                "name": "Tempering"
+                                            },
+                                            {
+                                                "type": "process",
+                                                "name": "Circulation"
+                                            },
+                                            {
+                                                "type": "process",
+                                                "name": "ElectricalField"
+                                            },
+                                            {
+                                                "type": "process",
+                                                "name": "Flowstoping"
                                             }
                                         ]
                                     }
