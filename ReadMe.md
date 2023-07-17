@@ -23,3 +23,6 @@ prerequisits:
 - For the python server part make sure to use the projects conda environment [todo: put link etc here]:
   - make sure you are in the right folder (server) and run the app.py script
   - `python app.py`
+
+-if all prequisites are already installed simply run:
+  - ./build_run.bat
