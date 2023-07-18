@@ -171,6 +171,7 @@ const onDrop = (event) => {
   var classes = event.dataTransfer.getData("itemClasses");
   
   var type 
+  console.log(classes)
   if (classes.includes("material_element")){
     type = "material"
   }else if (classes.includes("process_element")){

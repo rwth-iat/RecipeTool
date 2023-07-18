@@ -20,8 +20,10 @@
         element_class = "process_element sidebar_element"
         element_packages.value = [{
                                     "name": "GeneralCapabilityEffecting",
+                                    "type":"process",
                                     "children":[{
                                             "name": "Draining",
+                                            "type":"process",
                                             "children":[
                                                 {
                                                 "type":"process",
@@ -42,31 +44,28 @@
                                 }]
     }else if (element_type.value ==="Materials"){
         element_class = "material_element sidebar_element"
-        element_packages = [{
+        element_packages.value = [{
                             "name":"Grundmaterialien",
-                            "children":[{
-                                "type": "materials_package",
-                                "name": "foundation_materials",
-                                "children": [
-                                    {
-                                        "type": "material",
-                                        "name": "Eingangsmaterial"
-                                    },
-                                    {
-                                        "type": "material",
-                                        "name": "Zwischenprodukt"
-                                    },
-                                    {
-                                        "type": "material",
-                                        "name": "Endprodukt"
-                                    }
-                                ]
-                            }]
+                            "type": "material",
+                            "children":[
+                                {
+                                    "type": "material",
+                                    "name": "Eingangsmaterial"
+                                },
+                                {
+                                    "type": "material",
+                                    "name": "Zwischenprodukt"
+                                },
+                                {
+                                    "type": "material",
+                                    "name": "Endprodukt"
+                                }
+                            ]
                         }]
     }else{
         console.log("unknown element type: " + element_type)
     }
-	
+	console.log(element_packages.value)
     //sample data
     //let input = json
 	
@@ -83,16 +82,6 @@
 	const toggleAddElements = () =>{
 		addElementsOpen.value = !addElementsOpen.value;
 	}
-
-    //when starting to drag an element safe attributes to datatransfer, to access them in workspace component
-	const dragstart = (event, id, name, classes) =>{
-		console.log("dragstart")
-		event.dataTransfer.dropEffect = "copy"
-		event.dataTransfer.effectAllowed = "copy"
-		event.dataTransfer.setData("itemID", id)
-		event.dataTransfer.setData("itemName", name)
-		event.dataTransfer.setData("itemClasses", classes)
-	}
 </script>
 
 <template>
@@ -106,7 +95,7 @@
         <div class="element_spacer"></div>
         <div id="elements">
             <!-- into here get the process packages imported via the javascript script-->
-            <Recursive_component :items=element_packages :indentationLevel="0">
+            <Recursive_component :items=element_packages :indentationLevel="0" :class={element_class}>
             </Recursive_component>
             <!--
             <div  v-for="(elements_package, elements_package_name) in element_packages">

@@ -11,16 +11,17 @@ from flasgger import Swagger
 #ontologies
 from owlready2 import *
 
-def recursivly_add_subclasses(super_class, onto):
+def recursivly_add_subclasses(super_class):
     output_obj = {
             "name": str(super_class).split(".")[-1],
             "children": []
             }
-    if onto[super_class] != None:
-      subclasses_list = list(onto[super_class].subclasses())
+    if super_class != None:
+      subclasses_list = list(super_class.subclasses())
+      print(subclasses_list)
       if subclasses_list != []:
         for subclass in subclasses_list:
-          child = recursivly_add_subclasses(subclass, onto)
+          child = recursivly_add_subclasses(subclass)
           output_obj["children"].append(child)
     return output_obj
 
@@ -247,15 +248,32 @@ def add_ontology(onto_name="acplt", super_class="GeneralCapabilityEffecting"):
         default: GeneralCapabilityEffecting
     responses:
       200:
-        description: A list of colors (may be filtered by palette)
+        description: A list Subclasses and their respective subclasses
         examples:
-          rgb: ['red', 'green', 'blue']
+          rgb: [{
+                  "name": "GeneralCapabilityEffecting",
+                  "type":"process",
+                  "children":[
+                      {
+                        "name": "Draining",
+                        "type":"process",
+                        "children":[]
+                      },
+                      {
+                        "type": "process",
+                        "name": "Pumping"
+                      }
+                  ]
+                }]
     """
-    classes_dict = {}
+    classes_obj = {}
     onto = ontologies[onto_name]
-    subclasses_list = list(onto[super_class].subclasses())
-    classes_dict = add_subclasses(classes_dict, subclasses_list, super_class)
-    processes =  json.dumps(classes_dict, ensure_ascii=False, indent=4)
+    #subclasses_list = list(onto[super_class].subclasses())
+    super_class_obj = onto[super_class]
+    classes_obj = recursivly_add_subclasses(super_class_obj)
+    classes_list = [classes_obj]
+    #classes_dict = add_subclasses(classes_dict, subclasses_list, super_class)
+    processes =  json.dumps(classes_list, ensure_ascii=False, indent=4)
     response = make_response(processes)
     return response
 
@@ -269,6 +287,8 @@ def allowed_file(filename):
 # https://zhangtemplar.github.io/flask/
 if __name__ == '__main__':
   ontologies = load_ontologies()
-  output = recursivly_add_subclasses("GeneralCapabilityEffecting", ontologies["Capability_with_Query.owl"])
+  onto = ontologies["Capability_with_Query.owl"]
+  super_class = onto["GeneralCapabilityEffecting"]
+  output = recursivly_add_subclasses(super_class)
   print(output)
   app.run(debug=True, ssl_context='adhoc')
