@@ -18,7 +18,6 @@ def recursivly_add_subclasses(super_class):
             }
     if super_class != None:
       subclasses_list = list(super_class.subclasses())
-      print(subclasses_list)
       if subclasses_list != []:
         for subclass in subclasses_list:
           child = recursivly_add_subclasses(subclass)
@@ -287,8 +286,7 @@ def allowed_file(filename):
 # https://zhangtemplar.github.io/flask/
 if __name__ == '__main__':
   ontologies = load_ontologies()
-  onto = ontologies["Capability_with_Query.owl"]
-  super_class = onto["GeneralCapabilityEffecting"]
-  output = recursivly_add_subclasses(super_class)
-  print(output)
+  #onto = ontologies["Capability_with_Query.owl"]
+  #super_class = onto["GeneralCapabilityEffecting"]
+  #output = recursivly_add_subclasses(super_class)
   app.run(debug=True, ssl_context='adhoc')

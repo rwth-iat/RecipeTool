@@ -65,7 +65,7 @@
     }else{
         console.log("unknown element type: " + element_type)
     }
-	console.log(element_packages.value)
+	//console.log(element_packages.value)
     //sample data
     //let input = json
 	
