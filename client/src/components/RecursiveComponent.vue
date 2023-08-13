@@ -115,13 +115,13 @@ export default defineComponent({
     },
     //when starting to drag an element safe attributes to datatransfer, to access them in workspace component
 	  dragstart(event, id, name, classes){
-		console.log("dragstart")
-		event.dataTransfer.dropEffect = "copy"
-		event.dataTransfer.effectAllowed = "copy"
-		event.dataTransfer.setData("itemID", id)
-		event.dataTransfer.setData("itemName", name)
-		event.dataTransfer.setData("itemClasses", classes)
-	}
+      console.log("dragstart")
+      event.dataTransfer.dropEffect = "copy"
+      event.dataTransfer.effectAllowed = "copy"
+      event.dataTransfer.setData("itemID", id)
+      event.dataTransfer.setData("itemName", name)
+      event.dataTransfer.setData("itemClasses", classes)
+	  }
   },
 });
 </script>

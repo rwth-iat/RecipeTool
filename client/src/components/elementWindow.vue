@@ -88,7 +88,7 @@
         <div class="element_spacer"></div>
         <div id="elements">
             <!-- into here get the process packages imported via the javascript script-->
-            <Recursive_component :items=element_packages :indentationLevel="0" :class={element_class}>
+            <Recursive_component :items=element_packages :indentationLevel="0" :classes=element_class>
             </Recursive_component>
         </div>
     </div>

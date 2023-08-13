@@ -288,8 +288,5 @@ def allowed_file(filename):
 #debug is for testing to make this production ready read:
 # https://zhangtemplar.github.io/flask/
 if __name__ == '__main__':
-  ontologies = load_ontologies()
-  #onto = ontologies["Capability_with_Query.owl"]
-  #super_class = onto["GeneralCapabilityEffecting"]
-  #output = recursivly_add_subclasses(super_class)
+  #ontologies = load_ontologies()
   app.run(debug=True, ssl_context='adhoc')
