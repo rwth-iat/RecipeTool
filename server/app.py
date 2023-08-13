@@ -2,8 +2,11 @@
 import json
 import os
 import mimetypes
+mimetypes.add_type('application/javascript', '.js')
+mimetypes.add_type('text/css', '.css')
+
 #webserver
-from flask import Flask, flash, jsonify, redirect, request, send_from_directory, make_response, url_for
+from flask import Flask, flash, redirect, request, send_from_directory, make_response, url_for
 #from flask_restful import Api, Resource
 from werkzeug.utils import secure_filename
 from flasgger import Swagger

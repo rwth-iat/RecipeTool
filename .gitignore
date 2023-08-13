@@ -1,0 +1,6 @@
+# Editor directories and files
+.vscode/*
+
+client/.vscode/*
+server/.vscode/*
+server/__pycache__/*

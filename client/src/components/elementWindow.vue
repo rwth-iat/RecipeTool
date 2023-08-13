@@ -1,7 +1,6 @@
 <script setup>
 	//import vue from 'vue'
 	import { ref, toRefs } from 'vue'
-	import json from '../input/input.json'
 	import addDialog from './addDialog.vue'
     import Recursive_component from './RecursiveComponent.vue';
 
@@ -65,21 +64,15 @@
     }else{
         console.log("unknown element type: " + element_type)
     }
-	//console.log(element_packages.value)
-    //sample data
-    //let input = json
-	
-    //element_packages.value = input
-
-	let addElementsOpen = ref(false) //variable to show/hide Add Elements diaglog
 
 	function addElements(elements_json){
 		console.log("materials in sidebar")
 		element_packages.value = elements_json
 	}
 
-	// function to open/close add Elements window
-	const toggleAddElements = () =>{
+    let addElementsOpen = ref(false) //variable to show/hide Add Elements diaglog
+    // function to open/close add Elements window
+    const toggleAddElements = () =>{
 		addElementsOpen.value = !addElementsOpen.value;
 	}
 </script>
@@ -97,22 +90,6 @@
             <!-- into here get the process packages imported via the javascript script-->
             <Recursive_component :items=element_packages :indentationLevel="0" :class={element_class}>
             </Recursive_component>
-            <!--
-            <div  v-for="(elements_package, elements_package_name) in element_packages">
-                <div>{{ elements_package_name }}</div>
-                <div class="element_spacer"></div>
-                <div id="child_wrapper" v-for="element in elements_package.children">
-                    <div id={{element.name}} :class=element_class 
-                        @dragstart.preventDefault="$event => dragstart($event, 'testId', element.name, element_class)"
-                        draggable="true"
-                    >
-                        {{element.name}}
-                    </div>
-                    <div class="element_spacer"></div>
-                </div>
-                <div class="element_spacer"></div>
-            </div>
-            -->
         </div>
     </div>
     <!--
