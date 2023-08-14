@@ -102,10 +102,15 @@ watch(workspace_items, updateItemList, { deep: true });
 //create an BatchML XML Document containing all Connections and Elements
 function export_batchml() {
   // Create an XML document
-  var xmlDocument = document.implementation.createDocument(null, 'BatchML');
+  var xmlDocument = document.implementation.createDocument("", "batchML");
 
+  
+  // Specify the XML version at the top
+  const xmlDeclaration = xmlDocument.createProcessingInstruction('xml', 'version="1.0"');
+  xmlDocument.insertBefore(xmlDeclaration, xmlDocument.firstChild);
+  
   // Get the root element
-  var rootElement = xmlDocument.documentElement;
+  var batchML = xmlDocument.documentElement;
 
   // Iterate over connections and create XML elements
   var connections = instance.getConnections();
@@ -126,7 +131,7 @@ function export_batchml() {
       connectionElement.setAttribute('sourceId', sourceId);
       connectionElement.setAttribute('targetId', targetId);
       // You can add more attributes or data to the connectionElement as needed
-      rootElement.appendChild(connectionElement);
+      batchML.appendChild(connectionElement);
     }
   });
 
@@ -139,7 +144,7 @@ function export_batchml() {
     itemElement.setAttribute('x', item.x);
     itemElement.setAttribute('y', item.y);
     // You can add more attributes or data to the itemElement as needed
-    rootElement.appendChild(itemElement);
+    batchML.appendChild(itemElement);
   });
 
   // Convert XML document to string
@@ -199,7 +204,7 @@ const onDrop = (event) => {
 <!--Draw all workspace elements. Connections are drawn by jsplumb in the background-->
 <template>
   <div id="workspace" ref="workspace" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent>
-    <button @click="export_batchml">
+    <button @click="export_batchml" id="export_button">
       <span class="toggle-icons">export</span>
     </button>
     <div :class="'workspace_element ' + item.type" v-for="item in workspace_items" :key="item.id" :ref=" skipUnwrap.jsplumbElements" :id="item.id">

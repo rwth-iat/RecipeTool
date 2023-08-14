@@ -10,6 +10,9 @@ export default defineConfig({
     base: '',
     outDir   : '../server/static',
   },
+  test: {
+    globals   : true,
+  },  
   plugins: [
     vue(),
   ],
