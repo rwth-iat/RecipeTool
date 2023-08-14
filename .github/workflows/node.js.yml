@@ -13,7 +13,7 @@ jobs:
   build:
     defaults:
       run:
-        working-directory: 'client'
+        working-directory: './client'
     runs-on: ubuntu-latest
 
     strategy:
@@ -28,6 +28,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        cache-dependency-path: './client/package-lock.json'
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
