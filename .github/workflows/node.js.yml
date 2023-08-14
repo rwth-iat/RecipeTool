@@ -13,7 +13,7 @@ jobs:
   build:
     defaults:
       run:
-        working-directory: './client'
+        working-directory: './client/'
     runs-on: ubuntu-latest
 
     strategy:
