@@ -1,4 +1,6 @@
 # general info
+[![Python application](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/python-app.yml/badge.svg)](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/python-app.yml)
+
 
 # structure
 As a complex Ui is needed for the Editor, a Javascript Framework is recommended to handle the complexity.
