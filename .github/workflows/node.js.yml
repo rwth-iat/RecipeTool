@@ -11,7 +11,9 @@ on:
 
 jobs:
   build:
-
+    defaults:
+      run:
+        working-directory: 'client'
     runs-on: ubuntu-latest
 
     strategy:
@@ -26,7 +28,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        working-directory: dart_project
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
