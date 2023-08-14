@@ -5,19 +5,17 @@
 
 # Running the Server
 To run the server Python (3.10 at best) needs to be installed.
-Change directory so you are in the "server" subfolder.
+The following lines make sure you are in the "server" subfolder, install needed python packages using pip and runs the app:
 
-`cd server`
+  ```
+  cd server`
+  pip install -r requirements.txt
+  python app.py
+  ```
 
-Install needed python packages by using pip:
+After that the server is running under "https://127.0.0.1:5000/apidocs" for the documentation and "https://127.0.0.1:5000/editor" for the GUI.
 
-`pip install -r requirements.txt`
-
-Run the code:
-
-`python app.py`
-
-# structure
+# Structure
 As a complex Ui is needed for the Editor, a Javascript Framework is recommended to handle the complexity.
 Vue.js was chosen as it is one of the most used Frameworks and recommended for solo Programming, while other frameworks have benefits in Enterprise setting.
 
@@ -29,19 +27,28 @@ This is also displayed in the folder structure:
 - "server" is for the Flask app.
 - "client" is for the Vue.js Frontend.
 
-# building the project
-prerequisits:
-- npm must be installed
-- to make sure all packages are installed and build the package:
-  - `cd client`
-  - `npm install`
-  - `npm run build`
-
-- For the python server part make sure to use the projects conda environment [todo: put link etc here]:
-  - make sure you are in the right folder (server) and run the app.py script
-  - `cd server`
-  - `pip install -r requirements.txt`
-  - `python app.py`
-
--The steps above are also combined in one batch file in the project root folder which can be run by:
+# Building the project
+All steps necessary to Build and start the project are combined in one Batch File. Make sure you are in the root folder of the project and run:
   - `./build_run.bat`
+
+The commands in the build file are explained in the following:
+- To build the Client part:
+  - npm must be installed
+  - change directory to clinet folder, make sure all packages are installed and build the package:
+    ```
+    cd client
+    npm install
+    npm run build
+    ```
+
+- Building the Client part automatically puts the new Client-Files into the servers static folder. Therefore by starting the Python server the new client is served.
+  - make sure you are in the right folder (server) and run the app.py script:
+    ```
+    cd server
+    pip install -r requirements.txt
+    python app.py
+    ```
+
+# Notes for developers
+- After Making changes to the Client code, the project needs to be rebuild in order for the changes to arrive in the python server. Therefore after Changes you at least need to run `npm build` in the client folder and afterwards restart the python server. Therefore after changes you can simply run the batch file which will rebuild and start the server for you.
+- As the build takes quite a bit of time, when simply developing the client code which does not need the functionality of the python server api, running `npm run dev` in the client server runs a developmentserver at "http://localhost:5173". This starts up much faster and allows for the browser integrated debuggers to work. Also every change in code is directly used in the browser after saving the file with ctrl+s.
