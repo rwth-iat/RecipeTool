@@ -232,7 +232,7 @@ def get_classes(onto_name, methods = ['GET']):
     return response
 
 @app.route('/onto/<onto_name>/<super_class>/subclasses')
-def add_ontology(onto_name="acplt", super_class="GeneralCapabilityEffecting"):
+def get_subclasses(onto_name="acplt", super_class="GeneralCapabilityEffecting"):
     """Endpoint to get all subclasses of a class in the given ontology.
     ---
     tags:
@@ -284,9 +284,11 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def start_server():
+    ontologies = load_ontologies()
+    app.run(debug=True, ssl_context='adhoc')
 
 #debug is for testing to make this production ready read:
 # https://zhangtemplar.github.io/flask/
 if __name__ == '__main__':
-  #ontologies = load_ontologies()
-  app.run(debug=True, ssl_context='adhoc')
+  start_server()
