@@ -16,7 +16,7 @@ jobs:
   build:
     defaults:
       run:
-        working-directory: './client/'
+        working-directory: './server/'
     runs-on: ubuntu-latest
 
     steps:
