@@ -1,13 +1,19 @@
 from server import create_app
 import pytest
 import json
+import os
+from pathlib import Path
 
+# is run before the tests
+# creates an instance of the webserver
 @pytest.fixture
 def app():
     app = create_app()
     print(app.url_map)
     return app
 
+# is run before the tests
+# creates a flask test client based on the webserver
 @pytest.fixture
 def client(app):
     return app.test_client()
@@ -15,12 +21,26 @@ def client(app):
 def test_editor(client):
     response = client.get('/editor')
     assert response.status_code == 200
-    # Add more test assertions as needed
+
+    #check if returned webpage is the same as index.html
+    with open("static/index.html","r") as html:
+        index_html_text = html.read()
+    assert response.text == index_html_text
 
 def test_static_files(client):
-    response = client.get('/editor')
-    assert response.status_code == 200
-    # Add more test assertions as needed
+    #iterate over all static files.
+    static_dir = "/static/"
+    pathlist = Path(static_dir).glob('**/*')
+    for path in pathlist:
+        # request the file and check if OK
+        path_in_str = str(path)
+        response = client.get(path_in_str)
+        assert response.status_code == 200
+
+        #compare with actual file content
+        with open(path_in_str,"r") as html:
+            file_text = html.read()
+        assert response.text == file_text
 
 def test_get_onto(client):
     response = client.get('/editor')
