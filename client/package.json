@@ -26,6 +26,7 @@
     "@vitejs/plugin-vue": "^4.2.3",
     "@vue/test-utils": "^2.4.1",
     "happy-dom": "^10.9.0",
+    "msw": "^1.2.3",
     "vite": "^4.3.9"
   }
 }
