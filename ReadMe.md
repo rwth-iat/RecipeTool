@@ -8,7 +8,7 @@ To run the server Python (3.10 at best) needs to be installed.
 The following lines make sure you are in the "server" subfolder, install needed python packages using pip and runs the app:
 
   ```
-  cd server`
+  cd server
   pip install -r requirements.txt
   python app.py
   ```
@@ -51,4 +51,4 @@ The commands in the build file are explained in the following:
 
 # Notes for developers
 - After Making changes to the Client code, the project needs to be rebuild in order for the changes to arrive in the python server. Therefore after Changes you at least need to run `npm build` in the client folder and afterwards restart the python server. Therefore after changes you can simply run the batch file which will rebuild and start the server for you.
-- As the build takes quite a bit of time, when simply developing the client code which does not need the functionality of the python server api, running `npm run dev` in the client server runs a developmentserver at "http://localhost:5173". This starts up much faster and allows for the browser integrated debuggers to work. Also every change in code is directly used in the browser after saving the file with ctrl+s.
+- As the build takes quite a bit of time, when simply developing the client code which does not need the functionality of the python server api, running `npm run dev` in the client folder. This runs a development server at "http://localhost:5173". This starts up much faster and allows for the browser integrated debuggers to work. Also every change in code is directly used in the browser after saving the file with ctrl+s (hotfic.
