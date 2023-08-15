@@ -10,8 +10,8 @@ def setup_function():
 
 def test_get_ontologies():
     response = requests.get(url, params=None)
-    assert(response.status_code==200)
-    assert(response.text=="Capability_with_Query")
+    assert response.status_code == 200
+    assert response.text == "Capability_with_Query"
 
 
     
