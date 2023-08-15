@@ -5,7 +5,7 @@ url = "https://127.0.0.1:5000/onto"
 # gets called before every test 
 def setup_function():
     print('setting up')
-    start_server()
+#    start_server()
 
 
 def test_get_ontologies():
