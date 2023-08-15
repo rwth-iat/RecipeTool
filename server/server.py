@@ -149,14 +149,16 @@ def create_app():
       if 'file' not in request.files:
           print("no file given")
           flash('No file part')
-          return redirect(request.url)
+          #return redirect(request.url)
+          return  make_response(request.url, 400)
       file = request.files['file']
       # If the user does not select a file, the browser submits an
       # empty file without a filename.
       if file.filename == '':
           print("filename is empty string")
           flash('No selected file')
-          return redirect(request.url)
+          #return redirect(request.url)
+          return  make_response(request.url, 400)
       if file and allowed_file(file.filename):
           print("file allowed")
           filename = secure_filename(file.filename)
@@ -166,9 +168,11 @@ def create_app():
           #add to ontologies dict
           onto = get_ontology(filepath).load()
           ontologies[filename] = onto
-          return redirect(url_for('download_file', name=filename))
+          #return redirect(url_for('download_file', name=filename))
+          return  make_response(request.url, 200)
       print("file not allowed")
       make_response("file not allowed or no post request")
+      return  make_response(request.url, 400)
 
   # Method to load an ontology 
   @app.route('/onto',methods = ['GET'])
