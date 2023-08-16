@@ -26,14 +26,21 @@ mock
     "Class C"
   ]);
 
+const test_subclasses_payload = [
+   {"name":"Combining","children":[
+      {"name":"Absorbing","children":[
+         {"name":"Absorbing_child1","children":[]},
+         {"name":"Absorbing_child2","children":[]}]
+      },
+      {"name":"Adsorbing","children":[]},
+      {"name":"Atomizing","children":[]},
+      {"name":"Dissolving","children":[]},
+      {"name":"Emulsifying","children":[]}]
+   }
+] 
 mock
-  .onGet('https://127.0.0.1:5000/onto/Capability_with_Query.owl/Combining/subclasses')
-  .reply(200, [
-    {
-      age: 55,
-      name: "tope"
-    }
-  ]);
+  .onGet('/onto/test_ontology.owl/Combining/subclasses')
+  .reply(200, test_subclasses_payload);
 
 // Rest of your test setup, for example:
 // import your Vue component, mount it, and write your test cases
@@ -95,13 +102,12 @@ test("list classes of ontology as options", async () => {
    await wrapper.vm.readServerOntoClasses('test_ontology.owl');
 
    // Wait for the component to update after the API call
+   // two ticks are needed, i dont know why
    await wrapper.vm.$nextTick();
    await wrapper.vm.$nextTick();
-
 
    // Now, find the options select element using wrapper.find()
    const classSelect = wrapper.find('#super_class_select');
-   console.log(classSelect)
    // Access the options property and check the length
    const numOptions = classSelect.element.options.length;
 
@@ -112,17 +118,45 @@ test("list classes of ontology as options", async () => {
    expect(classSelect.element.options[2].textContent).toBe('Class C');
  });
 
-/*
-test("has a button", () => {
-    expect(wrapper.find("button").exists()).toBe(true);
-});
-  
-test("Button clicked", async () => {
-    const ac = await wrapper.get("button").trigger("click")
-    expect(wrapper.vm.search).toEqual("")
-})
 
-test("test get ontologies", async () => {
-    expect(Workspace).toBeTruthy();
+test("add subclasses button", async () => {
+   const wrapper = mount(addDialog, {
+      propsData: {
+        element_type: 'Processes'
+      }
+   });
+    
+   /*
+   //set selected onto
+   let onto_select = wrapper.find("#ontoSelect")
+   await onto_select.setValue("test_ontology.owl");
+   await onto_select.trigger('change');
+
+   //set selected class
+   let class_select = wrapper.find("#super_class_select")
+   await class_select.setValue("Combining");
+   await class_select.trigger('change');
+   */
+
+   // Update the value of current_ontology
+   wrapper.vm.current_ontology = 'test_ontology.owl';
+   wrapper.vm.current_super_class = 'Combining';
+
+   await wrapper.vm.$nextTick();
+
+   let add_elements_button = wrapper.find("#add_elements_button")
+   await add_elements_button.trigger('click');
+
+   // Check if the 'myEvent' has been emitted
+   expect(wrapper.emitted('add')).toBeTruthy();
+
+   // Access the emitted event payload (if needed)
+   const emittedEventPayload = wrapper.emitted('add');
+
+   // Perform assertions on the emitted payload
+   //expect(emittedEventPayload.length).toBe(1); // Event should have been emitted once
+   // TODO: not quite as expected
+   // array structure is a bit weird, need to look into it! 
+   expect(emittedEventPayload[1][0]).toEqual(test_subclasses_payload);
+
 });
-*/

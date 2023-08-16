@@ -191,7 +191,7 @@
                 <input id="relation_input" type="text" value="subclass_of"/>
                 <br/>
                 <br/>
-                <button class="button" type='button' @click="addElements(current_ontology, current_super_class)">
+                <button id="add_elements_button" class="button" type='button' @click="addElements(current_ontology, current_super_class)">
                     <h5>ADD {{ element_type }} to Sidebar</h5>
                 </button>
             </div>
