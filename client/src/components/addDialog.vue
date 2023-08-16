@@ -32,15 +32,13 @@
 		client.get('/onto')
 			.then(response => {
     			// handle success
-    			console.log(response.data)
-				console.log("test")
+    			console.log("read server ontologies successful")
 				serverProcessOntologies.value = response.data
-				console.log(serverProcessOntologies.value)
-				console.log("test2")
 			})
   			.catch(error => {
     			// handle error
-    			console.log(error.response)
+                console.log("error trying to read server ontologies")
+    			console.log(error)
   			})
 	}
 
@@ -63,11 +61,7 @@
             client.get('/onto/'+name+'/classes')
 			.then(response => {
     			// handle success
-    			console.log(response.data)
-				console.log("test")
 				onto_classes.value = response.data
-				console.log(serverProcessOntologies.value)
-				console.log("test2")
 			})
   			.catch(error => {
     			// handle error
