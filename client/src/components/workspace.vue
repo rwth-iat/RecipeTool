@@ -102,8 +102,7 @@ watch(workspace_items, updateItemList, { deep: true });
 //create an BatchML XML Document containing all Connections and Elements
 function export_batchml() {
   // Create an XML document
-  var xmlDocument = document.implementation.createDocument("", "batchML");
-
+  var xmlDocument = document.implementation.createDocument("", "BatchInformation");
   
   // Specify the XML version at the top
   const xmlDeclaration = xmlDocument.createProcessingInstruction('xml', 'version="1.0"');
@@ -111,6 +110,80 @@ function export_batchml() {
   
   // Get the root element
   var batchML = xmlDocument.documentElement;
+  var general_recipe = xmlDocument.createElement('GeneralRecipe')
+  
+  //append top level elements
+  general_recipe.appendChild(xmlDocument.createElement('Description'));
+  general_recipe.appendChild(xmlDocument.createElement('ID'));
+  general_recipe.appendChild(xmlDocument.createElement('Version'));
+  
+  //create header and append
+  var header = xmlDocument.createElement('Header')
+  //modification log
+  var mod_log = xmlDocument.createElement('ModificationLog')
+  mod_log.appendChild(xmlDocument.createElement("ModifiedDate"));
+  mod_log.appendChild(xmlDocument.createElement("Author"));
+  header.appendChild(mod_log)
+  //aproval History
+  var approval_history = xmlDocument.createElement('ApprovalHistory')
+  approval_history.appendChild(xmlDocument.createElement('FinalApprovalDate'));
+  approval_history.appendChild(xmlDocument.createElement('Version'));
+  //individual approval
+  var individual_approval = xmlDocument.createElement('IndividualApproval');
+  individual_approval.appendChild(xmlDocument.createElement('ApprovedBy'));
+  individual_approval.appendChild(xmlDocument.createElement('ApprovalDate'));
+  approval_history.appendChild(individual_approval)
+  header.appendChild(approval_history)
+
+  header.appendChild(xmlDocument.createElement('EffectiveDate'));
+  header.appendChild(xmlDocument.createElement('ProductID'));
+  header.appendChild(xmlDocument.createElement('ProductName'));
+  
+  // batch size
+  var batch_size = xmlDocument.createElement('BatchSize');
+  batch_size.appendChild(xmlDocument.createElement('Nominal'));
+  batch_size.appendChild(xmlDocument.createElement('Normal'));
+  batch_size.appendChild(xmlDocument.createElement('Min'));
+  batch_size.appendChild(xmlDocument.createElement('Max'));
+  batch_size.appendChild(xmlDocument.createElement('ScaleReference'));
+  batch_size.appendChild(xmlDocument.createElement('ScaledSize'));
+  batch_size.appendChild(xmlDocument.createElement('UnitOfMeasure'));
+  header.appendChild(batch_size)
+
+  general_recipe.appendChild(header);
+
+  //Prozess Procedure
+  var process_procedure = xmlDocument.createElement('ProcessProcedure')
+    //process_outputs.appendChild()
+  general_recipe.append(process_procedure)
+
+  //process_inputs
+  var process_inputs = xmlDocument.createElement('ProcessInputs')
+    //process_inputs.appendChild()
+  general_recipe.append(process_inputs)
+
+  //process outputs
+  var process_outputs = xmlDocument.createElement('ProcessOutputs')
+    //process_outputs.appendChild()
+  general_recipe.append(process_outputs)
+
+  //Other information
+  var other_information = xmlDocument.createElement('OtherInformation')
+    //process_outputs.appendChild()
+  general_recipe.append(other_information)
+
+  //Process Element Parameter
+  var process_element_parameter = xmlDocument.createElement('ProzessElementParameter')
+    //process_outputs.appendChild()
+  general_recipe.append(process_element_parameter)
+
+  //Process Intermediate
+  var prozess_intermediate = xmlDocument.createElement('ProzessIntermediate')
+    //process_outputs.appendChild()
+  general_recipe.append(prozess_intermediate)
+
+  batchML.appendChild(general_recipe)
+
 
   // Iterate over connections and create XML elements
   var connections = instance.getConnections();
