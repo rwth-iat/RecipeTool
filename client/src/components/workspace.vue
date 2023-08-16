@@ -154,16 +154,47 @@ function export_batchml() {
 
   //Prozess Procedure
   var process_procedure = xmlDocument.createElement('ProcessProcedure')
-    //process_outputs.appendChild()
+    // Iterate over workspace items and create XML elements
+    workspace_items.value.forEach(function (item) {
+      if(item.type == "process"){
+        var process_element = xmlDocument.createElement('ProcessElement');
+        process_element.setAttribute('id', item.id);
+        process_element.setAttribute('name', item.name);
+        process_element.setAttribute('type', item.type);
+        // You can add more attributes or data to the itemElement as needed
+        process_procedure.appendChild(process_element);
+      }
+    });
   general_recipe.append(process_procedure)
 
   //process_inputs
+  // TODO: Check to only include input materials
   var process_inputs = xmlDocument.createElement('ProcessInputs')
-    //process_inputs.appendChild()
+  workspace_items.value.forEach(function (item) {
+    if(item.type == "material"){
+      var process_element = xmlDocument.createElement('ProcessElement');
+      process_element.setAttribute('id', item.id);
+      process_element.setAttribute('name', item.name);
+      process_element.setAttribute('type', item.type);
+      // You can add more attributes or data to the itemElement as needed
+      process_procedure.appendChild(process_element);
+    }
+  });
   general_recipe.append(process_inputs)
 
   //process outputs
+  // TODO: Check to only include output materials
   var process_outputs = xmlDocument.createElement('ProcessOutputs')
+  workspace_items.value.forEach(function (item) {
+    if(item.type == "material"){
+      var process_element = xmlDocument.createElement('ProcessElement');
+      process_element.setAttribute('id', item.id);
+      process_element.setAttribute('name', item.name);
+      process_element.setAttribute('type', item.type);
+      // You can add more attributes or data to the itemElement as needed
+      process_procedure.appendChild(process_element);
+    }
+  });
     //process_outputs.appendChild()
   general_recipe.append(process_outputs)
 
@@ -206,18 +237,6 @@ function export_batchml() {
       // You can add more attributes or data to the connectionElement as needed
       batchML.appendChild(connectionElement);
     }
-  });
-
-  // Iterate over workspace items and create XML elements
-  workspace_items.value.forEach(function (item) {
-    var itemElement = xmlDocument.createElement('Element');
-    itemElement.setAttribute('id', item.id);
-    itemElement.setAttribute('name', item.name);
-    itemElement.setAttribute('type', item.type);
-    itemElement.setAttribute('x', item.x);
-    itemElement.setAttribute('y', item.y);
-    // You can add more attributes or data to the itemElement as needed
-    batchML.appendChild(itemElement);
   });
 
   // Convert XML document to string
