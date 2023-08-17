@@ -197,38 +197,28 @@ function export_batchml() {
   console.log("Elements with source connection:", elementsWithSourceConnection);
   console.log("Elements with target connection:", elementsWithTargetConnection);
 
+  // Adds either input or output materials to xml file
+  function add_materials_to_xml(root_element, workspace_items, elements_list, material_type){
+    var materials = xmlDocument.createElement(material_type)
+    elements_list.forEach(function (item) {
+      var workspace_item = workspace_items.value.find(x => x.id === item.id);
+      if(workspace_item.type == "material"){
+        var process_element = xmlDocument.createElement('ProcessElement');
+        process_element.setAttribute('id', workspace_item.id);
+        process_element.setAttribute('name', workspace_item.name);
+        process_element.setAttribute('type', workspace_item.type);
+        // You can add more attributes or data to the itemElement as needed
+        materials.appendChild(process_element);
+      }
+    });
+    root_element.append(materials)
+  }
 
   //process_inputs
-  // TODO: Check to only include input materials
-  var process_inputs = xmlDocument.createElement('ProcessInputs')
-  elementsWithSourceConnection.forEach(function (item) {
-    var workspace_item = workspace_items.value.find(x => x.id === item.id);
-    if(workspace_item.type == "material"){
-      var process_element = xmlDocument.createElement('ProcessElement');
-      process_element.setAttribute('id', workspace_item.id);
-      process_element.setAttribute('name', workspace_item.name);
-      process_element.setAttribute('type', workspace_item.type);
-      // You can add more attributes or data to the itemElement as needed
-      process_inputs.appendChild(process_element);
-    }
-  });
-  general_recipe.append(process_inputs)
+  add_materials_to_xml(general_recipe, workspace_items, elementsWithSourceConnection, "ProcessInputs")
 
   //process outputs
-  // TODO: Check to only include input materials
-  var process_outputs = xmlDocument.createElement('ProcessOutputs')
-  elementsWithTargetConnection.forEach(function (item) {
-    var workspace_item = workspace_items.value.find(x => x.id === item.id);
-    if(workspace_item.type == "material"){
-      var process_element = xmlDocument.createElement('ProcessElement');
-      process_element.setAttribute('id', workspace_item.id);
-      process_element.setAttribute('name', workspace_item.name);
-      process_element.setAttribute('type', workspace_item.type);
-      // You can add more attributes or data to the itemElement as needed
-      process_outputs.appendChild(process_element);
-    }
-  });
-  general_recipe.append(process_outputs)
+  add_materials_to_xml(general_recipe, workspace_items, elementsWithTargetConnection, "ProcessOutputs")
 
   //Other information
   var other_information = xmlDocument.createElement('OtherInformation')
