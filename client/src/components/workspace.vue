@@ -167,35 +167,67 @@ function export_batchml() {
     });
   general_recipe.append(process_procedure)
 
+  // Assuming you have a list of elements and connections
+  var connections = instance.getConnections();
+
+  var elementsWithSourceConnection = [];
+  var elementsWithTargetConnection = [];
+
+  // Iterate through connections and collect elements
+  for (var connectionId in connections) {
+    var connection = connections[connectionId];
+    var sourceId = connection.sourceId;
+    var targetId = connection.targetId;
+
+    // Find source and target elements
+    var sourceElement = document.getElementById(sourceId);
+    var targetElement = document.getElementById(targetId);
+
+    // Check if source element already added to list
+    if (elementsWithSourceConnection.indexOf(sourceElement) === -1) {
+      elementsWithSourceConnection.push(sourceElement);
+    }
+
+    // Check if target element already added to list
+    if (elementsWithTargetConnection.indexOf(targetElement) === -1) {
+      elementsWithTargetConnection.push(targetElement);
+    }
+  }
+
+  console.log("Elements with source connection:", elementsWithSourceConnection);
+  console.log("Elements with target connection:", elementsWithTargetConnection);
+
+
   //process_inputs
   // TODO: Check to only include input materials
   var process_inputs = xmlDocument.createElement('ProcessInputs')
-  workspace_items.value.forEach(function (item) {
-    if(item.type == "material"){
+  elementsWithSourceConnection.forEach(function (item) {
+    var workspace_item = workspace_items.value.find(x => x.id === item.id);
+    if(workspace_item.type == "material"){
       var process_element = xmlDocument.createElement('ProcessElement');
-      process_element.setAttribute('id', item.id);
-      process_element.setAttribute('name', item.name);
-      process_element.setAttribute('type', item.type);
+      process_element.setAttribute('id', workspace_item.id);
+      process_element.setAttribute('name', workspace_item.name);
+      process_element.setAttribute('type', workspace_item.type);
       // You can add more attributes or data to the itemElement as needed
-      process_procedure.appendChild(process_element);
+      process_inputs.appendChild(process_element);
     }
   });
   general_recipe.append(process_inputs)
 
   //process outputs
-  // TODO: Check to only include output materials
+  // TODO: Check to only include input materials
   var process_outputs = xmlDocument.createElement('ProcessOutputs')
-  workspace_items.value.forEach(function (item) {
-    if(item.type == "material"){
+  elementsWithTargetConnection.forEach(function (item) {
+    var workspace_item = workspace_items.value.find(x => x.id === item.id);
+    if(workspace_item.type == "material"){
       var process_element = xmlDocument.createElement('ProcessElement');
-      process_element.setAttribute('id', item.id);
-      process_element.setAttribute('name', item.name);
-      process_element.setAttribute('type', item.type);
+      process_element.setAttribute('id', workspace_item.id);
+      process_element.setAttribute('name', workspace_item.name);
+      process_element.setAttribute('type', workspace_item.type);
       // You can add more attributes or data to the itemElement as needed
-      process_procedure.appendChild(process_element);
+      process_outputs.appendChild(process_element);
     }
   });
-    //process_outputs.appendChild()
   general_recipe.append(process_outputs)
 
   //Other information
