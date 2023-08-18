@@ -131,14 +131,9 @@ function create_process_procedure(xmlDocument, workspace_items, jsplumb_connecti
   workspace_items.forEach(function (item) {
     if(item.type == "material"){
       var materials = xmlDocument.createElement('materials');
-      var id = xmlDocument.createElement('ID')
-      id.innerHTML = item.id
-      materials.appendChild(id)
-      var description = xmlDocument.createElement('Description')
-      materials.appendChild(description)
-
-      var materials_type= xmlDocument.createElement('MaterialsType')
-      materials_type.innerHTML = "testMaterialstype"
+      materials.append(create_Element_with_inner_HTML(xmlDocument, "ID", item.id))
+      materials.append(create_Element_with_inner_HTML(xmlDocument, "Description", ""))
+      materials.append(create_Element_with_inner_HTML(xmlDocument, "MaterialsType", "testMaterialstype"))
 
       // You can add more attributes or data to the itemElement as needed
       process_procedure.appendChild(materials);
@@ -149,16 +144,10 @@ function create_process_procedure(xmlDocument, workspace_items, jsplumb_connecti
   for (var connectionId in jsplumb_connections) {
     var connection = jsplumb_connections[connectionId];
       var directed_link = xmlDocument.createElement('DirectedLink')
-      var id =xmlDocument.createElement('ID')
-      id.innerHTML = connectionId
-      directed_link.appendChild(id)
-      directed_link.appendChild(xmlDocument.createElement('Description'))
-      var from_id = xmlDocument.createElement('FromID')
-      from_id.innerHTML = connection.sourceId
-      var to_id = xmlDocument.createElement('ToID')
-      to_id.innerHTML = connection.targetId
-      directed_link.appendChild(from_id)
-      directed_link.appendChild(to_id)
+      directed_link.append(create_Element_with_inner_HTML(xmlDocument, "ID", connectionId))
+      directed_link.append(create_Element_with_inner_HTML(xmlDocument, "Description", ""))
+      directed_link.append(create_Element_with_inner_HTML(xmlDocument, "FromID", connection.sourceId))
+      directed_link.append(create_Element_with_inner_HTML(xmlDocument, "TOID", connection.targetId))
       process_procedure.appendChild(directed_link)
   }
   return process_procedure
