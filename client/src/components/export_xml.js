@@ -53,39 +53,48 @@ export function export_batchml(workspace_items, jsplumb_connections) {
   
     //Prozess Procedure
     var process_procedure = xmlDocument.createElement('ProcessProcedure')
-    // Iterate over workspace items and create XML elements
+    
+    // Iterate over workspace items to create XML elements
     workspace_items.forEach(function (item) {
       if(item.type == "process"){
         var process_element = xmlDocument.createElement('ProcessElement');
         process_element.setAttribute('id', item.id);
         process_element.setAttribute('name', item.name);
         //process_element.setAttribute('type', item.type);
-        for (var connectionId in jsplumb_connections) {
-          var connection = jsplumb_connections[connectionId];
-          let is_source = connection.sourceId == item.id
-          let is_target = connection.targetId == item.id
-          if(is_source || is_target){
-            var directed_link = xmlDocument.createElement('DirectedLink')
-            var id =xmlDocument.createElement('ID')
-            id.innerHTML = connectionId
-            directed_link.appendChild(id)
-            directed_link.appendChild(xmlDocument.createElement('Description'))
-            var from_id = xmlDocument.createElement('FromID')
-            from_id.innerHTML = connection.sourceId
-            var to_id = xmlDocument.createElement('ToID')
-            to_id.innerHTML = connection.targetId
-            directed_link.appendChild(from_id)
-            directed_link.appendChild(to_id)
-            process_element.appendChild(directed_link)
-            console.log("element connection")
-          }else{
-            console.log("element has no connection")
-          }
-        }
         // You can add more attributes or data to the itemElement as needed
         process_procedure.appendChild(process_element);
       }; 
     });
+
+    // Iterate over workspace items to create Material XML elements
+    workspace_items.forEach(function (item) {
+      if(item.type == "material"){
+        var materials = xmlDocument.createElement('materials');
+        materials.setAttribute('id', item.id);
+        materials.setAttribute('name', item.name);
+        // You can add more attributes or data to the itemElement as needed
+        process_procedure.appendChild(materials);
+      }; 
+    });
+
+    // Iterate over connections and create Directed Links
+    for (var connectionId in jsplumb_connections) {
+      var connection = jsplumb_connections[connectionId];
+        var directed_link = xmlDocument.createElement('DirectedLink')
+        var id =xmlDocument.createElement('ID')
+        id.innerHTML = connectionId
+        directed_link.appendChild(id)
+        directed_link.appendChild(xmlDocument.createElement('Description'))
+        var from_id = xmlDocument.createElement('FromID')
+        from_id.innerHTML = connection.sourceId
+        var to_id = xmlDocument.createElement('ToID')
+        to_id.innerHTML = connection.targetId
+        directed_link.appendChild(from_id)
+        directed_link.appendChild(to_id)
+        process_procedure.appendChild(directed_link)
+        console.log("element connection")
+    }
+
     general_recipe.append(process_procedure)
   
     var elementsWithSourceConnection = [];
@@ -115,70 +124,19 @@ export function export_batchml(workspace_items, jsplumb_connections) {
     console.log("Elements with source connection:", elementsWithSourceConnection);
     console.log("Elements with target connection:", elementsWithTargetConnection);
   
-    // Adds either input or output materials to xml file
-    function add_materials_to_xml(root_element, workspace_items, elements_list, material_type){
-      var materials = xmlDocument.createElement(material_type)
-      elements_list.forEach(function (item) {
-        var workspace_item = workspace_items.find(x => x.id === item.id);
-        if(workspace_item.type == "material"){
-          var process_element = xmlDocument.createElement('ProcessElement');
-          process_element.setAttribute('id', workspace_item.id);
-          process_element.setAttribute('name', workspace_item.name);
-          process_element.setAttribute('type', workspace_item.type);
-          // You can add more attributes or data to the itemElement as needed
-          materials.appendChild(process_element);
-        }
-      });
-      root_element.append(materials)
-    }
-  
-    //process_inputs
-    add_materials_to_xml(general_recipe, workspace_items, elementsWithSourceConnection, "ProcessInputs")
-  
-    //process outputs
-    add_materials_to_xml(general_recipe, workspace_items, elementsWithTargetConnection, "ProcessOutputs")
-  
     //Other information
     var other_information = xmlDocument.createElement('OtherInformation')
-      //process_outputs.appendChild()
     general_recipe.append(other_information)
   
     //Process Element Parameter
     var process_element_parameter = xmlDocument.createElement('ProzessElementParameter')
-      //process_outputs.appendChild()
     general_recipe.append(process_element_parameter)
   
     //Process Intermediate
     var prozess_intermediate = xmlDocument.createElement('ProzessIntermediate')
-      //process_outputs.appendChild()
     general_recipe.append(prozess_intermediate)
   
     batchML.appendChild(general_recipe)
-  
-    /* connections are now printed into the process elements
-    // Iterate over connections and create XML elements
-    var connections = jsplumb_connections;
-    connections.forEach(function (connection) {
-      console.log(connection)
-      var sourceElementId = connection.sourceId;
-      var targetElementId = connection.targetId;
-  
-      // Look up the corresponding items in the workspace_items list based on the element IDs
-      var sourceItem = workspace_items.find(item => item.id === sourceElementId);
-      var targetItem = workspace_items.find(item => item.id === targetElementId);
-  
-      if (sourceItem && targetItem) {
-        var sourceId = sourceItem.id; // Retrieve source element ID from the item
-        var targetId = targetItem.id; // Retrieve target element ID from the item
-  
-        var connectionElement = xmlDocument.createElement('Connection');
-        connectionElement.setAttribute('sourceId', sourceId);
-        connectionElement.setAttribute('targetId', targetId);
-        // You can add more attributes or data to the connectionElement as needed
-        batchML.appendChild(connectionElement);
-      }
-    });
-    */
 
     // Convert XML document to string
     var serializer = new XMLSerializer();
