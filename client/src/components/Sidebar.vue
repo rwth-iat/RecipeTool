@@ -2,7 +2,7 @@
 	//import vue from 'vue'
 	import { ref } from 'vue'
 	import logoURL from '../assets/logo.png'
-	import elementWindow from './elementWindow.vue'
+	import elementWindow from './SidebarComponents/elementWindow.vue'
 
 	const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
 
