@@ -6,15 +6,35 @@ function create_Element_with_inner_HTML(xmlDocument, name, innerHTML){
 
 function create_materials_type(xmlDocument, name){
     var materials_type = xmlDocument.createElement(name)
-    //ID
-    materials_type.append(create_Element_with_inner_HTML(xmlDocument, "ID", "testid"))
-    //Description
-    materials_type.append(create_Element_with_inner_HTML(xmlDocument, "Description", "testdescription"))
-    //MaterialsType
-    materials_type.append(create_Element_with_inner_HTML(xmlDocument, "MaterialsType", "testmaterialstype"))
-    //Material
-    materials_type.append(create_Element_with_inner_HTML(xmlDocument, "material", "testmaterial"))
+    materials_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "ID", "testid"))
+    materials_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "Description", "testdescription"))
+    materials_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "MaterialsType", "testmaterialstype"))
+    materials_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "material", "testmaterial"))
 }
+
+function create_process_element_type(xmlDocument, name, id, description, type){
+  //only supports micro steps yet
+  //therefore fields for makro steps are not yet filled
+  var process_element_type = xmlDocument.createElement("ProcessElement")
+  process_element_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "ID", id))
+  process_element_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "Description", name+":"+description))
+  process_element_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "ProcessElementType", type))
+  
+  /* IF MAKRO
+  process_element_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "LifeCycleState", ""))
+  process_element_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "SequenceOrder", ""))
+  process_element_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "SequencePath", ""))
+  process_element_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "Materials", ""))
+  process_element_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "DirectedLink", ""))
+  process_element_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "ProcedureChartElement", ""))
+  process_element_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "ProcessElement", ""))
+  process_element_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "ProcessElementParameter", ""))
+  process_element_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "RessouceConstraint", ""))
+  process_element_type.appendChild(create_Element_with_inner_HTML(xmlDocument, "OtherInformation", ""))
+  */
+ return process_element_type
+}
+
 
 function list_source_target(jsplumb_connections) {
   //check wether elements are inputs, outputs, or intermediates
@@ -48,23 +68,24 @@ function create_header(xmlDocument){
   var header = xmlDocument.createElement('Header')
   //modification log
   var mod_log = xmlDocument.createElement('ModificationLog')
-  mod_log.appendChild(xmlDocument.createElement("ModifiedDate"));
-  mod_log.appendChild(xmlDocument.createElement("Author"));
+  mod_log.appendChild(create_Element_with_inner_HTML(xmlDocument, "ModifiedDate", ""))
+  mod_log.appendChild(create_Element_with_inner_HTML(xmlDocument, "Author", ""))
   header.appendChild(mod_log)
+
   //aproval History
   var approval_history = xmlDocument.createElement('ApprovalHistory')
-  approval_history.appendChild(xmlDocument.createElement('FinalApprovalDate'));
-  approval_history.appendChild(xmlDocument.createElement('Version'));
+  approval_history.appendChild(create_Element_with_inner_HTML(xmlDocument, "FinalApprovalDate", ""))
+  approval_history.appendChild(create_Element_with_inner_HTML(xmlDocument, "Version", ""))
   //individual approval
   var individual_approval = xmlDocument.createElement('IndividualApproval');
-  individual_approval.appendChild(xmlDocument.createElement('ApprovedBy'));
-  individual_approval.appendChild(xmlDocument.createElement('ApprovalDate'));
+  individual_approval.appendChild(create_Element_with_inner_HTML(xmlDocument, "ApprovedBy", ""))
+  individual_approval.appendChild(create_Element_with_inner_HTML(xmlDocument, "ApprovalDate", ""))
   approval_history.appendChild(individual_approval)
   header.appendChild(approval_history)
 
-  header.appendChild(xmlDocument.createElement('EffectiveDate'));
-  header.appendChild(xmlDocument.createElement('ProductID'));
-  header.appendChild(xmlDocument.createElement('ProductName'));
+  header.appendChild(create_Element_with_inner_HTML(xmlDocument, "EffectiveDate", ""))
+  header.appendChild(create_Element_with_inner_HTML(xmlDocument, "ProductID", ""))
+  header.appendChild(create_Element_with_inner_HTML(xmlDocument, "ProductName", ""))
   
   // batch size
   var batch_size = xmlDocument.createElement('BatchSize');
@@ -118,11 +139,13 @@ function create_process_procedure(xmlDocument, workspace_items, jsplumb_connecti
   // Iterate over workspace items to create XML elements
   workspace_items.forEach(function (item) {
     if(item.type == "process"){
-      var process_element = xmlDocument.createElement('ProcessElement');
-      process_element.setAttribute('id', item.id);
-      process_element.setAttribute('name', item.name);
-      //process_element.setAttribute('type', item.type);
-      // You can add more attributes or data to the itemElement as needed
+      var process_element = create_process_element_type(
+                            xmlDocument,
+                            item.name, 
+                            item.id, 
+                            "",
+                            "Process Action"
+                          )
       process_procedure.appendChild(process_element);
     }; 
   });
@@ -131,9 +154,9 @@ function create_process_procedure(xmlDocument, workspace_items, jsplumb_connecti
   workspace_items.forEach(function (item) {
     if(item.type == "material"){
       var materials = xmlDocument.createElement('materials');
-      materials.append(create_Element_with_inner_HTML(xmlDocument, "ID", item.id))
-      materials.append(create_Element_with_inner_HTML(xmlDocument, "Description", ""))
-      materials.append(create_Element_with_inner_HTML(xmlDocument, "MaterialsType", "testMaterialstype"))
+      materials.appendChild(create_Element_with_inner_HTML(xmlDocument, "ID", item.id))
+      materials.appendChild(create_Element_with_inner_HTML(xmlDocument, "Description", ""))
+      materials.appendChild(create_Element_with_inner_HTML(xmlDocument, "MaterialsType", "testMaterialstype"))
 
       // You can add more attributes or data to the itemElement as needed
       process_procedure.appendChild(materials);
@@ -144,10 +167,10 @@ function create_process_procedure(xmlDocument, workspace_items, jsplumb_connecti
   for (var connectionId in jsplumb_connections) {
     var connection = jsplumb_connections[connectionId];
       var directed_link = xmlDocument.createElement('DirectedLink')
-      directed_link.append(create_Element_with_inner_HTML(xmlDocument, "ID", connectionId))
-      directed_link.append(create_Element_with_inner_HTML(xmlDocument, "Description", ""))
-      directed_link.append(create_Element_with_inner_HTML(xmlDocument, "FromID", connection.sourceId))
-      directed_link.append(create_Element_with_inner_HTML(xmlDocument, "TOID", connection.targetId))
+      directed_link.appendChild(create_Element_with_inner_HTML(xmlDocument, "ID", connectionId))
+      directed_link.appendChild(create_Element_with_inner_HTML(xmlDocument, "Description", ""))
+      directed_link.appendChild(create_Element_with_inner_HTML(xmlDocument, "FromID", connection.sourceId))
+      directed_link.appendChild(create_Element_with_inner_HTML(xmlDocument, "TOID", connection.targetId))
       process_procedure.appendChild(directed_link)
   }
   return process_procedure
@@ -178,19 +201,19 @@ export function export_batchml(workspace_items, jsplumb_connections) {
   
     //formula
     var formula = create_formula(xmlDocument, workspace_items, jsplumb_connections)
-    general_recipe.append(formula)
+    general_recipe.appendChild(formula)
 
     //Process Procedure
     var process_procedure = create_process_procedure(xmlDocument, workspace_items, jsplumb_connections)
-    general_recipe.append(process_procedure)
+    general_recipe.appendChild(process_procedure)
   
     //Other information
     var other_information = xmlDocument.createElement('OtherInformation')
-    general_recipe.append(other_information)
+    general_recipe.appendChild(other_information)
   
     //Process Element Parameter
     var process_element_parameter = xmlDocument.createElement('ProzessElementParameter')
-    general_recipe.append(process_element_parameter)
+    general_recipe.appendChild(process_element_parameter)
   
     batchML.appendChild(general_recipe)
 
@@ -210,6 +233,5 @@ export function export_batchml(workspace_items, jsplumb_connections) {
     pom.dataset.downloadurl = ['text/plain', pom.download, pom.href].join(':');
     pom.draggable = true; 
     pom.classList.add('dragout');
-  
     pom.click();
   }
