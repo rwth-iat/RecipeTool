@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build --emptyOutDir",
     "preview": "vite preview",
-    "test": "vitest --dom",
+    "test": "vitest",
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
