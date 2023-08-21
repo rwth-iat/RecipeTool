@@ -13,7 +13,9 @@ The following lines make sure you are in the "server" subfolder, install needed 
   python app.py
   ```
 
-After that the server is running under "https://127.0.0.1:5000/apidocs" for the documentation and "https://127.0.0.1:5000/editor" for the GUI.
+After that the server is running under:
+- "https://127.0.0.1:5000/apidocs" for the documentation
+- "https://127.0.0.1:5000/editor" for the GUI.
 
 # Structure
 As a complex Ui is needed for the Editor, a Javascript Framework is recommended to handle the complexity.
@@ -28,10 +30,10 @@ This is also displayed in the folder structure:
 - "client" is for the Vue.js Frontend.
 
 # Building the project
-All steps necessary to Build and start the project are combined in one Batch File. Make sure you are in the root folder of the project and run:
+After changing the client code, a new Build is necessary for the changes to effect in the server. All steps necessary to Build and start the project are combined in one Batch File. Make sure you are in the root folder of the project and run:
   - `./build_run.bat`
 
-The commands in the build file are explained in the following:
+The commands in the build file are explained in the following and can also be run one by one manualy:
 - To build the Client part:
   - npm must be installed
   - change directory to clinet folder, make sure all packages are installed and build the package:
