@@ -56,7 +56,7 @@ function create_directed_link(xmlDocument, name, directed_link){
   return directed_link_xml_obj
 }
 
-function create_process_element_type(xmlDocument, name, process_element){
+export function create_process_element_type(xmlDocument, name, process_element){
   if (process_element === undefined){
     return undefined
   }
