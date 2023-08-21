@@ -71,11 +71,11 @@ function create_process_element_type(xmlDocument, name, process_element){
   process_element_type = append_Element_if_exists(process_element_type, create_Element_with_inner_HTML(xmlDocument, "LifeCycleState", process_element.LifeCycleState))
   process_element_type = append_Element_if_exists(process_element_type, create_Element_with_inner_HTML(xmlDocument, "SequenceOrder", process_element.SequenceOrder))
   process_element_type = append_Element_if_exists(process_element_type, create_Element_with_inner_HTML(xmlDocument, "SequencePath", process_element.SequencePath))
-  process_element_type = append_Element_if_exists(process_element_type, create_materials_type(xmlDocument, "Materials", process_element.Materials))
+  process_element_type = append_Element_if_exists(process_element_type, add_list(create_materials_type, xmlDocument, "Materials", process_element.Materials))
   process_element_type = append_Element_if_exists(process_element_type, add_list(create_directed_link, xmlDocument, "DirectedLink", process_element.DirectedLink))
   process_element_type = append_Element_if_exists(process_element_type, create_Element_with_inner_HTML(xmlDocument, "ProcedureChartElement", process_element.ProcedureChartElement))
   console.log(process_element.ProcessElement)
-  process_element_type = append_Element_if_exists(process_element_type, create_process_element_types(xmlDocument, "ProcessElement", process_element.ProcessElement))
+  process_element_type = append_Element_if_exists(process_element_type, add_list(create_process_element_type, xmlDocument, "ProcessElement", process_element.ProcessElement))
   process_element_type = append_Element_if_exists(process_element_type, create_Element_with_inner_HTML(xmlDocument, "ProcessElementParameter", process_element.ProcessElementParameter))
   process_element_type = append_Element_if_exists(process_element_type, create_Element_with_inner_HTML(xmlDocument, "RessouceConstraint", process_element.RessouceConstraint))
   process_element_type = append_Element_if_exists(process_element_type, create_Element_with_inner_HTML(xmlDocument, "OtherInformation", process_element.OtherInformation))
@@ -88,7 +88,7 @@ function add_list(add_element_function, xmlDocument, name, element_list){
     return undefined
   }
   var elements = []
-  if (Array.isArrayelement_list){
+  if (Array.isArray(element_list)){
     element_list.forEach(element =>{
       elements.push(add_element_function(xmlDocument, name, element))
     })
@@ -98,23 +98,6 @@ function add_list(add_element_function, xmlDocument, name, element_list){
   }
  return elements
 }
-
-function create_process_element_types(xmlDocument, name, process_elements){
-  if (process_elements === undefined){
-    return undefined
-  }
-  var elements = []
-  if (Array.isArray(process_elements)){
-    process_elements.forEach(process_element =>{
-      elements.push(create_process_element_type(xmlDocument, name, process_element))
-    })
-  }else{
-    console.log("not an array")
-    elements.push(create_process_element_type(xmlDocument, name, process_elements))
-  }
- return elements
-}
-
 
 function list_source_target(jsplumb_connections) {
   //check wether elements are inputs, outputs, or intermediates
