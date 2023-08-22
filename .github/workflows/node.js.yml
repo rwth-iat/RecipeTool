@@ -28,8 +28,8 @@ jobs:
     - name: Set up Java
       uses: actions/setup-java@v2
       with:
-        java-version: '11'  # Specify the version of Java you need
-        distribution: 'adopt'  # Specify the distribution of Java (e.g., adopt, openjdk)
+        java-version: '1.8'
+        distribution: 'oracle'
     
     # set up nodejs
     - name: Use Node.js ${{ matrix.node-version }}
