@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "prepublish": "java -jar node_modules/jsonix-schema-compiler/lib/jsonix-schema-compiler-full.jar -d batchml/bindings batchml/schemas/BatchML-GeneralRecipe.xsd",
     "dev": "vite",
     "build": "vite build --emptyOutDir",
     "preview": "vite preview",
@@ -16,6 +17,8 @@
     "axios-mock-adapter": "^1.21.5",
     "bootstrap": "^5.3.0",
     "bootstrap-vue": "^2.23.1",
+    "jsonix": "^3.0.0",
+    "jsonix-schema-compiler": "^2.3.9",
     "leader-line": "^1.0.7",
     "leader-line-vue": "^2.1.1",
     "sass": "^1.63.3",
