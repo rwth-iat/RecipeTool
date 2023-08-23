@@ -1,6 +1,12 @@
 import { Jsonix } from 'jsonix-issue-238-fixed';
 import { org_mesa_xml_b2mml} from './org_mesa_xml_b2mml_edited.js';
 
+/*
+This function is mainly used to determine input, output and intermediate materials for the "formula" object.
+Given the jsplumb connections, this function returns two lists:
+    - one with the elements that have an connection at their sourceEndpoint making them "Input" elements
+    - one with the elements that have an connection at their targetEndpoint making them "Output" elements
+*/
 function list_source_target(jsplumb_connections) {
     //check wether elements are inputs, outputs, or intermediates
     var elementsWithSourceConnection = [];
@@ -62,36 +68,38 @@ function create_formula(workspace_items, jsplumb_connections){
     //get list of input and output materials
     const [input_materials, output_materials] = list_source_target(jsplumb_connections)
     
-    //formula.processInputs = create_materials("testID", "Input")
-    
     //add input materials and intermediates
     formula.processInputs = create_materials("inputid", "Input")
     formula.processIntermediates = create_materials("intermediateid", "Intermediate")
-    input_materials.forEach(function (item) { 
-        //check if material is also output
-        if(!output_materials.includes(item)){ 
-            formula.processInputs.material.push(
-                create_material(item.id, "Input")
-            )
-        }
-        //if also output material than add to intermediate
-        else{
-            formula.processIntermediates.material.push(
-                create_material(item.id, "Intermediate")
-            )
+    input_materials.forEach(function (item) {
+        if(item.type == "material"){
+            //check if material is also output
+            if(!output_materials.includes(item)){ 
+                formula.processInputs.material.push(
+                    create_material(item.id, "Input")
+                )
+            }
+            //if also output material than add to intermediate
+            else{
+                formula.processIntermediates.material.push(
+                    create_material(item.id, "Intermediate")
+                )
+            }
         }
     });
 
     //add output materials
     formula.processOutputs = create_materials("outputsid", "Output")
-    output_materials.forEach(function (item) { 
-        //check if material is only output
-        if(!input_materials.includes(item)){ 
-            formula.processOutputs.material.push(
-                create_material(item.id, "Output")
-            )
+    output_materials.forEach(function (item) {
+        if(item.type == "material"){ 
+            //check if material is only output
+            if(!input_materials.includes(item)){ 
+                formula.processOutputs.material.push(
+                    create_material(item.id, "Output")
+                )
+            }
+            //here we dont add the intermediates, as they were already added with the process inputs
         }
-        //here we dont add the intermediates, as they were already added with the process inputs
     });
     return formula
 }
