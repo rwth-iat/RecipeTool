@@ -153,12 +153,10 @@ function create_process_element_type(id, process_element_type, workspace_items, 
 
 
 
-export function export_batchml(workspace_items, jsplumb_connections){
-    
-    //const gRecipeInstance = new org_mesa_xml_b2mml_Module.GRecipeType();
+export function generate_batchml(workspace_items, jsplumb_connections){
     // Create a Jsonix context
     const context = new Jsonix.Context([org_mesa_xml_b2mml]);
-    //console.log(context)
+
     // Create a JavaScript object representing the XML structure
     const gRecipe ={
         name: {
@@ -186,7 +184,6 @@ export function export_batchml(workspace_items, jsplumb_connections){
     const document = marshaller.marshalDocument(gRecipe);
     const xmlString = marshaller.marshalString(gRecipe)
 
-  
-    console.log(xmlString)
+    return xmlString
 }
 

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onUpdated, watch, nextTick } from 'vue';
 import { newInstance, ready } from "@jsplumb/browser-ui";
-import { export_batchml } from './new_export_xml.js';
+import { generate_batchml } from './new_export_xml.js';
 
 // when an element is dropped into the workspace workspace_items 
 const workspace_items = ref([]);
@@ -130,7 +130,20 @@ const onDrop = (event) => {
     console.log("dragged from sidebar, dropped in workspace at absolute position: " + event.clientX.toString() + " " + event.clientY.toString());
     console.log(workspace_items);
   }
-};
+  };
+  function export_batchml(workspace_items, jsplumb_connections){
+    var xml_string = generate_batchml(workspace_items, jsplumb_connections)
+    //automatically start download
+    var filename = "Verfahrensrezept.xml";
+    var pom = document.createElement('a');
+    var bb = new Blob([xml_string], {type: 'text/plain'});
+    pom.setAttribute('href', window.URL.createObjectURL(bb));
+    pom.setAttribute('download', filename);
+    pom.dataset.downloadurl = ['text/plain', pom.download, pom.href].join(':');
+    pom.draggable = true; 
+    pom.classList.add('dragout');
+    pom.click();
+  }
 </script>
 
 <!--Draw all workspace elements. Connections are drawn by jsplumb in the background-->
