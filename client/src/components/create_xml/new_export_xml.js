@@ -1,5 +1,3 @@
-console.log("test")
-//var Jsonix = require('jsonix').Jsonix;
 import { Jsonix } from 'jsonix-issue-238-fixed';
 import { org_mesa_xml_b2mml} from './org_mesa_xml_b2mml_edited.js';
 
