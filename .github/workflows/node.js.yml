@@ -24,13 +24,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    # setting up java as it is needed for the bindings creation of the xsd 
-    - name: Set up Java
-      uses: actions/setup-java@v2
-      with:
-        java-version: '8'
-        distribution: 'adopt'
-    
     # set up nodejs
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3

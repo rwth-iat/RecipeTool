@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "prepublish": "java -jar node_modules/jsonix-schema-compiler/lib/jsonix-schema-compiler-full.jar -d batchml/bindings batchml/schemas/BatchML-GeneralRecipe.xsd",
     "dev": "vite",
     "build": "vite build --emptyOutDir",
     "preview": "vite preview",
