@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onUpdated, watch, nextTick } from 'vue';
 import { newInstance, ready } from "@jsplumb/browser-ui";
-import { export_batchml } from './export_xml.js';
+import { export_batchml } from './new_export_xml.js';
 
 // when an element is dropped into the workspace workspace_items 
 const workspace_items = ref([]);
