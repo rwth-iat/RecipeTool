@@ -4,16 +4,101 @@ import { Jsonix } from 'jsonix-issue-238-fixed';
 import { org_mesa_xml_b2mml} from '../../batchml/bindings/org_mesa_xml_b2mml_edited';
 //import * as org_mesa_xml_b2mml_Module from '../../batchml/bindings/org_mesa_xml_b2mml.js';
 
-function create_formula(){
+function list_source_target(jsplumb_connections) {
+    //check wether elements are inputs, outputs, or intermediates
+    var elementsWithSourceConnection = [];
+    var elementsWithTargetConnection = [];
+  
+    // Iterate through connections and collect elements
+    for (var connectionId in jsplumb_connections) {
+      var connection = jsplumb_connections[connectionId];
+      var sourceId = connection.sourceId;
+      var targetId = connection.targetId;
+  
+      // Find source and target elements
+      var sourceElement = document.getElementById(sourceId);
+      var targetElement = document.getElementById(targetId);
+  
+      // Check if source element already added to list
+      if (elementsWithSourceConnection.indexOf(sourceElement) === -1) {
+        elementsWithSourceConnection.push(sourceElement);
+      }
+  
+      // Check if target element already added to list
+      if (elementsWithTargetConnection.indexOf(targetElement) === -1) {
+        elementsWithTargetConnection.push(targetElement);
+      }
+    }
+    return [elementsWithSourceConnection, elementsWithTargetConnection]
+  }
+
+function create_material(id){
+    var materials = {
+        id: id,
+        description: [],
+        materialID: "",
+        order: "",
+        amount: {}
+        }
+    return materials
+}
+
+function create_materials(id, materials_type){
+    var materials = {
+            id: id, 
+            description:[],
+            materialsType:materials_type,
+            material:[]
+        }
+    return materials
+}
+
+function create_formula(workspace_items, jsplumb_connections){
     var formula = {
-        description:["test"],
+        description:[],
         processInputs:{},
         processOutputs:{},
         processIntermediates:{},
         processElementParameter:[]
     }
+
+    //get list of input and output materials
+    const [input_materials, output_materials] = list_source_target(jsplumb_connections)
+    
+    //formula.processInputs = create_materials("testID", "Input")
+    
+    //add input materials and intermediates
+    formula.processInputs = create_materials("inputid", "Input")
+    formula.processIntermediates = create_materials("intermediateid", "Intermediate")
+    input_materials.forEach(function (item) { 
+        //check if material is also output
+        if(!output_materials.includes(item)){ 
+            formula.processInputs.material.push(
+                create_material(item.id, "Input")
+            )
+        }
+        //if also output material than add to intermediate
+        else{
+            formula.processIntermediates.material.push(
+                create_material(item.id, "Intermediate")
+            )
+        }
+    });
+
+    //add output materials
+    formula.processOutputs = create_materials("outputsid", "Output")
+    output_materials.forEach(function (item) { 
+        //check if material is only output
+        if(!input_materials.includes(item)){ 
+            formula.processOutputs.material.push(
+                create_material(item.id, "Output")
+            )
+        }
+        //here we dont add the intermediates, as they were already added with the process inputs
+    });
     return formula
 }
+
 function create_process_element_type(id, process_element_type, workspace_items, jsplumb_connections){
     var process_element = {
         id: id,
@@ -68,7 +153,7 @@ function create_process_element_type(id, process_element_type, workspace_items, 
 
 
 
-export function export_batchml(workspace_items, connections){
+export function export_batchml(workspace_items, jsplumb_connections){
     
     //const gRecipeInstance = new org_mesa_xml_b2mml_Module.GRecipeType();
     // Create a Jsonix context
@@ -89,8 +174,8 @@ export function export_batchml(workspace_items, connections){
             gRecipeType:{},
             lifeCycleState:{},
             header:{},
-            formula: create_formula(),
-            processProcedure: create_process_element_type("Procedure1", "Process", workspace_items, connections),
+            formula: create_formula(workspace_items, jsplumb_connections),
+            processProcedure: create_process_element_type("Procedure1", "Process", workspace_items, jsplumb_connections),
             resourceConstraint:[{}],
             otherInformation:[{}]
         }
