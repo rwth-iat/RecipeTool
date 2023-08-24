@@ -2,14 +2,22 @@
   import Topbar from './components/Topbar.vue'
   import Sidebar from './components/Sidebar.vue'
   import workspace from './components/workspace.vue'
+  import { ref } from 'vue'
+  
+  const workspaceRef = ref(null);
+
+  const callExportFunciton = () => {
+    console.log("function call")
+    workspaceRef.value.trigger_export();
+  };
 </script>
 
 <template>
   <main>
-    <topbar id="top_bar"/>
+    <topbar id="top_bar" @trigger-export="callExportFunciton"/>
     <div id="editor">
       <Sidebar/>
-      <workspace/>
+      <workspace ref="workspaceRef"/>
     </div>
   </main>
 </template>

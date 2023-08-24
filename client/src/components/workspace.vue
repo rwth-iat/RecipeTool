@@ -151,8 +151,18 @@
     pom.click();
   }
 
-  function export_batchml(workspace_items, jsplumb_connections){
-    var xml_string = generate_batchml(workspace_items, jsplumb_connections)
+  // Export the function so it's accessible from the outside
+  function trigger_export(){
+    export_batchml(workspace_items.value, instance.getConnections());
+  }
+  defineExpose({
+    trigger_export
+  });
+
+  function export_batchml(items, jsplumb_connections){
+    var jsplumb_connections = 
+    console.log(items)
+    var xml_string = generate_batchml(items, jsplumb_connections)
     client.get('/validate', {
             params: {
               "xml_string": xml_string

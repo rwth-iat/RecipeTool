@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, defineProps, defineEmits } from 'vue'
 
 const import_config = () =>{
   return
@@ -7,6 +7,14 @@ const import_config = () =>{
 const export_config = () =>{
   return
 }
+
+const props = defineProps();
+const emit = defineEmits(['export']);
+
+const triggerExportInWorkspace = () => {
+  console.log("trigger-export")
+  emit('trigger-export');
+};
 </script>
 
 <template>
@@ -19,6 +27,7 @@ const export_config = () =>{
 			<span class="close-icons">export</span>
   	</button>
     -->
+    <button id="exportBtt" @click="triggerExportInWorkspace">Export</button>
     <h3>Verfahrensrezept-Editor</h3>
   </div>
 </template>
@@ -26,15 +35,19 @@ const export_config = () =>{
 <style lang="scss">
     /*container for the page heading*/
     #topbar{
-    width: 100vw;
-    height: 10vh;
-    float:left;
-    text-align: center;
-    background-color: --grey;
-    color:white;
-    /*border-radius: 5px;
-    border-width:1px;
-    border-style:solid;
-    border-color:black;*/
-}
+      width: 100vw;
+      height: 10vh;
+      float:left;
+      text-align: center;
+      background-color: --grey;
+      color:white;
+      /*border-radius: 5px;
+      border-width:1px;
+      border-style:solid;
+      border-color:black;*/
+    }
+    #exportBtt{
+      float: left;
+      display: flex;
+    }
 </style>
