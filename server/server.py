@@ -345,8 +345,8 @@ def create_app():
           response = make_response("not valid!", 400)
           return response
     
-    #ontologies = load_ontologies()
-    ontologies = {}
+    ontologies = load_ontologies()
+    #ontologies = {}  #uncomment this is for offline development
     return app
 
 
