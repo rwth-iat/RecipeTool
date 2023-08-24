@@ -196,9 +196,6 @@
 <!--Draw all workspace elements. Connections are drawn by jsplumb in the background-->
 <template>
   <div id="workspace" ref="workspace" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent>
-    <button @click="export_batchml(workspace_items, instance.getConnections())" id="export_button">
-      <span class="toggle-icons">export</span>
-    </button>
     <div :class="'workspace_element ' + item.type" v-for="item in workspace_items" :key="item.id" :ref=" skipUnwrap.jsplumbElements" :id="item.id">
       {{ item.name }}
     </div>
