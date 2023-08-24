@@ -85,4 +85,8 @@ def test_get_onto_subclasses(client):
     wanted_response = [{"name":"Combining","children":[{"name":"Absorbing","children":[]},{"name":"Adsorbing","children":[]},{"name":"Atomizing","children":[]},{"name":"Dissolving","children":[]},{"name":"Emulsifying","children":[]},{"name":"Foam_creating","children":[]},{"name":"Fusing","children":[]},{"name":"Kneading","children":[]},{"name":"Mixing","children":[]},{"name":"Mixing_of_Gases","children":[]},{"name":"Mixing_of_Liquids","children":[]},{"name":"Moistening_of_Gases","children":[]},{"name":"Rubbing","children":[]},{"name":"Smoothing","children":[]},{"name":"Soaking","children":[]},{"name":"Spraying","children":[]},{"name":"Suspending","children":[]},{"name":"Swelling","children":[]},{"name":"Volatilizing","children":[]}]}]
     assert response_obj == wanted_response
 
+def test_validate(client):
+    response = client.get('/validate', query_string={'xml_string': '<p0:GRecipe xmlns:p0="http://www.mesa.org/xml/B2MML"></p0:GRecipe>'})
+    assert response.status_code == 200
+    # Add more test assertions as needed
 # Add more tests as new endpoints are added

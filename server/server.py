@@ -11,6 +11,9 @@ import os
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
+# xml validation
+from lxml import etree
+from io import StringIO
 
 
 ontologies = {}
@@ -19,6 +22,15 @@ ontologies = {}
 UPLOAD_FOLDER = './ontologies/'
 ALLOWED_EXTENSIONS = {'owl'}
 
+def validate(xml_string: str, xsd_path: str) -> bool:
+
+    xmlschema_doc = etree.parse(xsd_path)
+    xmlschema = etree.XMLSchema(xmlschema_doc)
+
+    xml_doc = etree.parse(StringIO(xml_string))
+    result = xmlschema.validate(xml_doc)
+
+    return result
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -287,7 +299,20 @@ def create_app():
         processes = json.dumps(classes_list, ensure_ascii=False, indent=4)
         response = make_response(processes)
         return response
-
+    
+    @app.route('/validate')
+    def validate_batchml():
+      args = request.args
+      xml_string = args.get("xml_string", type=str)
+      if validate(xml_string, "batchml_schemas/schemas/BatchML-GeneralRecipe.xsd"):
+        print('Valid! :)')
+        response = make_response("valid!", 200)
+        return response
+      else:
+        print('Not valid! :(')
+        response = make_response("valid!", 400)
+        return response
+    
     ontologies = load_ontologies()
     return app
 
