@@ -345,7 +345,8 @@ def create_app():
           response = make_response("not valid!", 400)
           return response
     
-    ontologies = load_ontologies()
+    #ontologies = load_ontologies()
+    ontologies = {}
     return app
 
 

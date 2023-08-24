@@ -129,8 +129,8 @@ function create_process_element_type(id, process_element_type, workspace_items, 
             process_element.materials.push(
             {
                 id: item.id, 
-                materialsType: "testMaterialstype"
             }
+            //materialsType: ""
             )
         }; 
         });
