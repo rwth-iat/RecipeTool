@@ -1,5 +1,5 @@
 # webserver
-from flask import Flask, flash, request, send_from_directory, make_response
+from flask import Flask, flash, request, send_from_directory, make_response, redirect
 # from flask_restful import Api, Resource
 from werkzeug.utils import secure_filename
 from flasgger import Swagger
@@ -96,6 +96,20 @@ def create_app():
         }
     }
 
+    @app.route('/')
+    def hello():
+        """Endpoint to also redirect only the ip+port to the Graphical Editor.
+        ---
+        tags:
+          - General Recipe Editor
+        responses:
+          302:
+            description: redirects to /editor.
+            examples:
+              rgb: ['red', 'green', 'blue']
+        """
+        return redirect("/editor", code=302)
+      
     # Main Website
     @app.route("/editor")
     def editor():
@@ -300,18 +314,35 @@ def create_app():
         response = make_response(processes)
         return response
     
+    
     @app.route('/validate')
     def validate_batchml():
-      args = request.args
-      xml_string = args.get("xml_string", type=str)
-      if validate(xml_string, "batchml_schemas/schemas/BatchML-GeneralRecipe.xsd"):
-        print('Valid! :)')
-        response = make_response("valid!", 200)
-        return response
-      else:
-        print('Not valid! :(')
-        response = make_response("valid!", 400)
-        return response
+        """Endpoint to validate a xml string against BatchML xsd schema.
+        ---
+        tags:
+          - General Recipe Editor
+        parameters:
+          - name: xml_string
+            in: args
+            type: string
+            required: true
+            default: ""
+        responses:
+          200:
+            description: Given String is valid.
+          400:
+            description: Given String is not valid.
+        """
+        args = request.args
+        xml_string = args.get("xml_string", type=str)
+        if validate(xml_string, "batchml_schemas/schemas/BatchML-GeneralRecipe.xsd"):
+          print('Valid! :)')
+          response = make_response("valid!", 200)
+          return response
+        else:
+          print('Not valid! :(')
+          response = make_response("valid!", 400)
+          return response
     
     ontologies = load_ontologies()
     return app
@@ -322,4 +353,4 @@ def create_app():
 if __name__ == '__main__':
     app = create_app()
     swagger = Swagger(app)
-    app.run(debug=True, ssl_context='adhoc')
+    app.run(debug=True)
