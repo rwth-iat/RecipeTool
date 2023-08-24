@@ -323,7 +323,7 @@ def create_app():
           - General Recipe Editor
         parameters:
           - name: xml_string
-            in: args
+            in: query
             type: string
             required: true
             default: ""
@@ -335,13 +335,14 @@ def create_app():
         """
         args = request.args
         xml_string = args.get("xml_string", type=str)
+        print(xml_string)
         if validate(xml_string, "batchml_schemas/schemas/BatchML-GeneralRecipe.xsd"):
           print('Valid! :)')
           response = make_response("valid!", 200)
           return response
         else:
           print('Not valid! :(')
-          response = make_response("valid!", 400)
+          response = make_response("not valid!", 400)
           return response
     
     ontologies = load_ontologies()

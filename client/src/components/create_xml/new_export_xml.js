@@ -35,6 +35,7 @@ function list_source_target(jsplumb_connections) {
     return [elementsWithSourceConnection, elementsWithTargetConnection]
   }
 
+
 function create_material(id){
     var materials = {
         id: id,
@@ -105,13 +106,14 @@ function create_formula(workspace_items, jsplumb_connections){
 }
 
 function create_process_element_type(id, process_element_type, workspace_items, jsplumb_connections){
+    // removed yet unimplemented fields which caused invalid xml
+    //     - lifeCycleState:{},
+    //     - sequenceOrder: {},
+    //     - sequencePath: {},
     var process_element = {
         id: id,
         description: [],
         processElementType: process_element_type,
-        lifeCycleState:{},
-        sequenceOrder: {},
-        sequencePath: {},
         materials: [],
         directedLink: [],
         procedureChartElement: [],
@@ -163,6 +165,9 @@ export function generate_batchml(workspace_items, jsplumb_connections){
     const context = new Jsonix.Context([org_mesa_xml_b2mml]);
 
     // Create a JavaScript object representing the XML structure
+    // removed not yet implemented fiels in "value" to make batchml valid
+    //    - lifeCycleState:{},
+    //    - header:{},
     const gRecipe ={
         name: {
             key: "{http://www.mesa.org/xml/B2MML}GRecipe",
@@ -174,9 +179,7 @@ export function generate_batchml(workspace_items, jsplumb_connections){
         value: {
             id: {},
             description: [{}],
-            gRecipeType:{},
-            lifeCycleState:{},
-            header:{},
+            gRecipeType: "General",
             formula: create_formula(workspace_items, jsplumb_connections),
             processProcedure: create_process_element_type("Procedure1", "Process", workspace_items, jsplumb_connections),
             resourceConstraint:[{}],
