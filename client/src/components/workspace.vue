@@ -1,5 +1,6 @@
 <script setup>
   import { ref, onMounted, onUpdated, watch, nextTick } from 'vue';
+  import axios from 'axios'
   import { newInstance, ready } from "@jsplumb/browser-ui";
   import { generate_batchml } from './create_xml/new_export_xml.js';
 
@@ -14,6 +15,40 @@
   var skipUnwrap = { jsplumbElements }
   //object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
   const managedElements = ref({})
+
+  const client = axios.create({
+    	//baseURL: process.env.VUE_APP_BASE_URL
+		baseURL: ''
+	});
+
+  //get all names/ids of the ontologies present at the server
+  async function check_batchml(xml_string){
+    var valid
+    await client.get('/validate', {
+            params: {
+              "xml_string": xml_string
+            }
+      }).then(response => {
+          if (response.status_code == 200){
+            // handle success
+            console.log("BatchML is valid!")
+            valid = true
+          }
+      }).catch(error => {
+          if (error.request.status == 400){
+            // handle success
+            console.log("BatchML is not valid!")
+            valid = false
+          }else{
+            // handle error
+            console.log("error trying to validate BatchML")
+            console.log(error)
+            valid = undefined
+          }
+      })
+      return valid
+	}
+
 
   onMounted(() => {
     workspace.value.focus();
@@ -133,9 +168,17 @@
     }
   };
 
-  function export_batchml(workspace_items, jsplumb_connections){
+  async function export_batchml(workspace_items, jsplumb_connections){
     var xml_string = generate_batchml(workspace_items, jsplumb_connections)
-    
+    var valid = await check_batchml(xml_string)
+    console.log(valid)
+    if (valid === true){
+      window.alert("The generated XML file is valid!");
+    }else if(valid === false){
+      window.alert("Caution! The generated XML file does not seem to be valid!");
+    }else{
+      window.alert("Error while validating BatchML");
+    }
     //automatically start download
     var filename = "Verfahrensrezept.xml";
     var pom = document.createElement('a');
