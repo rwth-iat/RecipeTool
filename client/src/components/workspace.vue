@@ -21,34 +21,6 @@
 		baseURL: ''
 	});
 
-  //get all names/ids of the ontologies present at the server
-  async function check_batchml(xml_string){
-    var valid
-    await client.get('/validate', {
-            params: {
-              "xml_string": xml_string
-            }
-      }).then(response => {
-          if (response.status_code == 200){
-            // handle success
-            console.log("BatchML is valid!")
-            valid = true
-          }
-      }).catch(error => {
-          if (error.request.status == 400){
-            // handle success
-            console.log("BatchML is not valid!")
-            valid = false
-          }else{
-            // handle error
-            console.log("error trying to validate BatchML")
-            console.log(error)
-            valid = undefined
-          }
-      })
-      return valid
-	}
-
 
   onMounted(() => {
     workspace.value.focus();
@@ -167,28 +139,43 @@
       console.log(workspace_items);
     }
   };
-
-  async function export_batchml(workspace_items, jsplumb_connections){
-    var xml_string = generate_batchml(workspace_items, jsplumb_connections)
-    var valid = await check_batchml(xml_string)
-    console.log(valid)
-    if (valid === true){
-      window.alert("The generated XML file is valid!");
-    }else if(valid === false){
-      window.alert("Caution! The generated XML file does not seem to be valid!");
-    }else{
-      window.alert("Error while validating BatchML");
-    }
+  function start_download(filename, file_string){
     //automatically start download
-    var filename = "Verfahrensrezept.xml";
     var pom = document.createElement('a');
-    var bb = new Blob([xml_string], {type: 'text/plain'});
+    var bb = new Blob([file_string], {type: 'text/plain'});
     pom.setAttribute('href', window.URL.createObjectURL(bb));
     pom.setAttribute('download', filename);
     pom.dataset.downloadurl = ['text/plain', pom.download, pom.href].join(':');
     pom.draggable = true; 
     pom.classList.add('dragout');
     pom.click();
+  }
+
+  function export_batchml(workspace_items, jsplumb_connections){
+    var xml_string = generate_batchml(workspace_items, jsplumb_connections)
+    client.get('/validate', {
+            params: {
+              "xml_string": xml_string
+            }
+      }).then(response => {
+        console.log(response)
+          if (response.status == 200){
+            // handle success
+            console.log("BatchML is valid!")
+            start_download("Verfahrensrezept.xml", xml_string)
+          }
+      }).catch(error => {
+          if (error.request.status == 400){
+            // handle success
+            console.log("BatchML is not valid!")
+            start_download("invalid_Verfahrensrezept.xml", xml_string)
+            window.alert("CAUTION: The generated Batchml is invalid, but is nevertheless downloaded.")
+          }else{
+            // handle error
+            console.log("error trying to validate the BatchML file")
+            console.log(error)
+          }
+      })
   }
 </script>
 
