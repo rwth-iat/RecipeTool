@@ -86,7 +86,13 @@ def test_get_onto_subclasses(client):
     assert response_obj == wanted_response
 
 def test_validate(client):
+    #only the first level opining and closing element
     response = client.get('/validate', query_string={'xml_string': '<p0:GRecipe xmlns:p0="http://www.mesa.org/xml/B2MML"></p0:GRecipe>'})
     assert response.status_code == 200
+    
+    #the generated string when hitting export
+    response = client.get('/validate', query_string={'xml_string': '<p0:GRecipe xmlns:p0="http://www.mesa.org/xml/B2MML"><p0:ID/><p0:Description/><p0:GRecipeType>General</p0:GRecipeType><p0:Formula><p0:ProcessInputs><p0:ID>inputid</p0:ID><p0:MaterialsType>Input</p0:MaterialsType></p0:ProcessInputs><p0:ProcessOutputs><p0:ID>outputsid</p0:ID><p0:MaterialsType>Output</p0:MaterialsType></p0:ProcessOutputs><p0:ProcessIntermediates><p0:ID>intermediateid</p0:ID><p0:MaterialsType>Intermediate</p0:MaterialsType></p0:ProcessIntermediates></p0:Formula><p0:ProcessProcedure><p0:ID>Procedure1</p0:ID><p0:ProcessElementType>Process</p0:ProcessElementType></p0:ProcessProcedure><p0:ResourceConstraint/><p0:OtherInformation/></p0:GRecipe>'})
+    assert response.status_code == 200
+    
     # Add more test assertions as needed
 # Add more tests as new endpoints are added
