@@ -8,7 +8,7 @@
 
   const callExportFunciton = () => {
     console.log("function call")
-    workspaceRef.value.trigger_export();
+    workspaceRef.value.export_batchml();
   };
 </script>
 

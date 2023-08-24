@@ -151,15 +151,9 @@
     pom.click();
   }
 
-  // Export the function so it's accessible from the outside
-  function trigger_export(){
-    export_batchml(workspace_items.value, instance.getConnections());
-  }
-  defineExpose({
-    trigger_export
-  });
-
-  function export_batchml(items, jsplumb_connections){
+  function export_batchml(){
+    var items = workspace_items.value
+    var jsplumb_connections = instance.getConnections()
     var jsplumb_connections = 
     console.log(items)
     var xml_string = generate_batchml(items, jsplumb_connections)
@@ -187,6 +181,9 @@
           }
       })
   }
+  defineExpose({
+    export_batchml
+  });
 </script>
 
 
