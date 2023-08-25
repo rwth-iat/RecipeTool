@@ -301,10 +301,10 @@
   }
 
   .property-window-enter-active, .property-window-leave-active {
-    transition: transform 0.8s ease-in-out; /* Adjust the duration as needed */
+    transition: transform 0.5s ease-in-out; /* Adjust the duration as needed */
   }
 
   .property-window-enter-from, .property-window-leave-to {
-    transform: translateX(100%);
+    transform: translateX(30%);
   }
 </style>
