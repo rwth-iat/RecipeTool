@@ -17,6 +17,12 @@
   //object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
   const managedElements = ref({})
 
+  const selectedElement = ref({
+    id: 'test',
+    description: 'test',
+  });
+
+
   const client = axios.create({
     	//baseURL: process.env.VUE_APP_BASE_URL
 		baseURL: ''
@@ -189,17 +195,18 @@
   //double click opens window
   const lastClickTime = ref(0);
   const doubleClickThreshold = 300; // Adjust this value as needed (in milliseconds)
-  const handleClick = () => {
+  const handleClick = (item) => {
     const currentTime = new Date().getTime();
     console.log("click_detected")
     if (currentTime - lastClickTime.value < doubleClickThreshold) {
-      handleDoubleClick();
+      handleDoubleClick(item);
     } else {
       lastClickTime.value = currentTime;
     }
   };
-  const handleDoubleClick = () => {
+  const handleDoubleClick = (item) => {
     // Logic to handle double click
+    selectedElement.value.id = item.id
     openPropertyWindow()
     console.log('Double click detected!');
   };
@@ -224,9 +231,9 @@
       <div :class="'workspace_element ' + item.type" 
         v-for="item in workspace_items" 
         :key="item.id" 
-        :ref=" skipUnwrap.jsplumbElements" 
+        :ref="skipUnwrap.jsplumbElements" 
         :id="item.id"
-        @click="handleClick"
+        @click="handleClick(item)"
       >
         {{ item.name }}
       </div>
@@ -234,7 +241,9 @@
       <!-- Property window -->
       <transition name="property-window">
         <div v-show="isPropertyWindowOpen" >
-          <PropertyWindowContent @close="closePropertyWindow" />
+          <PropertyWindowContent
+          :selectedElement="selectedElement" 
+          @close="closePropertyWindow" />
         </div>
       </transition>
     </div>
