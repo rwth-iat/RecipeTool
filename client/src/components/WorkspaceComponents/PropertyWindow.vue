@@ -7,7 +7,7 @@
     </div>
     <h2>Properties</h2>
     <label for="id">ID:</label>
-    <input type="text" id="id" v-model="selectedElement.id" />
+    <input type="text" id="id" v-model="selectedElement.id" readonly class="locked-input"/>
       
     <label for="description">Description:</label>
     <input type="text" id="description" v-model="selectedElement.description" />
@@ -25,6 +25,9 @@
 </script>
   
   <style scoped>
+    input.locked-input, textarea { 
+      background: lightslategrey; 
+    }
     .property-window-content {
         height: calc(100vh - var(--topbar-height));
         float:right;
