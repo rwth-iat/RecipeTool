@@ -9,7 +9,7 @@ const export_config = () =>{
 }
 
 const props = defineProps();
-const emit = defineEmits(['export']);
+const emit = defineEmits(['trigger-export']);
 
 const triggerExportInWorkspace = () => {
   console.log("trigger-export")

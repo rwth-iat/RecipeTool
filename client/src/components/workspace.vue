@@ -3,6 +3,7 @@
   import axios from 'axios'
   import { newInstance, ready } from "@jsplumb/browser-ui";
   import { generate_batchml } from './create_xml/new_export_xml.js';
+  import PropertyWindowContent from './WorkspaceComponents/PropertyWindow.vue'; // Import your property window content component
 
   // when an element is dropped into the workspace workspace_items 
   const workspace_items = ref([]);
@@ -184,6 +185,33 @@
   defineExpose({
     export_batchml
   });
+
+  //double click opens window
+  const lastClickTime = ref(0);
+  const doubleClickThreshold = 300; // Adjust this value as needed (in milliseconds)
+  const handleClick = () => {
+    const currentTime = new Date().getTime();
+    console.log("click_detected")
+    if (currentTime - lastClickTime.value < doubleClickThreshold) {
+      handleDoubleClick();
+    } else {
+      lastClickTime.value = currentTime;
+    }
+  };
+  const handleDoubleClick = () => {
+    // Logic to handle double click
+    openPropertyWindow()
+    console.log('Double click detected!');
+  };
+
+  //handle opening and closing the property window
+  const isPropertyWindowOpen = ref(false);
+  const openPropertyWindow = () => {
+    isPropertyWindowOpen.value = true;
+  };
+  const closePropertyWindow = () => {
+    isPropertyWindowOpen.value = false;
+  };
 </script>
 
 
@@ -193,9 +221,22 @@
 <!--Draw all workspace elements. Connections are drawn by jsplumb in the background-->
 <template>
   <div id="workspace" ref="workspace" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent>
-    <div :class="'workspace_element ' + item.type" v-for="item in workspace_items" :key="item.id" :ref=" skipUnwrap.jsplumbElements" :id="item.id">
-      {{ item.name }}
+    <div :class="'workspace_element ' + item.type" 
+      v-for="item in workspace_items" 
+      :key="item.id" 
+      :ref=" skipUnwrap.jsplumbElements" 
+      :id="item.id"
+      @click="handleClick"
+    >
+        {{ item.name }}
     </div>
+    
+    <!-- Property window -->
+    <transition name="property-window">
+      <div class="property-window" v-if="isPropertyWindowOpen">
+        <PropertyWindowContent @close="closePropertyWindow" />
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -242,5 +283,13 @@
     text-align: center;
     justify-content: center;
     align-items: center;
+  }
+
+  .property-window-enter-active, .property-window-leave-active {
+    transition: transform 0.8s ease-in-out; /* Adjust the duration as needed */
+  }
+
+  .property-window-enter, .property-window-leave-to {
+    transform: translateX(100%);
   }
 </style>
