@@ -178,10 +178,15 @@
             console.log("BatchML is not valid!")
             start_download("invalid_Verfahrensrezept.xml", xml_string)
             window.alert("CAUTION: The generated Batchml is invalid, but is nevertheless downloaded.")
+          }else if(error.request.status == 404){
+            console.log("Unable to reach the server, are you maybe only running the client code?")
+            console.log(error)
+            window.alert("Error 404: Unable to reach the server, when validating the Batchml. Are you maybe only running the client code? For complete error message look into the browser devtools console")
           }else{
             // handle error
-            console.log("error trying to validate the BatchML file")
+            console.log("error trying to validate the BatchML file:")
             console.log(error)
+            window.alert("Error: The Batchml could not be validated. For complete error message look into the browser devtools console.")
           }
       })
   }
