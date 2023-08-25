@@ -17,10 +17,7 @@
   //object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
   const managedElements = ref({})
 
-  const selectedElement = ref({
-    id: 'test',
-    description: 'test',
-  });
+  var selectedElement = ref({});
 
 
   const client = axios.create({
@@ -206,7 +203,8 @@
   };
   const handleDoubleClick = (item) => {
     // Logic to handle double click
-    selectedElement.value.id = item.id
+    selectedElement.value = item
+    console.log(selectedElement)
     openPropertyWindow()
     console.log('Double click detected!');
   };

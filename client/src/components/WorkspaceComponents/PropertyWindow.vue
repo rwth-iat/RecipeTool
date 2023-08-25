@@ -1,31 +1,28 @@
 <template>
-    <div class="property-window-content">
-      <div>
-        <button @click="close">
-            <span class="material-icons">>></span>
-        </button>
-	    </div>
-      <h2>Properties</h2>
-      <label for="id">ID:</label>
-      <input type="text" id="id" v-model="selectedElement.id" />
-      
-      <label for="description">Description:</label>
-      <input type="text" id="description" v-model="selectedElement.description" />
+  <div class="property-window-content">
+    <div>
+      <button @click="close">
+        <span class="material-icons">>></span>
+      </button>
     </div>
-  </template>
-  
-  <script setup>
+    <h2>Properties</h2>
+    <label for="id">ID:</label>
+    <input type="text" id="id" v-model="selectedElement.id" />
+      
+    <label for="description">Description:</label>
+    <input type="text" id="description" v-model="selectedElement.description" />
+  </div>
+</template>
+
+<script setup>
   import { ref, defineProps, defineEmits } from 'vue';
-  
-  const { selectedElement: initialSelectedElement} = defineProps(['selectedElement']);
-  const emit  = defineEmits(['close']);
-  
-  const selectedElement = ref(initialSelectedElement);
-  
+
+  const props = defineProps(['selectedElement']);
+  const emit = defineEmits(['close']);  
   const close = () => {
     emit('close');
   };
-  </script>
+</script>
   
   <style scoped>
     .property-window-content {
