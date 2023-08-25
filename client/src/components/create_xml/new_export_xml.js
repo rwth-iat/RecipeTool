@@ -77,13 +77,13 @@ function create_formula(workspace_items, jsplumb_connections){
             //check if material is also output
             if(!output_materials.includes(item)){ 
                 formula.processInputs.material.push(
-                    create_material(item.id, "Input")
+                    create_material(item.id)
                 )
             }
             //if also output material than add to intermediate
             else{
                 formula.processIntermediates.material.push(
-                    create_material(item.id, "Intermediate")
+                    create_material(item.id)
                 )
             }
         }
@@ -96,7 +96,7 @@ function create_formula(workspace_items, jsplumb_connections){
             //check if material is only output
             if(!input_materials.includes(item)){ 
                 formula.processOutputs.material.push(
-                    create_material(item.id, "Output")
+                    create_material(item.id)
                 )
             }
             //here we dont add the intermediates, as they were already added with the process inputs
