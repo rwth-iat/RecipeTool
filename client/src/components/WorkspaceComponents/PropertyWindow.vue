@@ -1,13 +1,16 @@
 <template>
     <div class="property-window-content">
-      <h2>Property Window</h2>
+      <div>
+        <button @click="close">
+            <span class="material-icons">>></span>
+        </button>
+	  </div>
+      <h2>Properties</h2>
       <label for="name">Name:</label>
       <input type="text" id="name" v-model="name" />
   
       <label for="id">ID:</label>
       <input type="text" id="id" v-model="id" />
-  
-      <button @click="close">Close</button>
     </div>
   </template>
   
@@ -27,12 +30,8 @@
   
   <style scoped>
     .property-window-content {
-        width: 33%; /* Set the width to one third of the screen */
-        min-width: 300px; /* Set a minimum width to ensure content fits */
         height: calc(100vh - var(--topbar-height));
-        position: fixed;
-        top: var(--topbar-height);
-        right: 0;
+        float:right;
         background-color: var(--dark);
         color: var(--light);
         /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
@@ -41,6 +40,13 @@
         flex-direction: column; /* Arrange children vertically */
         padding: 20px;
         transition: transform 0.8s ease-in-out; /* Adjust the duration as needed */
+        border-radius: 5px;
+    }
+    
+	.material-icons {
+        font-size: 2rem;
+        color: var(--light);
+        transition: 0.2s ease-in-out;
     }
 
     .property-window-content h2 {
@@ -60,9 +66,6 @@
         border-radius: 4px;
         box-sizing: border-box;
     }
-
-    .property-window-content button {
-        margin-top: auto; /* Push the button to the bottom */
-    }
+    
   </style>
   

@@ -16,7 +16,6 @@
 <template>	
 	<aside
 		:class="`${is_expanded ? 'is-expanded' : ''}`"
-		@drop="$event => onDrop($event)"
 		@dragenter.prevent
 		@dragover.prevent
 	>

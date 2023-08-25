@@ -220,24 +220,24 @@
 
 <!--Draw all workspace elements. Connections are drawn by jsplumb in the background-->
 <template>
-  <div id="workspace" ref="workspace" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent>
-    <div :class="'workspace_element ' + item.type" 
-      v-for="item in workspace_items" 
-      :key="item.id" 
-      :ref=" skipUnwrap.jsplumbElements" 
-      :id="item.id"
-      @click="handleClick"
-    >
+    <div id="workspace" ref="workspace" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent>
+      <div :class="'workspace_element ' + item.type" 
+        v-for="item in workspace_items" 
+        :key="item.id" 
+        :ref=" skipUnwrap.jsplumbElements" 
+        :id="item.id"
+        @click="handleClick"
+      >
         {{ item.name }}
-    </div>
-    
-    <!-- Property window -->
-    <transition name="property-window">
-      <div class="property-window" v-if="isPropertyWindowOpen">
-        <PropertyWindowContent @close="closePropertyWindow" />
       </div>
-    </transition>
-  </div>
+      
+      <!-- Property window -->
+      <transition name="property-window">
+        <div v-show="isPropertyWindowOpen" >
+          <PropertyWindowContent @close="closePropertyWindow" />
+        </div>
+      </transition>
+    </div>
 </template>
 
 
@@ -245,6 +245,9 @@
 
 
 <style>
+  .contianer{
+    display: flex;
+  }
   .material{
     background-color:#fff;
     border:1px solid black;    
@@ -289,7 +292,7 @@
     transition: transform 0.8s ease-in-out; /* Adjust the duration as needed */
   }
 
-  .property-window-enter, .property-window-leave-to {
+  .property-window-enter-from, .property-window-leave-to {
     transform: translateX(100%);
   }
 </style>
