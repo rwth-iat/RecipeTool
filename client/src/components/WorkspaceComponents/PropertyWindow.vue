@@ -4,24 +4,23 @@
         <button @click="close">
             <span class="material-icons">>></span>
         </button>
-	  </div>
+	    </div>
       <h2>Properties</h2>
-      <label for="name">Name:</label>
-      <input type="text" id="name" v-model="name" />
-  
       <label for="id">ID:</label>
-      <input type="text" id="id" v-model="id" />
+      <input type="text" id="id" v-model="selectedElement.id" />
+      
+      <label for="description">Description:</label>
+      <input type="text" id="description" v-model="selectedElement.description" />
     </div>
   </template>
   
   <script setup>
   import { ref, defineProps, defineEmits } from 'vue';
   
-  const { name: initialName, id: initialId } = defineProps(['name', 'id']);
+  const { selectedElement: initialSelectedElement} = defineProps(['selectedElement']);
   const emit  = defineEmits(['close']);
   
-  const name = ref(initialName);
-  const id = ref(initialId);
+  const selectedElement = ref(initialSelectedElement);
   
   const close = () => {
     emit('close');
