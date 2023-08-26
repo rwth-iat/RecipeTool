@@ -6,11 +6,27 @@
       </button>
     </div>
     <h2>Properties</h2>
+    <!--General Properties-->
     <label for="id">ID:</label>
     <input type="text" id="id" v-model="selectedElement.id" readonly class="locked-input"/>
-      
+
     <label for="description">Description:</label>
     <input type="text" id="description" v-model="selectedElement.description" />
+
+    <!--Material Properties-->
+    <div v-show='selectedElement.type=="material"'>
+    </div>
+
+    <!--Process Properties-->
+    <div v-show='selectedElement.type=="process"'>
+      <label for="processElementType">processElementType:</label>
+      <select type="text" id="processElementType" v-model="selectedElement.processElementType">
+        <option value="Process">Process</option>
+        <option value="Process Stage">Process Stage</option>
+        <option value="Process Operation">Process Operation</option>
+        <option value="Process Action">Process Action</option>
+      </select>
+    </div>
   </div>
 </template>
 

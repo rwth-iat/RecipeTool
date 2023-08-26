@@ -152,7 +152,7 @@ function create_process_element_type(id, description, process_element_type, work
         if(item.type == "process"){
             process_element.processElement.push(
                 //add child itemlist and connections here here to enable makro steps 
-                create_process_element_type(item.id, item.description, "Process Action", [], [])
+                create_process_element_type(item.id, item.description, item.processElementType, [], [])
             )
         }; 
     });
