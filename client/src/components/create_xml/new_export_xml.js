@@ -36,10 +36,10 @@ function list_source_target(jsplumb_connections) {
   }
 
 
-function create_material(id){
+function create_material(id, description){
     var materials = {
         id: id,
-        description: [],
+        description: [description],
         materialID: "",
         order: "",
         amount: {}
@@ -47,10 +47,10 @@ function create_material(id){
     return materials
 }
 
-function create_materials(id, materials_type){
+function create_materials(id, description, materials_type){
     var materials = {
             id: id, 
-            description:[],
+            description:[description],
             materialsType:materials_type,
             material:[]
         }
@@ -59,7 +59,7 @@ function create_materials(id, materials_type){
 
 function create_formula(workspace_items, jsplumb_connections){
     var formula = {
-        description:[],
+        description:["The formula defines the Inputs, Intermediates and Outputs of the Procedure"],
         processInputs:{},
         processOutputs:{},
         processIntermediates:{},
@@ -70,33 +70,33 @@ function create_formula(workspace_items, jsplumb_connections){
     const [input_materials, output_materials] = list_source_target(jsplumb_connections)
     
     //add input materials and intermediates
-    formula.processInputs = create_materials("inputid", "Input")
-    formula.processIntermediates = create_materials("intermediateid", "Intermediate")
+    formula.processInputs = create_materials("inputid", "List of Process Inputs", "Input")
+    formula.processIntermediates = create_materials("intermediateid", "List of Process Intermediates", "Intermediate")
     input_materials.forEach(function (item) {
         if(item.type == "material"){
             //check if material is also output
             if(!output_materials.includes(item)){ 
                 formula.processInputs.material.push(
-                    create_material(item.id)
+                    create_material(item.id, item.description)
                 )
             }
             //if also output material than add to intermediate
             else{
                 formula.processIntermediates.material.push(
-                    create_material(item.id)
+                    create_material(item.id, item.description)
                 )
             }
         }
     });
 
     //add output materials
-    formula.processOutputs = create_materials("outputsid", "Output")
+    formula.processOutputs = create_materials("outputsid", "List of Process Outputs", "Output")
     output_materials.forEach(function (item) {
         if(item.type == "material"){ 
             //check if material is only output
             if(!input_materials.includes(item)){ 
                 formula.processOutputs.material.push(
-                    create_material(item.id)
+                    create_material(item.id, item.description)
                 )
             }
             //here we dont add the intermediates, as they were already added with the process inputs
@@ -105,14 +105,14 @@ function create_formula(workspace_items, jsplumb_connections){
     return formula
 }
 
-function create_process_element_type(id, process_element_type, workspace_items, jsplumb_connections){
+function create_process_element_type(id, description, process_element_type, workspace_items, jsplumb_connections){
     // removed yet unimplemented fields which caused invalid xml
     //     - lifeCycleState:{},
     //     - sequenceOrder: {},
     //     - sequencePath: {},
     var process_element = {
         id: id,
-        description: [],
+        description: [description],
         processElementType: process_element_type,
         materials: [],
         directedLink: [],
@@ -128,7 +128,8 @@ function create_process_element_type(id, process_element_type, workspace_items, 
         if(item.type == "material"){  
             process_element.materials.push(
             {
-                id: item.id, 
+                id: item.id,
+                description: [item.description]
             }
             //materialsType: ""
             )
@@ -151,7 +152,7 @@ function create_process_element_type(id, process_element_type, workspace_items, 
         if(item.type == "process"){
             process_element.processElement.push(
                 //add child itemlist and connections here here to enable makro steps 
-                create_process_element_type(item.id, "Process Action", [], [])
+                create_process_element_type(item.id, item.description, "Process Action", [], [])
             )
         }; 
     });
@@ -181,7 +182,7 @@ export function generate_batchml(workspace_items, jsplumb_connections){
             description: [{}],
             gRecipeType: "General",
             formula: create_formula(workspace_items, jsplumb_connections),
-            processProcedure: create_process_element_type("Procedure1", "Process", workspace_items, jsplumb_connections),
+            processProcedure: create_process_element_type("Procedure1", "This is the top level ProcessElement", "Process", workspace_items, jsplumb_connections),
             resourceConstraint:[{}],
             otherInformation:[{}]
         }
