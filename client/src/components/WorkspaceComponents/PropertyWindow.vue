@@ -37,13 +37,13 @@
 
         <!--value-->
         <label :for="parameter+'_valueString'">ValueString:</label>
-        <input type="text" :id="parameter+'_valueString'" v-model="parameter.description" />
+        <input type="text" :id="parameter+'_valueString'" v-model="parameter.valueString" />
         <label :for="parameter+'_dataType'">DataType:</label>
-        <input type="text" :id="parameter+'_dataType'" v-model="parameter.description" />
+        <input type="text" :id="parameter+'_dataType'" v-model="parameter.dataType" />
         <label :for="parameter+'_unitOfMeasure'">UnitOfMeasure:</label>
-        <input type="text" :id="parameter+'_unitOfMeasure'" v-model="parameter.description" />
+        <input type="text" :id="parameter+'_unitOfMeasure'" v-model="parameter.unitOfMeasure" />
         <label :for="parameter+'_key'">Key:</label>
-        <input type="text" :id="parameter+'_key'" v-model="parameter.description" />
+        <input type="text" :id="parameter+'_key'" v-model="parameter.key" />
       </div>
 
       <button @click="addProcessElementParameter" id="addProcessElementParameter">
@@ -67,7 +67,7 @@
 
   function addProcessElementParameter(){
     if(props.selectedElement.processElementParameter  === undefined){
-      props.selectedElement.processElementParameter = []  
+      props.selectedElement.processElementParameter = [{}]  
     }else{
       props.selectedElement.processElementParameter.push({})
     }

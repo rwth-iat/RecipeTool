@@ -104,16 +104,27 @@ function create_formula(workspace_items, jsplumb_connections){
     });
     return formula
 }
+function create_process_element_parameter(item){
+    var parameter = {
+        id: item.id,
+        description: [item.description],
+        valueString: item.valueString,
+        dataType: item.dataType,
+        unitOfMeasure: item.unitOfMeasure,
+        key: item.key
+    }
+    return parameter
+}
 
-function create_process_element_type(id, description, process_element_type, workspace_items, jsplumb_connections){
+function create_process_element_type(item, workspace_items, jsplumb_connections){
     // removed yet unimplemented fields which caused invalid xml
     //     - lifeCycleState:{},
     //     - sequenceOrder: {},
     //     - sequencePath: {},
     var process_element = {
-        id: id,
-        description: [description],
-        processElementType: process_element_type,
+        id: item.id,
+        description: [item.description],
+        processElementType: item.processElementType,
         materials: [],
         directedLink: [],
         procedureChartElement: [],
@@ -123,13 +134,20 @@ function create_process_element_type(id, description, process_element_type, work
         otherInformation: []
     }
 
+    // Parameters
+    if (item.processElementParameter){
+        item.processElementParameter.forEach(function(parameter){
+            process_element.processElementParameter.push(create_process_element_parameter(parameter))
+        })
+    }
+
     //add materials
-    workspace_items.forEach(function (item) {
-        if(item.type == "material"){  
+    workspace_items.forEach(function (child_item) {
+        if(child_item.type == "material"){  
             process_element.materials.push(
             {
-                id: item.id,
-                description: [item.description]
+                id: child_item.id,
+                description: [child_item.description]
             }
             //materialsType: ""
             )
@@ -148,11 +166,11 @@ function create_process_element_type(id, description, process_element_type, work
     }
 
     //add Process Elements
-    workspace_items.forEach(function (item) {
-        if(item.type == "process"){
+    workspace_items.forEach(function (child_item) {
+        if(child_item.type == "process"){
             process_element.processElement.push(
                 //add child itemlist and connections here here to enable makro steps 
-                create_process_element_type(item.id, item.description, item.processElementType, [], [])
+                create_process_element_type(child_item, [], [])
             )
         }; 
     });
@@ -182,7 +200,7 @@ export function generate_batchml(workspace_items, jsplumb_connections){
             description: [{}],
             gRecipeType: "General",
             formula: create_formula(workspace_items, jsplumb_connections),
-            processProcedure: create_process_element_type("Procedure1", "This is the top level ProcessElement", "Process", workspace_items, jsplumb_connections),
+            processProcedure: create_process_element_type({id:"Procedure1", description:"This is the top level ProcessElement", processElementType:"Process", processElementParameter:[]}, workspace_items, jsplumb_connections),
             resourceConstraint:[{}],
             otherInformation:[{}]
         }

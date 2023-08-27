@@ -158,15 +158,12 @@
   function export_batchml(){
     var items = workspace_items.value
     var jsplumb_connections = instance.getConnections()
-    var jsplumb_connections = 
-    console.log(items)
     var xml_string = generate_batchml(items, jsplumb_connections)
     client.get('/validate', {
             params: {
               "xml_string": xml_string
             }
       }).then(response => {
-        console.log(response)
           if (response.status == 200){
             // handle success
             console.log("BatchML is valid!")
@@ -209,7 +206,6 @@
   const handleDoubleClick = (item) => {
     // Logic to handle double click
     selectedElement.value = item
-    console.log(selectedElement)
     openPropertyWindow()
     console.log('Double click detected!');
   };
