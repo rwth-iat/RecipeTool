@@ -26,6 +26,32 @@
         <option value="Process Operation">Process Operation</option>
         <option value="Process Action">Process Action</option>
       </select>
+      <div>
+      <h2>ProcessElementParameter</h2>
+      <div v-for="parameter in selectedElement.processElementParameter" id="parameter-container">
+        <label :for="parameter+'_id'">ID:</label>
+        <input type="text" :id="parameter+'_id'" v-model="parameter.id"/>
+
+        <label :for="parameter+'_description'">Description:</label>
+        <input type="text" :id="parameter+'_description'" v-model="parameter.description" />
+
+        <!--value-->
+        <label :for="parameter+'_valueString'">ValueString:</label>
+        <input type="text" :id="parameter+'_valueString'" v-model="parameter.description" />
+        <label :for="parameter+'_dataType'">DataType:</label>
+        <input type="text" :id="parameter+'_dataType'" v-model="parameter.description" />
+        <label :for="parameter+'_unitOfMeasure'">UnitOfMeasure:</label>
+        <input type="text" :id="parameter+'_unitOfMeasure'" v-model="parameter.description" />
+        <label :for="parameter+'_key'">Key:</label>
+        <input type="text" :id="parameter+'_key'" v-model="parameter.description" />
+      </div>
+
+      <button @click="addProcessElementParameter" id="addProcessElementParameter">
+        <span class="material-icons">+</span>
+      </button>
+
+
+    </div>
     </div>
   </div>
 </template>
@@ -38,9 +64,25 @@
   const close = () => {
     emit('close');
   };
+
+  function addProcessElementParameter(){
+    if(props.selectedElement.processElementParameter  === undefined){
+      props.selectedElement.processElementParameter = []  
+    }else{
+      props.selectedElement.processElementParameter.push({})
+    }
+  }
 </script>
   
   <style scoped>
+    #parameter-container{
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
     input.locked-input, textarea { 
       background: lightslategrey; 
     }
