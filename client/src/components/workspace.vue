@@ -57,6 +57,7 @@
   var selectedElement = ref({});
 
   
+  //dragging parameters
   let panning = false; // Flag to indicate if panning is currently active
   let draggingElement = false; // Track dragging of individual elements
   let initialMouseX = 0; // Initial mouse X position when starting to pan
@@ -76,7 +77,8 @@
     instance = newInstance({
       container: workspace_content.value,
       maxConnections: -1,
-      connectionOverlays: [{ type:"Arrow", options:{location:1}}] //sets the default connection to an arrow from source to target
+      connectionOverlays: [{ type:"Arrow", options:{location:1}}], //sets the default connection to an arrow from source to target
+      connector: "Flowchart"
     });
     workspace_content.value.style.transform = `scale(1)`;
     instance.setZoom(1);
@@ -283,13 +285,14 @@
     console.log("zoom out");
   };
   
-  
-
+  /*
+  This Function is called when the workspace_content is dragged.
+  When dragging elements the event is also propagated to the parent("workspace_conntent") therefore we check if the target was the workspace_content.
+  */ 
   const startPanning = (event) => {
     if (!event.target.classList.contains("workspace_content")) {
-      // If the clicked element is not a workspace element, it's a drag action
+      // If the clicked element is not the workspace, it's a drag action
       draggingElement = true;
-      // Handle dragging logic here...
     } else {
       panning = true;
       initialMouseX = event.clientX;
@@ -366,7 +369,7 @@ const stopPanning = () => {
   position: relative;
   width: calc(100% + 200px); /* Adjust the value based on your needs */
   height: calc(100% + 200px); /* Adjust the value based on your needs */
-  transform-origin: top left;
+  transform-origin: center center;
   background-size: 50px 50px;
   background-image: radial-gradient(circle, #000 1px, rgba(0, 0, 0, 0) 1px);
   z-index: 1;
