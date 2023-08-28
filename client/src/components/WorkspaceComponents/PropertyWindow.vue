@@ -87,6 +87,7 @@
       background: lightslategrey; 
     }
     .property-window-content {
+        overflow-y: scroll;
         height: calc(100vh - var(--topbar-height));
         float:right;
         background-color: var(--dark);

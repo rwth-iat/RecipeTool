@@ -253,9 +253,6 @@
 
 
 <style>
-  .contianer{
-    display: flex;
-  }
   .material{
     background-color:#fff;
     border:1px solid black;    
