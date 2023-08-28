@@ -35,7 +35,9 @@ After that the server is running under:
 - [ ] delete elements
 - [ ] change element styles to oficial Chart elements
 - [ ] enable creation of macro Steps
+- [ ] open macro steps in new workspace 
 - [ ] enable macro processParameters (only simple ones possible yet)
+- [ ] enable possibillity to save current workspace
 - [ ] add Ressource Constraints
 - [ ] multiple workspace tabs (one for main process, others for opened subprocesses)
 - [ ] extend generated BatchML
