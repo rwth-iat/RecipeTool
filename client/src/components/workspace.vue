@@ -58,6 +58,7 @@
 
   
   let panning = false; // Flag to indicate if panning is currently active
+  let draggingElement = false; // Track dragging of individual elements
   let initialMouseX = 0; // Initial mouse X position when starting to pan
   let initialMouseY = 0; // Initial mouse Y position when starting to pan
   let initialPanX = 0; // Initial pan X value when starting to pan
@@ -282,18 +283,27 @@
     console.log("zoom out");
   };
   
+  
+
   const startPanning = (event) => {
-  panning = true;
-  initialMouseX = event.clientX;
-  initialMouseY = event.clientY;
-  initialPanX = workspace_content.value.offsetLeft;
-  initialPanY = workspace_content.value.offsetTop;
-  document.addEventListener("mousemove", handleMouseMove);
-  document.addEventListener("mouseup", stopPanning);
-};
+    if (!event.target.classList.contains("workspace_content")) {
+      // If the clicked element is not a workspace element, it's a drag action
+      draggingElement = true;
+      // Handle dragging logic here...
+    } else {
+      panning = true;
+      initialMouseX = event.clientX;
+      initialMouseY = event.clientY;
+      initialPanX = workspace_content.value.offsetLeft;
+      initialPanY = workspace_content.value.offsetTop;
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", stopPanning);
+  };
+}
 
 const handleMouseMove = (event) => {
-  if (panning) {
+  if (panning && !draggingElement) {
+    // Handle panning only if not dragging an element
     const deltaX = event.clientX - initialMouseX;
     const deltaY = event.clientY - initialMouseY;
 
@@ -305,6 +315,7 @@ const handleMouseMove = (event) => {
 
 const stopPanning = () => {
   panning = false;
+  draggingElement = false; // Reset dragging status
   document.removeEventListener("mousemove", handleMouseMove);
   document.removeEventListener("mouseup", handleMouseUp);
 };
