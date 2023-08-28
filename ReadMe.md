@@ -32,6 +32,7 @@ After that the server is running under:
  
 ## under development
 - [ ] delete elements
+- [ ] change element styles to oficial Chart elements
 - [ ] enable creation of macro Steps
 - [ ] enable macro processParameters (only simple ones possible yet)
 - [ ] add Ressource Constraints
