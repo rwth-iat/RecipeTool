@@ -265,8 +265,6 @@
   };
 
   const zoomLevel = ref(1);
-  const panX = ref(0);
-  const panY = ref(0);
 
   // Zoom in by incrementing the zoom level
   const zoomIn = () => {
