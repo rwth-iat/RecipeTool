@@ -71,6 +71,8 @@
       maxConnections: -1,
       connectionOverlays: [{ type:"Arrow", options:{location:1}}] //sets the default connection to an arrow from source to target
     });
+    workspace_content.value.style.transform = `scale(1)`;
+    instance.setZoom(1);
   });
 
   function addSourceEndpoint(element){
@@ -263,6 +265,7 @@
   // Zoom in by incrementing the zoom level
   const zoomIn = () => {
     zoomLevel.value += 0.1;
+    workspace_content.value.style.transform = `scale(${zoomLevel.value})`;
     instance.setZoom(zoomLevel.value);
     console.log("zoom in");
   };
@@ -270,6 +273,7 @@
   // Zoom out by decrementing the zoom level
   const zoomOut = () => {
     zoomLevel.value -= 0.1;
+    workspace_content.value.style.transform = `scale(${zoomLevel.value})`;
     instance.setZoom(zoomLevel.value);
     console.log("zoom out");
   };
@@ -306,7 +310,6 @@
     border-width: 1px;
     border-style: solid;
     border-color: black;
-    transform: scale(1);
   } 
   .property-window-container {
     position: absolute;
