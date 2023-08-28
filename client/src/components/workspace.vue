@@ -2,7 +2,7 @@
 <template>
   <div id="workspace" @dragenter.prevent @dragover.prevent>
     <!-- Workspace elements -->
-    <div class="workspace_content" ref="workspace_content" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent draggable="false">
+    <div class="workspace_content" ref="workspace_content" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent draggable="false" @mousedown="startPanning" @mousemove="handleMouseMove" @mouseup="stopPanning">
       <!-- Your flowchart elements here -->
       <div :class="'workspace_element ' + item.type" 
       v-for="item in workspace_items" 
@@ -56,6 +56,12 @@
 
   var selectedElement = ref({});
 
+  
+  let panning = false; // Flag to indicate if panning is currently active
+  let initialMouseX = 0; // Initial mouse X position when starting to pan
+  let initialMouseY = 0; // Initial mouse Y position when starting to pan
+  let initialPanX = 0; // Initial pan X value when starting to pan
+  let initialPanY = 0; // Initial pan Y value when starting to pan
 
   const client = axios.create({
     	//baseURL: process.env.VUE_APP_BASE_URL
@@ -277,6 +283,33 @@
     instance.setZoom(zoomLevel.value);
     console.log("zoom out");
   };
+  
+  const startPanning = (event) => {
+  panning = true;
+  initialMouseX = event.clientX;
+  initialMouseY = event.clientY;
+  initialPanX = workspace_content.value.offsetLeft;
+  initialPanY = workspace_content.value.offsetTop;
+  document.addEventListener("mousemove", handleMouseMove);
+  document.addEventListener("mouseup", stopPanning);
+};
+
+const handleMouseMove = (event) => {
+  if (panning) {
+    const deltaX = event.clientX - initialMouseX;
+    const deltaY = event.clientY - initialMouseY;
+
+    // Update the position of workspace_content
+    workspace_content.value.style.left = initialPanX + deltaX + "px";
+    workspace_content.value.style.top = initialPanY + deltaY + "px";
+  }
+};
+
+const stopPanning = () => {
+  panning = false;
+  document.removeEventListener("mousemove", handleMouseMove);
+  document.removeEventListener("mouseup", handleMouseUp);
+};
 
 </script>
 
@@ -310,12 +343,13 @@
     border-width: 1px;
     border-style: solid;
     border-color: black;
+    z-index: 0;
   } 
   .property-window-container {
     position: absolute;
     top: 0px; /* Adjust the top distance as needed */
     right: 0px; /* Adjust the right distance as needed */
-    z-index: 1; /* Ensure property window appears above the workspace content */
+    z-index: 2; /* Ensure property window appears above the workspace content */
   }
 
 
@@ -324,8 +358,9 @@
   width: calc(100% + 200px); /* Adjust the value based on your needs */
   height: calc(100% + 200px); /* Adjust the value based on your needs */
   transform-origin: top left;
-  background-size: 40px 40px;
+  background-size: 50px 50px;
   background-image: radial-gradient(circle, #000 1px, rgba(0, 0, 0, 0) 1px);
+  z-index: 1;
 }
 
   /* Position buttons and property window */
@@ -333,7 +368,7 @@
     position: absolute;
     top: 10px; /* Adjust the top distance as needed */
     left: 10px; /* Adjust the left distance as needed */
-    z-index: 1; /* Ensure buttons appear above the workspace content */
+    z-index: 2; /* Ensure buttons appear above the workspace content */
   }
 
   .workspace_element {
