@@ -25,7 +25,8 @@ After that the server is running under:
 - [X] move processes and materials in workspace
 - [X] connect elements via drag and drop
 - [X] double click on element to edit properties
-- [X] Zoom in and out via zoom buttons
+- [X] zoom in and out via zoom buttons
+- [X] panning of the workspace (moving horizontally and vertically)
 - [X] generate simple BatchML (needs to be extended)
 - [X] validate BatchML
 - [X] automated testing pipeline with every project push (tests need to be extended)
@@ -37,7 +38,6 @@ After that the server is running under:
 - [ ] enable macro processParameters (only simple ones possible yet)
 - [ ] add Ressource Constraints
 - [ ] multiple workspace tabs (one for main process, others for opened subprocesses)
-- [ ] enable panning of the workspace (moving horizontally and vertically)
 - [ ] extend generated BatchML
 - [ ] Capability Matching
 
