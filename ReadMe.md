@@ -17,6 +17,27 @@ After that the server is running under:
 - "https://127.0.0.1:5000/apidocs" for the documentation
 - "https://127.0.0.1:5000/editor" for the GUI.
 
+# Functionality
+## already implemented
+- [X] upload Ontologies
+- [X] load Ontology classes as Processes
+- [X] Drag & Drop Process and materials into Workspace
+- [X] Move Processes and Materials in Workspace
+- [X] Connect Elements via drag and drop
+- [X] Double click on Element to edit Properties
+- [X] Zoom in and out via Zoom Buttons
+- [X] Generate simple BatchML (needs to be extended)
+- [X] Validate BatchML
+- [X] Automated Testing pipeline with every commit (needs to be extended)
+ 
+## under development
+- [ ] delete elements
+- [ ] enable creation of macro Steps
+- [ ] multiple workspace tabs (one for main process, others for opened subprocesses)
+- [ ] enable panning of the workspace (moving horizontally and vertically)
+- [ ] extend generated BatchML
+- [ ] Capability Matching
+
 # Structure
 As a complex Ui is needed for the Editor, a Javascript Framework is recommended to handle the complexity.
 Vue.js was chosen as it is one of the most used Frameworks and recommended for solo Programming, while other frameworks have benefits in Enterprise setting.
