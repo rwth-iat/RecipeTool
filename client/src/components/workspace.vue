@@ -1,3 +1,40 @@
+<!--Draw all workspace elements. Connections are drawn by jsplumb in the background-->
+<template>
+  <div id="workspace" ref="workspace" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent>
+    <!-- Workspace elements -->
+    <div class="workspace-content">
+      <!-- Your flowchart elements here -->
+      <div :class="'workspace_element ' + item.type" 
+      v-for="item in workspace_items" 
+      :key="item.id" 
+      :ref="skipUnwrap.jsplumbElements" 
+      :id="item.id"
+      @click="handleClick(item)"
+    >
+      {{ item.name }}
+    </div>
+    </div>
+
+    <!-- Zoom Buttons-->
+    <div class="buttons-container">
+      <button @click="zoomIn">Zoom In</button>
+      <button @click="zoomOut">Zoom Out</button>
+    </div>
+
+    <!-- Property window -->
+    <div class="property-window-container">
+    <transition name="property-window">
+      <div v-show="isPropertyWindowOpen" >
+        <PropertyWindowContent
+        :selectedElement="selectedElement" 
+        @close="closePropertyWindow" />
+      </div>
+    </transition>
+    </div>
+  </div>
+</template>
+
+
 <script setup>
   import { ref, onMounted, onUpdated, watch, nextTick } from 'vue';
   import axios from 'axios'
@@ -218,36 +255,26 @@
   const closePropertyWindow = () => {
     isPropertyWindowOpen.value = false;
   };
+
+  const zoomLevel = ref(1);
+  const panX = ref(0);
+  const panY = ref(0);
+
+  // Zoom in by incrementing the zoom level
+  const zoomIn = () => {
+    zoomLevel.value += 0.1;
+    instance.setZoom(zoomLevel.value);
+    console.log("zoom in");
+  };
+
+  // Zoom out by decrementing the zoom level
+  const zoomOut = () => {
+    zoomLevel.value -= 0.1;
+    instance.setZoom(zoomLevel.value);
+    console.log("zoom out");
+  };
+
 </script>
-
-
-
-
-
-<!--Draw all workspace elements. Connections are drawn by jsplumb in the background-->
-<template>
-    <div id="workspace" ref="workspace" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent>
-      <div :class="'workspace_element ' + item.type" 
-        v-for="item in workspace_items" 
-        :key="item.id" 
-        :ref="skipUnwrap.jsplumbElements" 
-        :id="item.id"
-        @click="handleClick(item)"
-      >
-        {{ item.name }}
-      </div>
-      
-      <!-- Property window -->
-      <transition name="property-window">
-        <div v-show="isPropertyWindowOpen" >
-          <PropertyWindowContent
-          :selectedElement="selectedElement" 
-          @close="closePropertyWindow" />
-        </div>
-      </transition>
-    </div>
-</template>
-
 
 
 
@@ -273,17 +300,36 @@
 
   #workspace {
     position: relative;
-    width: 100vw;
     height: calc(100vh - var(--topbar-height));
     flex: 1 1 0;
     border-radius: 5px;
     border-width: 1px;
     border-style: solid;
     border-color: black;
+  } 
+  .property-window-container {
+    position: absolute;
+    top: 0px; /* Adjust the top distance as needed */
+    right: 0px; /* Adjust the right distance as needed */
+    z-index: 1; /* Ensure property window appears above the workspace content */
+  }
+
+  .workspace-content{
+    position: relative; /* Important for positioning absolute elements */
+    transform-origin: top left;
+    width: 100%; /* Use percentage to adjust to parent width */
+    min-height: 100%; /* Ensure content fills the available vertical space */
     background-size: 40px 40px;
     background-image: radial-gradient(circle, #000 1px, rgba(0, 0, 0, 0) 1px);
   }
 
+  /* Position buttons and property window */
+  .buttons-container {
+    position: absolute;
+    top: 10px; /* Adjust the top distance as needed */
+    left: 10px; /* Adjust the left distance as needed */
+    z-index: 1; /* Ensure buttons appear above the workspace content */
+  }
 
   .workspace_element {
     display: flex;
@@ -298,6 +344,6 @@
   }
 
   .property-window-enter-from, .property-window-leave-to {
-    transform: translateX(30%);
+    transform: translateX(100%);
   }
 </style>

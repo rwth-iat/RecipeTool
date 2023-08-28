@@ -16,8 +16,8 @@
   <main>
     <topbar id="top_bar" @trigger-export="callExportFunciton"/>
     <div id="editor">
-      <Sidebar/>
-      <workspace ref="workspaceRef"/>
+      <Sidebar id="side_bar"/>
+      <workspace id="workspace" ref="workspaceRef"/>
     </div>
   </main>
 </template>

@@ -16,6 +16,7 @@
     "axios-mock-adapter": "^1.21.5",
     "bootstrap": "^5.3.0",
     "bootstrap-vue": "^2.23.1",
+    "jquery.panzoom": "^3.2.3",
     "jsonix-issue-238-fixed": "^3.0.0",
     "jsonix-schema-compiler": "^2.3.9",
     "leader-line": "^1.0.7",
