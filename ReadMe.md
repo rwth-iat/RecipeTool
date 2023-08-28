@@ -19,16 +19,16 @@ After that the server is running under:
 
 # Functionality
 ## already implemented
-- [X] upload Ontologies
-- [X] load Ontology classes as Processes
-- [X] Drag & Drop Process and materials into Workspace
-- [X] Move Processes and Materials in Workspace
-- [X] Connect Elements via drag and drop
-- [X] Double click on Element to edit Properties
-- [X] Zoom in and out via Zoom Buttons
-- [X] Generate simple BatchML (needs to be extended)
-- [X] Validate BatchML
-- [X] Automated Testing pipeline with every commit (needs to be extended)
+- [X] upload ontologies
+- [X] load ontology classes as processes
+- [X] drag & drop processes and materials into workspace
+- [X] move processes and materials in workspace
+- [X] connect elements via drag and drop
+- [X] double click on element to edit properties
+- [X] Zoom in and out via zoom buttons
+- [X] generate simple BatchML (needs to be extended)
+- [X] validate BatchML
+- [X] automated testing pipeline with every project push (tests need to be extended)
  
 ## under development
 - [ ] delete elements
