@@ -64,6 +64,7 @@
     }
   }
   #editor{
+    overflow: hidden;
     box-sizing: border-box;
     width: 100vw;
     height: calc(100vh - var(--topbar-height));
