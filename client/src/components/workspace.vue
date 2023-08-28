@@ -1,8 +1,8 @@
 <!--Draw all workspace elements. Connections are drawn by jsplumb in the background-->
 <template>
-  <div id="workspace" ref="workspace" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent>
+  <div id="workspace" @dragenter.prevent @dragover.prevent>
     <!-- Workspace elements -->
-    <div class="workspace-content">
+    <div class="workspace_content" ref="workspace_content" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent draggable="false">
       <!-- Your flowchart elements here -->
       <div :class="'workspace_element ' + item.type" 
       v-for="item in workspace_items" 
@@ -46,7 +46,7 @@
   const workspace_items = ref([]);
 
   let instance = null; //the jsplumb instance, this is a library which handles the drag and drop as well as the connections 
-  const workspace = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
+  const workspace_content = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
 
   //need this as the developer server "npm run dev" will run into error using a normal ref of a v-for. This skips the unwrapping
   const jsplumbElements = ref([]);
@@ -64,10 +64,10 @@
 
 
   onMounted(() => {
-    workspace.value.focus();
+    workspace_content.value.focus();
     console.log(jsplumbElements.value)
     instance = newInstance({
-      container: workspace.value,
+      container: workspace_content.value,
       maxConnections: -1,
       connectionOverlays: [{ type:"Arrow", options:{location:1}}] //sets the default connection to an arrow from source to target
     });
@@ -306,6 +306,7 @@
     border-width: 1px;
     border-style: solid;
     border-color: black;
+    transform: scale(1);
   } 
   .property-window-container {
     position: absolute;
@@ -314,14 +315,15 @@
     z-index: 1; /* Ensure property window appears above the workspace content */
   }
 
-  .workspace-content{
-    position: relative; /* Important for positioning absolute elements */
-    transform-origin: top left;
-    width: 100%; /* Use percentage to adjust to parent width */
-    min-height: 100%; /* Ensure content fills the available vertical space */
-    background-size: 40px 40px;
-    background-image: radial-gradient(circle, #000 1px, rgba(0, 0, 0, 0) 1px);
-  }
+
+  .workspace_content {
+  position: relative;
+  width: calc(100% + 200px); /* Adjust the value based on your needs */
+  height: calc(100% + 200px); /* Adjust the value based on your needs */
+  transform-origin: top left;
+  background-size: 40px 40px;
+  background-image: radial-gradient(circle, #000 1px, rgba(0, 0, 0, 0) 1px);
+}
 
   /* Position buttons and property window */
   .buttons-container {
