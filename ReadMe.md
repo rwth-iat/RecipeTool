@@ -33,6 +33,8 @@ After that the server is running under:
 ## under development
 - [ ] delete elements
 - [ ] enable creation of macro Steps
+- [ ] enable macro processParameters (only simple ones possible yet)
+- [ ] add Ressource Constraints
 - [ ] multiple workspace tabs (one for main process, others for opened subprocesses)
 - [ ] enable panning of the workspace (moving horizontally and vertically)
 - [ ] extend generated BatchML
