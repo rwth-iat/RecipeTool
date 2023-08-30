@@ -2,18 +2,12 @@
 <template>
   <div id="workspace" @dragenter.prevent @dragover.prevent>
     <!-- Workspace elements -->
-    <div class="workspace_content" ref="workspace_content" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent draggable="false" @mousedown="startPanning" @mousemove="handlePanning" @mouseup="stopPanning">
-      <!-- Your flowchart elements here -->
-      <div :class="'workspace_element ' + item.type" 
-      v-for="item in workspace_items" 
-      :key="item.id" 
-      :ref="skipUnwrap.jsplumbElements" 
-      :id="item.id"
-      @click="handleClick(item)"
-    >
-      {{ item.name }}
-    </div>
-    </div>
+    <WorkspaceContent :workspace_items="workspace_items"
+      @changeSelectedElement="selectedElement = $event" 
+      @content-ref="workspaceContentRef = $event" 
+      @jsplumbElements="jsplumbElements = $event" 
+      @openPropertyWindow="openPropertyWindow"
+    />
 
     <!-- Zoom Buttons-->
     <div class="buttons-container">
@@ -36,21 +30,20 @@
 
 
 <script setup>
-  import { ref, onMounted, onUpdated, watch, nextTick } from 'vue';
+  import { ref, onMounted, onUpdated, watch, nextTick, VueElement } from 'vue';
   import axios from 'axios'
   import { newInstance, ready } from "@jsplumb/browser-ui";
   import { create_validate_download_batchml } from './create_xml/new_export_xml.js';
   import PropertyWindowContent from './WorkspaceComponents/PropertyWindow.vue'; // Import your property window content component
+  import WorkspaceContent from './WorkspaceComponents/WorkspaceContent.vue';
 
   // when an element is dropped into the workspace workspace_items 
   const workspace_items = ref([]);
 
   let instance = null; //the jsplumb instance, this is a library which handles the drag and drop as well as the connections 
-  const workspace_content = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
+  let workspaceContentRef = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
+  let jsplumbElements = ref([]);
 
-  //need this as the developer server "npm run dev" will run into error using a normal ref of a v-for. This skips the unwrapping
-  const jsplumbElements = ref([]);
-  var skipUnwrap = { jsplumbElements }
   //object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
   const managedElements = ref({})
 
@@ -61,19 +54,55 @@
 		baseURL: ''
 	});
 
+  
+  //handle opening and closing the property window
+  const isPropertyWindowOpen = ref(false);
+  function openPropertyWindow(){
+    isPropertyWindowOpen.value = true;
+  };
+  function closePropertyWindow(){
+    isPropertyWindowOpen.value = false;
+  };
+
 
   onMounted(() => {
-    workspace_content.value.focus();
+    //nextTick()
+    //workspaceContentRef.value.focus();
+    
     console.log(jsplumbElements.value)
+    console.log("0")
+    console.log("1")
+    console.log("2")
+  });
+
+  
+  // Watch for changes in workspaceContentRef
+  watch(workspaceContentRef, (newWorkspaceContentRef) => {
+    console.log("3")
+    if (newWorkspaceContentRef) {
+      ready(() => {
+        console.log(newWorkspaceContentRef)
+        initializeJsPlumb(newWorkspaceContentRef);
+        console.log("7")
+      })
+    }
+  });
+  
+  // Function to initialize jsPlumb
+  function initializeJsPlumb(container) {
+    console.log("4")
     instance = newInstance({
-      container: workspace_content.value,
+      container: container.value,
       maxConnections: -1,
-      connectionOverlays: [{ type:"Arrow", options:{location:1}}], //sets the default connection to an arrow from source to target
+      connectionOverlays: [{ type: "Arrow", options: { location: 1 } }],
       connector: "Flowchart"
     });
-    workspace_content.value.style.transform = `scale(1)`;
+    console.log("5")
+    container.value.style.transform = `scale(1)`;
+    console.log("5")
     instance.setZoom(1);
-  });
+    console.log("6")
+  }
 
   function addSourceEndpoint(element){
     const sourceEndpoint = instance.addEndpoint(element, {
@@ -137,9 +166,11 @@
   //if a new item is added automatically add endpoints to new items
   async function updateItemList(newItems) {
     console.debug("workspace_items updated, watcher triggered")
+    console.log(newItems)
     await nextTick(); //wait for next tick to ensure that the newly added items of the workspace item list are actually rendered
     newItems.forEach(item => { //iterate through items
-      const elementRef = jsplumbElements.value.find(element => {return element.id === item.id}); //find the corresponding DOM element
+      console.log(jsplumbElements)
+      const elementRef = jsplumbElements.value.value.find((element) => {return element.id === item.id}); //find the corresponding DOM element
       if (!managedElements.value[item.id]) {    //check if there are any new items and run the following:
         addJsPlumbEndpoints(elementRef, item)  // add endpoints
         elementRef.style.left = item.x+"px";   //set x to x saved in Ondrop event
@@ -149,72 +180,6 @@
     });
   }
   watch(workspace_items, updateItemList, { deep: true });
-  // TODO: check if this interfers with js plumb drag and drop as it may be called on every drop event
-  const onDrop = (event) => {
-    console.log("Drop");
-    event.preventDefault();
-    var id = event.dataTransfer.getData("itemID");
-    var name = event.dataTransfer.getData("itemName");
-    var classes = event.dataTransfer.getData("itemClasses");
-    
-    var type 
-    console.log(classes)
-    if (classes.includes("material_element")){
-      type = "material"
-    }else if (classes.includes("process_element")){
-      type = "process"
-    }else{
-      console.log("neither material nor process")
-    }
-
-    //get mouse postion and substrac workspace position to get relative position as workspace elemenets are positioned relative (is needed for jsplumb)
-    var rect = event.target.getBoundingClientRect();
-    var x = event.clientX - rect.left; //+ "px"  x position within the element.
-    var y = event.clientY - rect.top;
-
-    // if it is a sidebar element add new item to workspace list. Drag and drop of workspace elements is handled by jsplumb
-    if (classes.includes("sidebar_element")) {
-      var unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
-      //var unique_id = id;
-      workspace_items.value.push({ id: unique_id, name: name, type: type, x: x, y: y });
-      console.log("dragged from sidebar, dropped in workspace at absolute position: " + event.clientX.toString() + " " + event.clientY.toString());
-      console.log(workspace_items);
-    }
-  };
-
-
-  /*
-    The follwing Functions handle the opening and closing of the property window.
-    Every click checks if in the last 300 miliseconds the same target was already clicked.
-    Then it is registered as a double click and the property window is opened.
-  */
-  //double click opens window
-  const lastClickTime = ref(0);
-  const doubleClickThreshold = 300; // Adjust this value as needed (in milliseconds)
-  const handleClick = (item) => {
-    const currentTime = new Date().getTime();
-    console.log("click_detected")
-    if (currentTime - lastClickTime.value < doubleClickThreshold) {
-      handleDoubleClick(item);
-    } else {
-      lastClickTime.value = currentTime;
-    }
-  };
-  const handleDoubleClick = (item) => {
-    // Logic to handle double click
-    selectedElement.value = item
-    openPropertyWindow()
-    console.log('Double click detected!');
-  };
-  //handle opening and closing the property window
-  const isPropertyWindowOpen = ref(false);
-  const openPropertyWindow = () => {
-    isPropertyWindowOpen.value = true;
-  };
-  const closePropertyWindow = () => {
-    isPropertyWindowOpen.value = false;
-  };
-
 
   /*
     the following paramters and functions handle the zooming of the workspace
@@ -224,60 +189,16 @@
   // Zoom in by incrementing the zoom level
   const zoomIn = () => {
     zoomLevel.value += 0.1;
-    workspace_content.value.style.transform = `scale(${zoomLevel.value})`;
+    workspaceContentRef.value.style.transform = `scale(${zoomLevel.value})`;
     instance.setZoom(zoomLevel.value);
     console.log("zoom in");
   };
   // Zoom out by decrementing the zoom level
   const zoomOut = () => {
     zoomLevel.value -= 0.1;
-    workspace_content.value.style.transform = `scale(${zoomLevel.value})`;
+    workspaceContentRef.value.style.transform = `scale(${zoomLevel.value})`;
     instance.setZoom(zoomLevel.value);
     console.log("zoom out");
-  };
-  
-  /*
-    the following parameters and functions handle the panning of the workspace
-    to pan the workspace you drag the background 
-  */
-
-  //dragging parameters
-  let panning = false; // Flag to indicate if panning is currently active
-  let initialMouseX = 0; // Initial mouse X position when starting to pan
-  let initialMouseY = 0; // Initial mouse Y position when starting to pan
-  let initialPanX = 0; // Initial pan X value when starting to pan
-  let initialPanY = 0; // Initial pan Y value when starting to pan
-  /*
-  This Function is called when the workspace_content is dragged.
-  When dragging elements the event is also propagated to the parent("workspace_conntent") therefore we check if the target was the workspace_content.
-  */ 
-  const startPanning = (event) => {
-    if (event.target.classList.contains("workspace_content")) {
-      panning = true;
-      initialMouseX = event.clientX;
-      initialMouseY = event.clientY;
-      initialPanX = workspace_content.value.offsetLeft;
-      initialPanY = workspace_content.value.offsetTop;
-      document.addEventListener("mousemove", handlePanning);
-      document.addEventListener("mouseup", stopPanning);
-    };
-  }
-  const handlePanning = (event) => {
-    if (panning) {
-      // Handle panning only if not dragging an element
-      const deltaX = event.clientX - initialMouseX;
-      const deltaY = event.clientY - initialMouseY;
-
-      // Update the position of workspace_content
-      workspace_content.value.style.left = initialPanX + deltaX + "px";
-      workspace_content.value.style.top = initialPanY + deltaY + "px";
-    }
-  };
-
-  const stopPanning = () => {
-    panning = false;
-    document.removeEventListener("mousemove", handlePanning);
-    document.removeEventListener("mouseup", stopPanning);
   };
 
   /*
@@ -301,24 +222,6 @@
 
 
 <style>
-  .material{
-    background-color:#fff;
-    border:1px solid black;    
-    height:100px;
-    border-radius:50%;
-    -moz-border-radius:50%;
-    -webkit-border-radius:50%;
-    width:100px;
-  }
-  .process{
-    width: 200px;
-    height: 30px;
-    border-radius: 5px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: black;
-  }
-
   #workspace {
     position: relative;
     height: calc(100vh - var(--topbar-height));
@@ -336,31 +239,12 @@
     z-index: 2; /* Ensure property window appears above the workspace content */
   }
 
-
-  .workspace_content {
-  position: relative;
-  width: calc(100% + 200px); /* Adjust the value based on your needs */
-  height: calc(100% + 200px); /* Adjust the value based on your needs */
-  transform-origin: center center;
-  background-size: 50px 50px;
-  background-image: radial-gradient(circle, #000 1px, rgba(0, 0, 0, 0) 1px);
-  z-index: 1;
-}
-
   /* Position buttons and property window */
   .buttons-container {
     position: absolute;
     top: 10px; /* Adjust the top distance as needed */
     left: 10px; /* Adjust the left distance as needed */
     z-index: 2; /* Ensure buttons appear above the workspace content */
-  }
-
-  .workspace_element {
-    display: flex;
-    position: absolute;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
   }
 
   .property-window-enter-active, .property-window-leave-active {
