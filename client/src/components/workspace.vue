@@ -56,14 +56,6 @@
 
   var selectedElement = ref({});
 
-  
-  //dragging parameters
-  let panning = false; // Flag to indicate if panning is currently active
-  let initialMouseX = 0; // Initial mouse X position when starting to pan
-  let initialMouseY = 0; // Initial mouse Y position when starting to pan
-  let initialPanX = 0; // Initial pan X value when starting to pan
-  let initialPanY = 0; // Initial pan Y value when starting to pan
-
   const client = axios.create({
     	//baseURL: process.env.VUE_APP_BASE_URL
 		baseURL: ''
@@ -157,7 +149,6 @@
     });
   }
   watch(workspace_items, updateItemList, { deep: true });
-
   // TODO: check if this interfers with js plumb drag and drop as it may be called on every drop event
   const onDrop = (event) => {
     console.log("Drop");
@@ -191,6 +182,12 @@
     }
   };
 
+
+  /*
+    The follwing Functions handle the opening and closing of the property window.
+    Every click checks if in the last 300 miliseconds the same target was already clicked.
+    Then it is registered as a double click and the property window is opened.
+  */
   //double click opens window
   const lastClickTime = ref(0);
   const doubleClickThreshold = 300; // Adjust this value as needed (in milliseconds)
@@ -209,7 +206,6 @@
     openPropertyWindow()
     console.log('Double click detected!');
   };
-
   //handle opening and closing the property window
   const isPropertyWindowOpen = ref(false);
   const openPropertyWindow = () => {
@@ -219,8 +215,12 @@
     isPropertyWindowOpen.value = false;
   };
 
-  const zoomLevel = ref(1);
 
+  /*
+    the following paramters and functions handle the zooming of the workspace
+    to zoom the workspace you use the zoomin and zoomout buttons in the upper left corner
+  */
+  const zoomLevel = ref(1);
   // Zoom in by incrementing the zoom level
   const zoomIn = () => {
     zoomLevel.value += 0.1;
@@ -228,7 +228,6 @@
     instance.setZoom(zoomLevel.value);
     console.log("zoom in");
   };
-
   // Zoom out by decrementing the zoom level
   const zoomOut = () => {
     zoomLevel.value -= 0.1;
@@ -237,6 +236,17 @@
     console.log("zoom out");
   };
   
+  /*
+    the following parameters and functions handle the panning of the workspace
+    to pan the workspace you drag the background 
+  */
+
+  //dragging parameters
+  let panning = false; // Flag to indicate if panning is currently active
+  let initialMouseX = 0; // Initial mouse X position when starting to pan
+  let initialMouseY = 0; // Initial mouse Y position when starting to pan
+  let initialPanX = 0; // Initial pan X value when starting to pan
+  let initialPanY = 0; // Initial pan Y value when starting to pan
   /*
   This Function is called when the workspace_content is dragged.
   When dragging elements the event is also propagated to the parent("workspace_conntent") therefore we check if the target was the workspace_content.
@@ -250,9 +260,8 @@
       initialPanY = workspace_content.value.offsetTop;
       document.addEventListener("mousemove", handlePanning);
       document.addEventListener("mouseup", stopPanning);
-  };
-}
-
+    };
+  }
   const handlePanning = (event) => {
     if (panning) {
       // Handle panning only if not dragging an element
