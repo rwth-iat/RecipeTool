@@ -1,18 +1,32 @@
 <!--Draw all workspace elements. Connections are drawn by jsplumb in the background-->
 <template>
   <div id="workspace" @dragenter.prevent @dragover.prevent>
-    <!-- Workspace elements -->
-    <WorkspaceContent :workspace_items="workspace_items"
+    <!-- Main workspace where the top level processes are located -->
+    <WorkspaceContent
+      id="main_workspace"
+      v-show="!show_macro_steps"
+      :workspace_items="main_workspace_items"
       @changeSelectedElement="selectedElement = $event" 
       @content-ref="workspaceContentRef = $event" 
       @jsplumbElements="jsplumbElements = $event" 
       @openPropertyWindow="openPropertyWindow"
     />
 
+    <!-- secondary workspace for when the inner steps of a single process are edited -->
+    <WorkspaceContent
+      id="secondary_workspace"
+      v-show="show_macro_steps"
+      :workspace_items="secondary_workspace_items"
+      @changeSelectedElement="selectedElement = $event"
+      @openPropertyWindow="openPropertyWindow"
+    />
+
     <!-- Zoom Buttons-->
     <div class="buttons-container">
-      <button @click="zoomIn">Zoom In</button>
-      <button @click="zoomOut">Zoom Out</button>
+      <button class="buttons" @click="zoomIn">Zoom In</button>
+      <button class="buttons" @click="zoomOut">Zoom Out</button>
+      <button class="buttons" @click="show_macro_steps=true">open new workspace</button>
+      <button class="buttons" @click="show_macro_steps=false">close workspace</button>
     </div>
 
     <!-- Property window -->
@@ -38,7 +52,8 @@
   import WorkspaceContent from './WorkspaceComponents/WorkspaceContent.vue';
 
   // when an element is dropped into the workspace workspace_items 
-  const workspace_items = ref([]);
+  const main_workspace_items = ref([]);
+  const secondary_workspace_items = ref([]);
 
   let instance = null; //the jsplumb instance, this is a library which handles the drag and drop as well as the connections 
   let workspaceContentRef = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
@@ -46,14 +61,13 @@
 
   //object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
   const managedElements = ref({})
-
   var selectedElement = ref({});
-
   const client = axios.create({
     	//baseURL: process.env.VUE_APP_BASE_URL
 		baseURL: ''
 	});
 
+  const show_macro_steps = ref(false)
   
   //handle opening and closing the property window
   const isPropertyWindowOpen = ref(false);
@@ -63,45 +77,26 @@
   function closePropertyWindow(){
     isPropertyWindowOpen.value = false;
   };
-
-
-  onMounted(() => {
-    //nextTick()
-    //workspaceContentRef.value.focus();
-    
-    console.log(jsplumbElements.value)
-    console.log("0")
-    console.log("1")
-    console.log("2")
-  });
-
   
   // Watch for changes in workspaceContentRef
   watch(workspaceContentRef, (newWorkspaceContentRef) => {
-    console.log("3")
     if (newWorkspaceContentRef) {
       ready(() => {
-        console.log(newWorkspaceContentRef)
         initializeJsPlumb(newWorkspaceContentRef);
-        console.log("7")
       })
     }
   });
   
   // Function to initialize jsPlumb
   function initializeJsPlumb(container) {
-    console.log("4")
     instance = newInstance({
       container: container.value,
       maxConnections: -1,
       connectionOverlays: [{ type: "Arrow", options: { location: 1 } }],
       connector: "Flowchart"
     });
-    console.log("5")
     container.value.style.transform = `scale(1)`;
-    console.log("5")
     instance.setZoom(1);
-    console.log("6")
   }
 
   function addSourceEndpoint(element){
@@ -166,10 +161,8 @@
   //if a new item is added automatically add endpoints to new items
   async function updateItemList(newItems) {
     console.debug("workspace_items updated, watcher triggered")
-    console.log(newItems)
     await nextTick(); //wait for next tick to ensure that the newly added items of the workspace item list are actually rendered
     newItems.forEach(item => { //iterate through items
-      console.log(jsplumbElements)
       const elementRef = jsplumbElements.value.value.find((element) => {return element.id === item.id}); //find the corresponding DOM element
       if (!managedElements.value[item.id]) {    //check if there are any new items and run the following:
         addJsPlumbEndpoints(elementRef, item)  // add endpoints
@@ -179,7 +172,7 @@
       }
     });
   }
-  watch(workspace_items, updateItemList, { deep: true });
+  watch(main_workspace_items, updateItemList, { deep: true });
 
   /*
     the following paramters and functions handle the zooming of the workspace
@@ -189,14 +182,14 @@
   // Zoom in by incrementing the zoom level
   const zoomIn = () => {
     zoomLevel.value += 0.1;
-    workspaceContentRef.value.style.transform = `scale(${zoomLevel.value})`;
+    workspaceContentRef.value.value.style.transform = `scale(${zoomLevel.value})`;
     instance.setZoom(zoomLevel.value);
     console.log("zoom in");
   };
   // Zoom out by decrementing the zoom level
   const zoomOut = () => {
     zoomLevel.value -= 0.1;
-    workspaceContentRef.value.style.transform = `scale(${zoomLevel.value})`;
+    workspaceContentRef.value.value.style.transform = `scale(${zoomLevel.value})`;
     instance.setZoom(zoomLevel.value);
     console.log("zoom out");
   };
@@ -210,7 +203,7 @@
         - if unknown error while creating or validating it gives the user the error message
   */ 
   function export_batchml (){
-    create_validate_download_batchml(workspace_items.value, instance.getConnections(), client)
+    create_validate_download_batchml(main_workspace_items.value, instance.getConnections(), client)
   }
   //expose this funciton so that i can be called from the Topbar export button
   defineExpose({
@@ -223,6 +216,7 @@
 
 <style>
   #workspace {
+    background-color: black;
     position: relative;
     height: calc(100vh - var(--topbar-height));
     flex: 1 1 0;
@@ -232,6 +226,12 @@
     border-color: black;
     z-index: 0;
   } 
+  #main_workspace{
+    background-color: white;
+  }
+  #secondary_workspace{
+    background-color: grey;
+  }
   .property-window-container {
     position: absolute;
     top: 0px; /* Adjust the top distance as needed */
@@ -241,10 +241,14 @@
 
   /* Position buttons and property window */
   .buttons-container {
+    background-color: white;
     position: absolute;
     top: 10px; /* Adjust the top distance as needed */
     left: 10px; /* Adjust the left distance as needed */
     z-index: 2; /* Ensure buttons appear above the workspace content */
+  }
+  .buttons{
+    margin: 10px;
   }
 
   .property-window-enter-active, .property-window-leave-active {
