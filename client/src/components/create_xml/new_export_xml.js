@@ -212,3 +212,47 @@ export function generate_batchml(workspace_items, jsplumb_connections){
     const xmlString = marshaller.marshalString(gRecipe);
     return xmlString
 }
+
+export function start_download(filename, file_string){
+    //automatically start download
+    var pom = document.createElement('a');
+    var bb = new Blob([file_string], {type: 'text/plain'});
+    pom.setAttribute('href', window.URL.createObjectURL(bb));
+    pom.setAttribute('download', filename);
+    pom.dataset.downloadurl = ['text/plain', pom.download, pom.href].join(':');
+    pom.draggable = true; 
+    pom.classList.add('dragout');
+    pom.click();
+    return;
+}
+
+export function create_validate_download_batchml(items, jsplumb_connections, client){
+    var xml_string = generate_batchml(items, jsplumb_connections)
+    client.get('/validate', {
+            params: {
+              "xml_string": xml_string
+            }
+      }).then(response => {
+          if (response.status == 200){
+            // handle success
+            console.log("BatchML is valid!")
+            start_download("Verfahrensrezept.xml", xml_string)
+          }
+      }).catch(error => {
+          if (error.request.status == 400){
+            // handle success
+            console.log("BatchML is not valid!")
+            start_download("invalid_Verfahrensrezept.xml", xml_string)
+            window.alert("CAUTION: The generated Batchml is invalid, but is nevertheless downloaded.")
+          }else if(error.request.status == 404){
+            console.log("Unable to reach the server, are you maybe only running the client code?")
+            console.log(error)
+            window.alert("Error 404: Unable to reach the server, when validating the Batchml. Are you maybe only running the client code? For complete error message look into the browser devtools console")
+          }else{
+            // handle error
+            console.log("error trying to validate the BatchML file:")
+            console.log(error)
+            window.alert("Error: The Batchml could not be validated. For complete error message look into the browser devtools console.")
+          }
+      })
+  }

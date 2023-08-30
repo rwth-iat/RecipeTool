@@ -2,7 +2,7 @@
 <template>
   <div id="workspace" @dragenter.prevent @dragover.prevent>
     <!-- Workspace elements -->
-    <div class="workspace_content" ref="workspace_content" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent draggable="false" @mousedown="startPanning" @mousemove="handleMouseMove" @mouseup="stopPanning">
+    <div class="workspace_content" ref="workspace_content" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent draggable="false" @mousedown="startPanning" @mousemove="handlePanning" @mouseup="stopPanning">
       <!-- Your flowchart elements here -->
       <div :class="'workspace_element ' + item.type" 
       v-for="item in workspace_items" 
@@ -39,7 +39,7 @@
   import { ref, onMounted, onUpdated, watch, nextTick } from 'vue';
   import axios from 'axios'
   import { newInstance, ready } from "@jsplumb/browser-ui";
-  import { generate_batchml } from './create_xml/new_export_xml.js';
+  import { create_validate_download_batchml } from './create_xml/new_export_xml.js';
   import PropertyWindowContent from './WorkspaceComponents/PropertyWindow.vue'; // Import your property window content component
 
   // when an element is dropped into the workspace workspace_items 
@@ -59,7 +59,6 @@
   
   //dragging parameters
   let panning = false; // Flag to indicate if panning is currently active
-  let draggingElement = false; // Track dragging of individual elements
   let initialMouseX = 0; // Initial mouse X position when starting to pan
   let initialMouseY = 0; // Initial mouse Y position when starting to pan
   let initialPanX = 0; // Initial pan X value when starting to pan
@@ -191,53 +190,6 @@
       console.log(workspace_items);
     }
   };
-  function start_download(filename, file_string){
-    //automatically start download
-    var pom = document.createElement('a');
-    var bb = new Blob([file_string], {type: 'text/plain'});
-    pom.setAttribute('href', window.URL.createObjectURL(bb));
-    pom.setAttribute('download', filename);
-    pom.dataset.downloadurl = ['text/plain', pom.download, pom.href].join(':');
-    pom.draggable = true; 
-    pom.classList.add('dragout');
-    pom.click();
-  }
-
-  function export_batchml(){
-    var items = workspace_items.value
-    var jsplumb_connections = instance.getConnections()
-    var xml_string = generate_batchml(items, jsplumb_connections)
-    client.get('/validate', {
-            params: {
-              "xml_string": xml_string
-            }
-      }).then(response => {
-          if (response.status == 200){
-            // handle success
-            console.log("BatchML is valid!")
-            start_download("Verfahrensrezept.xml", xml_string)
-          }
-      }).catch(error => {
-          if (error.request.status == 400){
-            // handle success
-            console.log("BatchML is not valid!")
-            start_download("invalid_Verfahrensrezept.xml", xml_string)
-            window.alert("CAUTION: The generated Batchml is invalid, but is nevertheless downloaded.")
-          }else if(error.request.status == 404){
-            console.log("Unable to reach the server, are you maybe only running the client code?")
-            console.log(error)
-            window.alert("Error 404: Unable to reach the server, when validating the Batchml. Are you maybe only running the client code? For complete error message look into the browser devtools console")
-          }else{
-            // handle error
-            console.log("error trying to validate the BatchML file:")
-            console.log(error)
-            window.alert("Error: The Batchml could not be validated. For complete error message look into the browser devtools console.")
-          }
-      })
-  }
-  defineExpose({
-    export_batchml
-  });
 
   //double click opens window
   const lastClickTime = ref(0);
@@ -290,39 +242,50 @@
   When dragging elements the event is also propagated to the parent("workspace_conntent") therefore we check if the target was the workspace_content.
   */ 
   const startPanning = (event) => {
-    if (!event.target.classList.contains("workspace_content")) {
-      // If the clicked element is not the workspace, it's a drag action
-      draggingElement = true;
-    } else {
+    if (event.target.classList.contains("workspace_content")) {
       panning = true;
       initialMouseX = event.clientX;
       initialMouseY = event.clientY;
       initialPanX = workspace_content.value.offsetLeft;
       initialPanY = workspace_content.value.offsetTop;
-      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mousemove", handlePanning);
       document.addEventListener("mouseup", stopPanning);
   };
 }
 
-const handleMouseMove = (event) => {
-  if (panning && !draggingElement) {
-    // Handle panning only if not dragging an element
-    const deltaX = event.clientX - initialMouseX;
-    const deltaY = event.clientY - initialMouseY;
+  const handlePanning = (event) => {
+    if (panning) {
+      // Handle panning only if not dragging an element
+      const deltaX = event.clientX - initialMouseX;
+      const deltaY = event.clientY - initialMouseY;
 
-    // Update the position of workspace_content
-    workspace_content.value.style.left = initialPanX + deltaX + "px";
-    workspace_content.value.style.top = initialPanY + deltaY + "px";
+      // Update the position of workspace_content
+      workspace_content.value.style.left = initialPanX + deltaX + "px";
+      workspace_content.value.style.top = initialPanY + deltaY + "px";
+    }
+  };
+
+  const stopPanning = () => {
+    panning = false;
+    document.removeEventListener("mousemove", handlePanning);
+    document.removeEventListener("mouseup", stopPanning);
+  };
+
+  /*
+    this function does the following:,
+      - it creates the batchml
+      - validates it by the servers /validate endpoint
+        - if its valid downloads it automatically "Verfahrensrezept.xml"
+        - if not warns the user by alert box but downloads as "invalid_Verfahrensrezept"
+        - if unknown error while creating or validating it gives the user the error message
+  */ 
+  function export_batchml (){
+    create_validate_download_batchml(workspace_items.value, instance.getConnections(), client)
   }
-};
-
-const stopPanning = () => {
-  panning = false;
-  draggingElement = false; // Reset dragging status
-  document.removeEventListener("mousemove", handleMouseMove);
-  document.removeEventListener("mouseup", handleMouseUp);
-};
-
+  //expose this funciton so that i can be called from the Topbar export button
+  defineExpose({
+      export_batchml
+  });
 </script>
 
 
