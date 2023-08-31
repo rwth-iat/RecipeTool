@@ -212,9 +212,9 @@
   const mainZoomLevel = ref(1);
   const secondaryZoomLevel = ref(1);
   function getZoomVariables(){
-    if(show_macro_steps){
+    if(!show_macro_steps.value){
       return [mainZoomLevel, mainWorkspaceContentRef, mainJsplumbInstance]
-    }else if(!show_macro_steps){
+    }else if(show_macro_steps.value){
       return [secondaryZoomLevel, secondaryWorkspaceContentRef, secondaryJsplumbInstance]
     }
   }
