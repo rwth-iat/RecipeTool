@@ -7,8 +7,8 @@
       v-show="!show_macro_steps"
       :workspace_items="main_workspace_items"
       @changeSelectedElement="selectedElement = $event" 
-      @content-ref="workspaceContentRef = $event" 
-      @jsplumbElements="jsplumbElements = $event" 
+      @content-ref="mainWorkspaceContentRef = $event" 
+      @jsplumbElements="mainJsplumbElements = $event" 
       @openPropertyWindow="openPropertyWindow"
     />
 
@@ -18,6 +18,8 @@
       v-show="show_macro_steps"
       :workspace_items="secondary_workspace_items"
       @changeSelectedElement="selectedElement = $event"
+      @content-ref="secondaryWorkspaceContentRef = $event"
+      @jsplumbElements="secondaryJsplumbElements = $event"  
       @openPropertyWindow="openPropertyWindow"
     />
 
@@ -51,16 +53,21 @@
   import PropertyWindowContent from './WorkspaceComponents/PropertyWindow.vue'; // Import your property window content component
   import WorkspaceContent from './WorkspaceComponents/WorkspaceContent.vue';
 
-  // when an element is dropped into the workspace workspace_items 
-  const main_workspace_items = ref([]);
-  const secondary_workspace_items = ref([]);
+  //variables for main workspace
+  const main_workspace_items = ref([]); // when an element is dropped into the workspace workspace_items
+  let mainJsplumbInstance = null; //the jsplumb instance, this is a library which handles the drag and drop as well as the connections 
+  let mainWorkspaceContentRef = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
+  let mainJsplumbElements = ref([]);
+  const mainManagedElements = ref({}) //object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
+  
+//variables for secondary workspace
+  const secondary_workspace_items = ref([]); // when an element is dropped into the workspace workspace_items
+  let secondaryJsplumbInstance = null; //the jsplumb instance, this is a library which handles the drag and drop as well as the connections 
+  let secondaryWorkspaceContentRef = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
+  let secondaryJsplumbElements = ref([]);
+  const secondaryManagedElements = ref({}) //object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
 
-  let instance = null; //the jsplumb instance, this is a library which handles the drag and drop as well as the connections 
-  let workspaceContentRef = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
-  let jsplumbElements = ref([]);
-
-  //object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
-  const managedElements = ref({})
+  
   var selectedElement = ref({});
   const client = axios.create({
     	//baseURL: process.env.VUE_APP_BASE_URL
@@ -79,17 +86,28 @@
   };
   
   // Watch for changes in workspaceContentRef
-  watch(workspaceContentRef, (newWorkspaceContentRef) => {
+  watch(mainWorkspaceContentRef, (newWorkspaceContentRef) => {
     if (newWorkspaceContentRef) {
       ready(() => {
-        initializeJsPlumb(newWorkspaceContentRef);
+        mainJsplumbInstance = initializeJsPlumb(newWorkspaceContentRef);
+        watch(main_workspace_items, createUpdateItemListHandler(mainJsplumbInstance, mainJsplumbElements, mainManagedElements), {deep: true,});
       })
+    }
+  });
+
+  // Watch for changes in workspaceContentRef
+  watch(secondaryWorkspaceContentRef, (newWorkspaceContentRef) => {
+    if (newWorkspaceContentRef) {
+      ready(() => {
+        secondaryJsplumbInstance = initializeJsPlumb(newWorkspaceContentRef);
+        watch(secondary_workspace_items, createUpdateItemListHandler(secondaryJsplumbInstance, secondaryJsplumbElements, secondaryManagedElements), {deep: true,});
+    })
     }
   });
   
   // Function to initialize jsPlumb
   function initializeJsPlumb(container) {
-    instance = newInstance({
+    var instance = newInstance({
       container: container.value,
       maxConnections: -1,
       connectionOverlays: [{ type: "Arrow", options: { location: 1 } }],
@@ -97,9 +115,10 @@
     });
     container.value.style.transform = `scale(1)`;
     instance.setZoom(1);
+    return instance
   }
 
-  function addSourceEndpoint(element){
+  function addSourceEndpoint(instance, element){
     const sourceEndpoint = instance.addEndpoint(element, {
         source: true,
         anchor: "Bottom",
@@ -108,7 +127,7 @@
       return sourceEndpoint
   }
 
-  function addTargetEndpoint(element){
+  function addTargetEndpoint(instance, element){
     const targetEndpoint = instance.addEndpoint(element, {
         target: true,
         anchor: "Top",
@@ -119,8 +138,9 @@
 
   // add endpoints and attach the element id as data to the endpoint. 
   // When exporting to xml we can iterate through the connections and when accessing the source Endpoint and Target endpoint we can now read the corresponding element
-  async function addJsPlumbEndpoints(element, item) {
+  async function addJsPlumbEndpoints(instance, element, item) {
     console.log("entered addJSEndpoints")
+    console.log(instance)
     console.log(element)
     console.log(item)
     //await nextTick(); // we need this for smooth rendering
@@ -131,20 +151,28 @@
       var targetEndpoint = {}
       if(item.type === "material"){
         if(item.name === "Eingangsmaterial"){
-          sourceEndpoint = addSourceEndpoint(element)
+          console.log("add Eingangsmaterial")
+          sourceEndpoint = addSourceEndpoint(instance, element)
           targetEndpoint = {id: ''}
+          console.log("added SourceEndpoint")
         }else if(item.name === "Zwischenprodukt"){
-          sourceEndpoint = addSourceEndpoint(element)
-          targetEndpoint = addTargetEndpoint(element)
+          console.log("add Zwischenprodukt")
+          sourceEndpoint = addSourceEndpoint(instance, element)
+          targetEndpoint = addTargetEndpoint(instance, element)
+          console.log("added Source- and Target-Endpoint")
         }else if(item.name === "Endprodukt"){
+          console.log("add Endproduct")
           sourceEndpoint = {id: ''}
-          targetEndpoint = addTargetEndpoint(element)
+          targetEndpoint = addTargetEndpoint(instance, element)
+          console.log("added TargetEndpoint")
         }else{
           console.error("unknown material type: " + item.name)
         }
       }else if(item.type === "process"){
-        sourceEndpoint = addSourceEndpoint(element)
-        targetEndpoint = addTargetEndpoint(element)
+        console.log("add process")
+        sourceEndpoint = addSourceEndpoint(instance, element)
+        targetEndpoint = addTargetEndpoint(instance, element)
+        console.log("added Source and Target Endpoint")
       }else{
           console.error("unknown type: " + item.type)
       }
@@ -157,40 +185,56 @@
     }
   }
 
-
-  //if a new item is added automatically add endpoints to new items
-  async function updateItemList(newItems) {
-    console.debug("workspace_items updated, watcher triggered")
-    await nextTick(); //wait for next tick to ensure that the newly added items of the workspace item list are actually rendered
-    newItems.forEach(item => { //iterate through items
-      const elementRef = jsplumbElements.value.value.find((element) => {return element.id === item.id}); //find the corresponding DOM element
-      if (!managedElements.value[item.id]) {    //check if there are any new items and run the following:
-        addJsPlumbEndpoints(elementRef, item)  // add endpoints
-        elementRef.style.left = item.x+"px";   //set x to x saved in Ondrop event
-        elementRef.style.top = item.y+"px";    //set y to y saved in Ondrop event
-        managedElements.value[item.id] = true  //mark as already managed to run this only once
+  function createUpdateItemListHandler(instance, jsplumbElements, managedElements) {
+  return async (newItems) => {
+    console.debug("workspace_items updated, watcher triggered");
+    await nextTick();
+    newItems.forEach((item) => {
+      const elementRef = jsplumbElements.value.value.find(
+        (element) => element.id === item.id
+      );
+      if (!managedElements.value[item.id]) {
+        addJsPlumbEndpoints(instance, elementRef, item);
+        elementRef.style.left = item.x + "px";
+        elementRef.style.top = item.y + "px";
+        managedElements.value[item.id] = true;
       }
     });
-  }
-  watch(main_workspace_items, updateItemList, { deep: true });
+  };
+}
+
+  //watch(secondary_workspace_items, createUpdateItemListHandler(secondary_js_plumb_instance, secondary_js_plumb_elements, secondary_managed_elements), {deep: true,});
 
   /*
     the following paramters and functions handle the zooming of the workspace
     to zoom the workspace you use the zoomin and zoomout buttons in the upper left corner
   */
-  const zoomLevel = ref(1);
+  const mainZoomLevel = ref(1);
+  const secondaryZoomLevel = ref(1);
+  function getZoomVariables(){
+    if(show_macro_steps){
+      return [mainZoomLevel, mainWorkspaceContentRef, mainJsplumbInstance]
+    }else if(!show_macro_steps){
+      return [secondaryZoomLevel, secondaryWorkspaceContentRef, secondaryJsplumbInstance]
+    }
+  }
   // Zoom in by incrementing the zoom level
   const zoomIn = () => {
+    var [zoomLevel, workspaceContentRef, jsplumbInstance] = getZoomVariables()
     zoomLevel.value += 0.1;
+    console.log(zoomLevel)
     workspaceContentRef.value.value.style.transform = `scale(${zoomLevel.value})`;
-    instance.setZoom(zoomLevel.value);
+    console.log(workspaceContentRef)
+    console.log(jsplumbInstance)
+    jsplumbInstance.setZoom(zoomLevel.value);
     console.log("zoom in");
   };
   // Zoom out by decrementing the zoom level
   const zoomOut = () => {
+    var [zoomLevel, workspaceContentRef, jsplumbInstance] = getZoomVariables()
     zoomLevel.value -= 0.1;
     workspaceContentRef.value.value.style.transform = `scale(${zoomLevel.value})`;
-    instance.setZoom(zoomLevel.value);
+    jsplumbInstance.setZoom(zoomLevel.value);
     console.log("zoom out");
   };
 
@@ -203,7 +247,7 @@
         - if unknown error while creating or validating it gives the user the error message
   */ 
   function export_batchml (){
-    create_validate_download_batchml(main_workspace_items.value, instance.getConnections(), client)
+    create_validate_download_batchml(main_workspace_items.value, mainJsplumbInstance.getConnections(), client)
   }
   //expose this funciton so that i can be called from the Topbar export button
   defineExpose({
