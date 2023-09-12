@@ -27,8 +27,9 @@
     <div class="buttons-container">
       <button class="buttons" @click="zoomIn">Zoom In</button>
       <button class="buttons" @click="zoomOut">Zoom Out</button>
-      <button class="buttons" @click="showSecondaryWorkspace=true">show secondary workspace</button>
-      <button class="buttons" @click="showSecondaryWorkspace=false">close secondary workspace</button>
+      <button class="buttons" v-show="showSecondaryWorkspace" @click="showSecondaryWorkspace=false">
+        close secondary workspace
+      </button>
     </div>
 
     <!-- Property window -->
@@ -273,9 +274,16 @@
       selectedElement.value.materials.push({ id: "OUT", name: "Endprodukt", type: "material", x: "300", y: "400" })
     }
 
+    //reset secondary workspace variables
+    secondaryJsplumbInstance.reset(); // reset Jsplumbinstance
+    console.debug(secondaryWorkspaceContentRef)
+    secondaryJsplumbInstance = initializeJsPlumb(secondaryWorkspaceContentRef.value);
+    secondary_workspace_items.value = [] // reset elements
+    //secondaryJsplumbElements.value = [];
+    //secondaryManagedElements.value = {};
+
     //add the materials and the processes to workspace items
     //the ... pushes every single element one by one instead of the whole list as one entry
-    secondary_workspace_items.value = []
     secondary_workspace_items.value.push(...selectedElement.value.processElement);
     secondary_workspace_items.value.push(...selectedElement.value.materials);
 
