@@ -37,7 +37,8 @@
       <div v-show="isPropertyWindowOpen" >
         <PropertyWindowContent
         :selectedElement="selectedElement" 
-        @close="closePropertyWindow" />
+        @close="closePropertyWindow"
+        @openInWorkspace="openInWorkspace"/>
       </div>
     </transition>
     </div>
@@ -253,6 +254,29 @@
   defineExpose({
       export_batchml
   });
+
+
+  function openInWorkspace(){
+    // check if this element already has children processes else define empty list
+    if(!Array.isArray(selectedElement.value.processElement)){
+      selectedElement.value.processElement = [];
+    }
+    // check if this element already has children processes else define empty list
+    if(!Array.isArray(selectedElement.value.materials)){
+      //if no materials exist yet add an input and output knot
+      selectedElement.value.materials = [];
+      selectedElement.value.materials.push({ id: "IN", name: "Eingangsmaterial", type: "material", x: "100px", y: "100px" })
+      selectedElement.value.materials.push({ id: "OUT", name: "Endprodukt", type: "material", x: "200px", y: "200px" })
+    }
+
+    //add the materials and the processes to workspace items
+    //the ... pushes every single element one by one instead of the whole list as one entry
+    secondary_workspace_items.value.push(...selectedElement.value.processElement);
+    secondary_workspace_items.value.push(...selectedElement.value.materials);
+
+    //open the actual secondary workspace
+    show_macro_steps.value=true;
+  }
 </script>
 
 

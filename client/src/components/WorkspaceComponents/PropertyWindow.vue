@@ -4,6 +4,9 @@
       <button @click="close">
         <span class="material-icons">>></span>
       </button>
+      <button v-show='selectedElement.type=="process"' class="openWorkspaceBtt" @click="openInWorkspace">
+        <span>Open in Workspace</span>
+      </button>
     </div>
     <h2>Properties</h2>
     <!--General Properties-->
@@ -60,9 +63,12 @@
   import { ref, defineProps, defineEmits } from 'vue';
 
   const props = defineProps(['selectedElement']);
-  const emit = defineEmits(['close']);  
+  const emit = defineEmits(['close', 'openInWorkspace']);  
   const close = () => {
     emit('close');
+  };
+  const openInWorkspace = () => {
+    emit('openInWorkspace');
   };
 
   function addProcessElementParameter(){
@@ -100,7 +106,17 @@
         transition: transform 0.8s ease-in-out; /* Adjust the duration as needed */
         border-radius: 5px;
     }
-    
+  
+    .openWorkspaceBtt{
+        padding: 5px;
+        color: black;
+        float: right;
+        background-color: var(--light) ;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
 	.material-icons {
         font-size: 2rem;
         color: var(--light);
