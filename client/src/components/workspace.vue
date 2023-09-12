@@ -27,8 +27,8 @@
     <div class="buttons-container">
       <button class="buttons" @click="zoomIn">Zoom In</button>
       <button class="buttons" @click="zoomOut">Zoom Out</button>
-      <button class="buttons" @click="showSecondaryWorkspace=true">open new workspace</button>
-      <button class="buttons" @click="showSecondaryWorkspace=false">close workspace</button>
+      <button class="buttons" @click="showSecondaryWorkspace=true">show secondary workspace</button>
+      <button class="buttons" @click="showSecondaryWorkspace=false">close secondary workspace</button>
     </div>
 
     <!-- Property window -->
