@@ -4,7 +4,7 @@
     <!-- Main workspace where the top level processes are located -->
     <WorkspaceContent
       id="main_workspace"
-      v-show="!show_macro_steps"
+      v-show="!showSecondaryWorkspace"
       :workspace_items="main_workspace_items"
       @changeSelectedElement="selectedElement = $event" 
       @content-ref="mainWorkspaceContentRef = $event" 
@@ -15,7 +15,7 @@
     <!-- secondary workspace for when the inner steps of a single process are edited -->
     <WorkspaceContent
       id="secondary_workspace"
-      v-show="show_macro_steps"
+      v-show="showSecondaryWorkspace"
       :workspace_items="secondary_workspace_items"
       @changeSelectedElement="selectedElement = $event"
       @content-ref="secondaryWorkspaceContentRef = $event"
@@ -27,8 +27,8 @@
     <div class="buttons-container">
       <button class="buttons" @click="zoomIn">Zoom In</button>
       <button class="buttons" @click="zoomOut">Zoom Out</button>
-      <button class="buttons" @click="show_macro_steps=true">open new workspace</button>
-      <button class="buttons" @click="show_macro_steps=false">close workspace</button>
+      <button class="buttons" @click="showSecondaryWorkspace=true">open new workspace</button>
+      <button class="buttons" @click="showSecondaryWorkspace=false">close workspace</button>
     </div>
 
     <!-- Property window -->
@@ -75,7 +75,7 @@
 		baseURL: ''
 	});
 
-  const show_macro_steps = ref(false)
+  const showSecondaryWorkspace = ref(false)
   
   //handle opening and closing the property window
   const isPropertyWindowOpen = ref(false);
@@ -213,9 +213,9 @@
   const mainZoomLevel = ref(1);
   const secondaryZoomLevel = ref(1);
   function getZoomVariables(){
-    if(!show_macro_steps.value){
+    if(!showSecondaryWorkspace.value){
       return [mainZoomLevel, mainWorkspaceContentRef, mainJsplumbInstance]
-    }else if(show_macro_steps.value){
+    }else if(showSecondaryWorkspace.value){
       return [secondaryZoomLevel, secondaryWorkspaceContentRef, secondaryJsplumbInstance]
     }
   }
@@ -275,7 +275,7 @@
     secondary_workspace_items.value.push(...selectedElement.value.materials);
 
     //open the actual secondary workspace
-    show_macro_steps.value=true;
+    showSecondaryWorkspace.value=true;
   }
 </script>
 
