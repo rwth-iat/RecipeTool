@@ -195,7 +195,9 @@
         (element) => element.id === item.id
       );
       if (!managedElements.value[item.id]) {
+        console.debug("changed element not yet managed placing adding endpoints");
         addJsPlumbEndpoints(instance, elementRef, item);
+        console.debug("placing new element at x:", item.x+"px", " , y:", item.y+"px");
         elementRef.style.left = item.x + "px";
         elementRef.style.top = item.y + "px";
         managedElements.value[item.id] = true;
@@ -259,14 +261,16 @@
   function openInWorkspace(){
     // check if this element already has children processes else define empty list
     if(!Array.isArray(selectedElement.value.processElement)){
+      console.log(selectedElement.value.processElements)
       selectedElement.value.processElement = [];
     }
     // check if this element already has children processes else define empty list
     if(!Array.isArray(selectedElement.value.materials)){
+      console.log(selectedElement.value.materials)
       //if no materials exist yet add an input and output knot
       selectedElement.value.materials = [];
-      selectedElement.value.materials.push({ id: "IN", name: "Eingangsmaterial", type: "material", x: "100px", y: "100px" })
-      selectedElement.value.materials.push({ id: "OUT", name: "Endprodukt", type: "material", x: "200px", y: "200px" })
+      selectedElement.value.materials.push({ id: "IN", name: "Eingangsmaterial", type: "material", x: "300", y: "100" })
+      selectedElement.value.materials.push({ id: "OUT", name: "Endprodukt", type: "material", x: "300", y: "400" })
     }
 
     //add the materials and the processes to workspace items

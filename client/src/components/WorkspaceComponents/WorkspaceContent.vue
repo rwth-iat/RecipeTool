@@ -109,11 +109,11 @@
         var type 
         console.log(classes)
         if (classes.includes("material_element")){
-        type = "material"
+            type = "material"
         }else if (classes.includes("process_element")){
-        type = "process"
+            type = "process"
         }else{
-        console.log("neither material nor process")
+            console.log("neither material nor process")
         }
 
         //get mouse postion and substrac workspace position to get relative position as workspace elemenets are positioned relative (is needed for jsplumb)
@@ -123,11 +123,11 @@
 
         // if it is a sidebar element add new item to workspace list. Drag and drop of workspace elements is handled by jsplumb
         if (classes.includes("sidebar_element")) {
-        var unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
-        //var unique_id = id;
-        props.workspace_items.push({ id: unique_id, name: name, type: type, x: x, y: y });
-        console.log("dragged from sidebar, dropped in workspace at absolute position: " + event.clientX.toString() + " " + event.clientY.toString());
-        console.log(props.workspace_items);
+            var unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
+            //var unique_id = id;
+            props.workspace_items.push({ id: unique_id, name: name, type: type, x: x, y: y });
+            console.log("dragged from sidebar, dropped in workspace at absolute position: " + event.clientX.toString() + " " + event.clientY.toString());
+            console.log(props.workspace_items);
         }
     };
 </script>
