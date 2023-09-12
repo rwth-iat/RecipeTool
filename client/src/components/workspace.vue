@@ -261,12 +261,12 @@
   function openInWorkspace(){
     // check if this element already has children processes else define empty list
     if(!Array.isArray(selectedElement.value.processElement)){
-      console.log(selectedElement.value.processElements)
+      console.debug("no child processelements: ", selectedElement.value.processElements)
       selectedElement.value.processElement = [];
     }
     // check if this element already has children processes else define empty list
     if(!Array.isArray(selectedElement.value.materials)){
-      console.log(selectedElement.value.materials)
+      console.debug("no child materials: ", selectedElement.value.materials)
       //if no materials exist yet add an input and output knot
       selectedElement.value.materials = [];
       selectedElement.value.materials.push({ id: "IN", name: "Eingangsmaterial", type: "material", x: "300", y: "100" })
@@ -275,6 +275,7 @@
 
     //add the materials and the processes to workspace items
     //the ... pushes every single element one by one instead of the whole list as one entry
+    secondary_workspace_items.value = []
     secondary_workspace_items.value.push(...selectedElement.value.processElement);
     secondary_workspace_items.value.push(...selectedElement.value.materials);
 
