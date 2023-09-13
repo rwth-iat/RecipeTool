@@ -58,15 +58,15 @@
   //variables for main workspace
   const main_workspace_items = ref([]); // when an element is dropped into the workspace workspace_items
   let mainJsplumbInstance = null; //the jsplumb instance, this is a library which handles the drag and drop as well as the connections 
-  let mainWorkspaceContentRef = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
-  let mainJsplumbElements = ref([]);
+  const mainWorkspaceContentRef = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
+  const mainJsplumbElements = ref([]);
   const mainManagedElements = ref({}) //object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
   
 //variables for secondary workspace
   const secondary_workspace_items = ref([]); // when an element is dropped into the workspace workspace_items
   let secondaryJsplumbInstance = null; //the jsplumb instance, this is a library which handles the drag and drop as well as the connections 
-  let secondaryWorkspaceContentRef = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
-  let secondaryJsplumbElements = ref([]);
+  const secondaryWorkspaceContentRef = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
+  const secondaryJsplumbElements = ref([]);
   const secondaryManagedElements = ref({}) //object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
 
   
