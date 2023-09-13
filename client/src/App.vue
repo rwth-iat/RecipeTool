@@ -1,3 +1,13 @@
+<template>
+  <main>
+    <Topbar id="top_bar" @trigger-export="callExportFunciton"/>
+    <div id="editor">
+      <Sidebar id="side_bar"/>
+      <workspace id="workspace" ref="workspaceRef"/>
+    </div>
+  </main>
+</template>
+
 <script setup>
   import Topbar from './components/TopBar.vue'
   import Sidebar from './components/SideBar.vue'
@@ -11,16 +21,6 @@
     workspaceRef.value.export_batchml();
   };
 </script>
-
-<template>
-  <main>
-    <topbar id="top_bar" @trigger-export="callExportFunciton"/>
-    <div id="editor">
-      <Sidebar id="side_bar"/>
-      <workspace id="workspace" ref="workspaceRef"/>
-    </div>
-  </main>
-</template>
 
 <style lang="scss">
   :root {
