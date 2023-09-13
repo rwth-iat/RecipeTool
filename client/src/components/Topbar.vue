@@ -1,12 +1,3 @@
-<script setup>
-const emit = defineEmits(['trigger-export']);
-
-const triggerExportInWorkspace = () => {
-  console.log("trigger-export")
-  emit('trigger-export');
-};
-</script>
-
 <template>
   <div id="topbar">
     <!--
@@ -21,6 +12,15 @@ const triggerExportInWorkspace = () => {
     <h3>Verfahrensrezept-Editor</h3>
   </div>
 </template>
+
+<script setup>
+  const emit = defineEmits(['trigger-export']);
+
+  const triggerExportInWorkspace = () => {
+    console.log("trigger-export")
+    emit('trigger-export');
+  };
+</script>
 
 <style lang="scss">
     /*container for the page heading*/

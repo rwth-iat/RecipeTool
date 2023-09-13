@@ -1,18 +1,3 @@
-<script setup>
-	//import vue from 'vue'
-	import { ref } from 'vue'
-	import logoURL from '../assets/logo.png'
-	import elementWindow from './SidebarComponents/elementWindow.vue'
-
-	const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
-
-	//function to open/close sidebar
-	const ToggleMenu = () => {
-		is_expanded.value = !is_expanded.value
-		localStorage.setItem("is_expanded", is_expanded.value)
-	}
-</script>
-
 <template>	
 	<aside
 		:class="`${is_expanded ? 'is-expanded' : ''}`"
@@ -36,6 +21,21 @@
 		</div>
 	</aside>
 </template>
+
+<script setup>
+	//import vue from 'vue'
+	import { ref } from 'vue'
+	import logoURL from '../assets/logo.png'
+	import elementWindow from './SidebarComponents/elementWindow.vue'
+
+	const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
+
+	//function to open/close sidebar
+	const ToggleMenu = () => {
+		is_expanded.value = !is_expanded.value
+		localStorage.setItem("is_expanded", is_expanded.value)
+	}
+</script>
 
 
 <style lang="scss" scoped>

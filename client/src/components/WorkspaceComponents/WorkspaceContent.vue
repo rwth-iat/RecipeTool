@@ -21,7 +21,8 @@
     const workspaceContentRef = ref(null)
     const jsplumbElements = ref([])
     const jsplumbInstance = ref(null)
-    const managedElements = ref([])
+    const managedElements = ref([]) //object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
+    const zoomLevel       = ref(1)
 
     //need this as the developer server "npm run dev" will run into error using a normal ref of a v-for. This skips the unwrapping
     var skipUnwrap = {jsplumbElements}
@@ -158,6 +159,11 @@
     return instance
   }
 
+  function resetJsPlumb(){
+    jsplumbInstance.value.reset()
+    jsplumbInstance.value = initializeJsPlumb(workspaceContentRef)
+  }
+
   function addSourceEndpoint(instance, element){
     const sourceEndpoint = instance.addEndpoint(element, {
         source: true,
@@ -244,6 +250,29 @@
             });
         };
     }
+
+    // Zoom in by incrementing the zoom level
+    function zoomIn(){
+        zoomLevel.value += 0.1;
+        console.log(zoomLevel)
+        workspaceContentRef.value.style.transform = `scale(${zoomLevel.value})`;
+        console.log(workspaceContentRef)
+        console.log(jsplumbInstance)
+        jsplumbInstance.value.setZoom(zoomLevel.value);
+        console.log("zoom in");
+    }
+    // Zoom out by decrementing the zoom level
+    function zoomOut(){
+        zoomLevel.value -= 0.1;
+        workspaceContentRef.value.style.transform = `scale(${zoomLevel.value})`;
+        jsplumbInstance.value.setZoom(zoomLevel.value);
+        console.log("zoom out");
+    }
+    //expose this funciton so that i can be called from the Topbar export button
+    defineExpose({
+        zoomIn,
+        zoomOut
+    });
 </script>
 
 <style>

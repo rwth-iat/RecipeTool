@@ -3,6 +3,7 @@
     <!-- Main workspace where the top level processes are located -->
     <WorkspaceContent
       id="main_workspace"
+      ref="mainWorkspaceContent"
       v-show="!showSecondaryWorkspace"
       :workspace_items="main_workspace_items"
       @changeSelectedElement="selectedElement = $event" 
@@ -14,10 +15,10 @@
     <!-- secondary workspace for when the inner steps of a single process are edited -->
     <WorkspaceContent
       id="secondary_workspace"
+      ref="secondaryWorkspaceContent"
       v-show="showSecondaryWorkspace"
       :workspace_items="secondary_workspace_items"
       @changeSelectedElement="selectedElement = $event"
-      @content-ref="secondaryWorkspaceContentRef = $event"
       @jsplumbElements="secondaryJsplumbElements = $event"  
       @openPropertyWindow="openPropertyWindow"
     />
@@ -47,9 +48,8 @@
 
 
 <script setup>
-  import { ref, watch, nextTick,} from 'vue';
+  import { ref} from 'vue';
   import axios from 'axios'
-  import { newInstance, ready } from "@jsplumb/browser-ui";
   import { create_validate_download_batchml } from './create_xml/new_export_xml.js';
   import PropertyWindowContent from './WorkspaceComponents/PropertyWindow.vue'; // Import your property window content component
   import WorkspaceContent from './WorkspaceComponents/WorkspaceContent.vue';
@@ -59,15 +59,14 @@
   let mainJsplumbInstance = null; //the jsplumb instance, this is a library which handles the drag and drop as well as the connections 
   const mainWorkspaceContentRef = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
   const mainJsplumbElements = ref([]);
-  const mainManagedElements = ref({}) //object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
-  
+  const mainWorkspaceContent = ref(null)
+
 //variables for secondary workspace
   const secondary_workspace_items = ref([]); // when an element is dropped into the workspace workspace_items
   let secondaryJsplumbInstance = null; //the jsplumb instance, this is a library which handles the drag and drop as well as the connections 
   const secondaryWorkspaceContentRef = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
   const secondaryJsplumbElements = ref([]);
-  const secondaryManagedElements = ref({}) //object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
-
+  const secondaryWorkspaceContent = ref(null)
   
   var selectedElement = ref({});
   const client = axios.create({
@@ -85,19 +84,6 @@
   function closePropertyWindow(){
     isPropertyWindowOpen.value = false;
   }
-  
-  // Function to initialize jsPlumb
-  function initializeJsPlumb(container) {
-    var instance = newInstance({
-      container: container.value,
-      maxConnections: -1,
-      connectionOverlays: [{ type: "Arrow", options: { location: 1 } }],
-      connector: "Flowchart"
-    });
-    container.value.style.transform = `scale(1)`;
-    instance.setZoom(1);
-    return instance
-  }
 
   //watch(secondary_workspace_items, createUpdateItemListHandler(secondary_js_plumb_instance, secondary_js_plumb_elements, secondary_managed_elements), {deep: true,});
 
@@ -105,34 +91,20 @@
     the following paramters and functions handle the zooming of the workspace
     to zoom the workspace you use the zoomin and zoomout buttons in the upper left corner
   */
-  const mainZoomLevel = ref(1);
-  const secondaryZoomLevel = ref(1);
-  function getZoomVariables(){
-    if(!showSecondaryWorkspace.value){
-      return [mainZoomLevel, mainWorkspaceContentRef, mainJsplumbInstance]
-    }else if(showSecondaryWorkspace.value){
-      return [secondaryZoomLevel, secondaryWorkspaceContentRef, secondaryJsplumbInstance]
+  function zoomIn(){
+    if (!showSecondaryWorkspace.value){
+      mainWorkspaceContent.value.zoomIn()
+    }else{
+      secondaryWorkspaceContent.value.zoomIn()      
     }
   }
-  // Zoom in by incrementing the zoom level
-  const zoomIn = () => {
-    var [zoomLevel, workspaceContentRef, jsplumbInstance] = getZoomVariables()
-    zoomLevel.value += 0.1;
-    console.log(zoomLevel)
-    workspaceContentRef.value.value.style.transform = `scale(${zoomLevel.value})`;
-    console.log(workspaceContentRef)
-    console.log(jsplumbInstance)
-    jsplumbInstance.setZoom(zoomLevel.value);
-    console.log("zoom in");
-  };
-  // Zoom out by decrementing the zoom level
-  const zoomOut = () => {
-    var [zoomLevel, workspaceContentRef, jsplumbInstance] = getZoomVariables()
-    zoomLevel.value -= 0.1;
-    workspaceContentRef.value.value.style.transform = `scale(${zoomLevel.value})`;
-    jsplumbInstance.setZoom(zoomLevel.value);
-    console.log("zoom out");
-  };
+  function zoomOut(){
+    if (!showSecondaryWorkspace.value){
+      mainWorkspaceContent.value.zoomOut()
+    }else{
+      secondaryWorkspaceContent.value.zoomOut()      
+    }
+  }
 
   /*
     this function does the following:,
@@ -171,6 +143,7 @@
     //console.debug(secondaryWorkspaceContentRef)
     //secondaryJsplumbInstance = initializeJsPlumb(secondaryWorkspaceContentRef.value);
     secondary_workspace_items.value = [] // reset elements
+    secondaryWorkspaceContent.value.resetJsPlumb()
     //secondaryJsplumbElements.value = [];
     //secondaryManagedElements.value = {};
 
