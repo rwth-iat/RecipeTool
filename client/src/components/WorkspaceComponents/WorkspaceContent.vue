@@ -2,7 +2,7 @@
   <div class="workspace_content" ref="workspaceContentRef" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent draggable="false" @mousedown="startPanning" @mousemove="handlePanning" @mouseup="stopPanning">
       <!--Draw all workspace elements. Connections are drawn by jsplumb in the background-->
         <div :class="'workspace_element ' + item.type" 
-            v-for="item in workspace_items" 
+            v-for="item in computedWorkspaceItems" 
             :key="item.id" 
             :ref="skipUnwrap.jsplumbElements" 
             :id="item.id"
@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-    import { onMounted, ref, defineProps, defineEmits } from 'vue';
+    import { onMounted, ref, defineProps, defineEmits, computed } from 'vue';
     const props = defineProps(['workspace_items']);
     const emit = defineEmits(['content-ref', 'jsplumbElements', 'openPropertyWindow']);  
     const workspaceContentRef = ref(null)
@@ -28,6 +28,10 @@
         workspaceContentRef.value.focus();
         emit('content-ref', workspaceContentRef);
         emit('jsplumbElements', jsplumbElements);
+    });
+
+    const computedWorkspaceItems = computed(() => {
+        return props.workspace_items || [];
     });
 
     /*
@@ -78,7 +82,7 @@
         initialPanY = workspaceContentRef.value.offsetTop;
         document.addEventListener("mousemove", handlePanning);
         document.addEventListener("mouseup", stopPanning);
-        };
+        }
     }
     const handlePanning = (event) => {
         if (panning) {
@@ -102,7 +106,7 @@
     function onDrop(event){
         console.log("Drop");
         event.preventDefault();
-        var id = event.dataTransfer.getData("itemID");
+        //var id = event.dataTransfer.getData("itemID");
         var name = event.dataTransfer.getData("itemName");
         var classes = event.dataTransfer.getData("itemClasses");
         
@@ -125,11 +129,11 @@
         if (classes.includes("sidebar_element")) {
             var unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
             //var unique_id = id;
-            props.workspace_items.push({ id: unique_id, name: name, type: type, x: x, y: y });
+            computedWorkspaceItems.value.push({ id: unique_id, name: name, type: type, x: x, y: y });
             console.log("dragged from sidebar, dropped in workspace at absolute position: " + event.clientX.toString() + " " + event.clientY.toString());
             console.log(props.workspace_items);
         }
-    };
+    }
 </script>
 
 <style>

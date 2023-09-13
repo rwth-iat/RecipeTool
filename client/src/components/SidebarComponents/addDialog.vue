@@ -1,5 +1,5 @@
 <script setup>
-    import {ref, toRefs, reactive} from 'vue'
+    import {ref, toRefs} from 'vue'
     import axios from 'axios'
 
     //we define a prop elementtype so that we can use this component for materials and Processes 
@@ -19,11 +19,10 @@
     const current_super_class = ref('')
 	const serverProcessOntologies = ref([""])
 	const onto_classes = ref([])
-    const current_Elements = ref({})
     const current_file = ref({})
 
 	const client = axios.create({
-    	//baseURL: process.env.VUE_APP_BASE_URL
+        //baseURL: process.env.VUE_APP_BASE_URL
 		baseURL: ''
 	});
 
@@ -31,15 +30,15 @@
     function readServerOntologies(){
 		client.get('/onto')
 			.then(response => {
-    			// handle success
-    			console.log("read server ontologies successful")
+                // handle success
+                console.log("read server ontologies successful")
 				serverProcessOntologies.value = response.data
 			})
-  			.catch(error => {
-    			// handle error
+            .catch(error => {
+                // handle error
                 console.log("error trying to read server ontologies")
-    			console.log(error)
-  			})
+                console.log(error)
+            })
 	}
 
     function close(){
@@ -60,42 +59,42 @@
         if (name!=="new"){
             client.get('/onto/'+name+'/classes')
 			.then(response => {
-    			// handle success
+                // handle success
 				onto_classes.value = response.data
 			})
-  			.catch(error => {
-    			// handle error
-    			console.log(error.response)
-  			})
+            .catch(error => {
+                // handle error
+                console.log(error.response)
+            })
         }
 	}
     function readSubclasses(ontoName, className){
 		client.get('/onto/'+ontoName+'/'+className+'/subclasses')
 			.then(response => {
-    			// handle success
-    			console.log(response.data)
+                // handle success
+                console.log(response.data)
 				onto_classes.value = response.data
 				console.log(serverProcessOntologies.value)
 			})
-  			.catch(error => {
-    			// handle error
-    			console.log(error.response)
-  			})
+            .catch(error => {
+                // handle error
+                console.log(error.response)
+            })
 	}
 
     //function to add materials/Processes from Ontology to the Editor
     function addOnto(ontoName, className){
 		client.get('/onto/'+ontoName+'/'+className+'/subclasses')
 			.then(response => {
-    			// handle success
-    			console.log(response.data)
+                // handle success
+                console.log(response.data)
 				response.data
                 emit('add', response.data) 
 			})
-  			.catch(error => {
-    			// handle error
-    			console.log(error.response)
-  			})
+            .catch(error => {
+                // handle error
+                console.log(error.response)
+            })
 	}
 
     function onFileChange($event) {
@@ -116,14 +115,14 @@
                 }
             })
             .then(response => {
-    			// handle success
-    			console.log(response.data)
+                // handle success
+                console.log(response.data)
 				console.log("test")
 			})
-  			.catch(error => {
-    			// handle error
-    			console.log(error.response)
-  			})
+            .catch(error => {
+                // handle error
+                console.log(error.response)
+            })
     }
 
     readServerOntologies()
@@ -223,10 +222,10 @@
         align-items: center;
     }
     .close-icons {
-	    font-size: 1.5rem;
-	    color: red;
-	    transition: 0.2s ease-out;
-	    float:right;
+        font-size: 1.5rem;
+        color: red;
+        transition: 0.2s ease-out;
+        float:right;
     }
 
     .reload {

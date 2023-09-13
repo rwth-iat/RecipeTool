@@ -1,14 +1,5 @@
 <script setup>
-import { ref, defineProps, defineEmits } from 'vue'
-
-const import_config = () =>{
-  return
-}
-const export_config = () =>{
-  return
-}
-
-const props = defineProps();
+import { defineEmits } from 'vue'
 const emit = defineEmits(['trigger-export']);
 
 const triggerExportInWorkspace = () => {
@@ -22,10 +13,10 @@ const triggerExportInWorkspace = () => {
     <!--
     <button @click="import_config" style="float:'left'">
 			<span class="close-icons">import</span>
-	  </button>
+    </button>
     <button @click="export_config" style="float:'left'">
 			<span class="close-icons">export</span>
-  	</button>
+    </button>
     -->
     <button id="exportBtt" @click="triggerExportInWorkspace">Export</button>
     <h3>Verfahrensrezept-Editor</h3>
