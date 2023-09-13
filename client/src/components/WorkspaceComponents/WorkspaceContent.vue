@@ -285,8 +285,8 @@
             jsplumbInstance.value.removeAllEndpoints(elementRef);
             elementRef.remove();
         }
-        //managedElements.value = [];
-        //computedWorkspaceItems.value = [];
+        managedElements.value = [];
+        computedWorkspaceItems.value = [];
     }
 
     //expose this funciton so that i can be called from the Topbar export button
