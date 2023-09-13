@@ -6,8 +6,7 @@
       ref="mainWorkspaceContent"
       v-show="!showSecondaryWorkspace"
       :workspace_items="main_workspace_items"
-      @changeSelectedElement="selectedElement = $event" 
-      @content-ref="mainWorkspaceContentRef = $event" 
+      @changeSelectedElement="selectedElement = $event"
       @jsplumbElements="mainJsplumbElements = $event" 
       @openPropertyWindow="openPropertyWindow"
     />
@@ -57,14 +56,11 @@
   //variables for main workspace
   const main_workspace_items = ref([]); // when an element is dropped into the workspace workspace_items
   let mainJsplumbInstance = null; //the jsplumb instance, this is a library which handles the drag and drop as well as the connections 
-  const mainWorkspaceContentRef = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
   const mainJsplumbElements = ref([]);
   const mainWorkspaceContent = ref(null)
 
 //variables for secondary workspace
-  const secondary_workspace_items = ref([]); // when an element is dropped into the workspace workspace_items
-  let secondaryJsplumbInstance = null; //the jsplumb instance, this is a library which handles the drag and drop as well as the connections 
-  const secondaryWorkspaceContentRef = ref(null); // workspace references the workspace DOM-Element which js plumb needs as parent object
+  const secondary_workspace_items = ref([]); // when an element is dropped into the workspace workspace_items  
   const secondaryJsplumbElements = ref([]);
   const secondaryWorkspaceContent = ref(null)
   

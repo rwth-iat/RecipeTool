@@ -17,10 +17,10 @@
     import { onMounted, ref, computed, watch, nextTick } from 'vue';
     import { newInstance, ready } from "@jsplumb/browser-ui";
     const props = defineProps(['workspace_items']);
-    const emit = defineEmits(['content-ref', 'jsplumbElements', 'openPropertyWindow']);  
+    const emit = defineEmits(['jsplumbElements', 'openPropertyWindow']);  
     const workspaceContentRef = ref(null)
+    const jsplumbInstance = ref(null) //the jsplumb instance, this is a library which handles the drag and drop as well as the connections
     const jsplumbElements = ref([])
-    const jsplumbInstance = ref(null)
     const managedElements = ref([]) //object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
     const zoomLevel       = ref(1)
 
@@ -30,7 +30,6 @@
     //here we make the ref to the workspace_content availible in the parent
     onMounted(() => {
         workspaceContentRef.value.focus();
-        emit('content-ref', workspaceContentRef);
         emit('jsplumbElements', jsplumbElements);
         console.debug("secondaryWorkspaceContent set, watcher triggered: ", workspaceContentRef)
         if (workspaceContentRef.value) {
@@ -271,7 +270,8 @@
     //expose this funciton so that i can be called from the Topbar export button
     defineExpose({
         zoomIn,
-        zoomOut
+        zoomOut,
+        resetJsPlumb
     });
 </script>
 
