@@ -47,7 +47,7 @@
 
 
 <script setup>
-  import { ref, watch, nextTick } from 'vue';
+  import { ref, watch, nextTick,} from 'vue';
   import axios from 'axios'
   import { newInstance, ready } from "@jsplumb/browser-ui";
   import { create_validate_download_batchml } from './create_xml/new_export_xml.js';
@@ -86,26 +86,6 @@
     isPropertyWindowOpen.value = false;
   }
   
-  // Watch for changes in workspaceContentRef
-  watch(mainWorkspaceContentRef, (newWorkspaceContentRef) => {
-    if (newWorkspaceContentRef) {
-      ready(() => {
-        mainJsplumbInstance = initializeJsPlumb(newWorkspaceContentRef);
-        watch(main_workspace_items, createUpdateItemListHandler(mainJsplumbInstance, mainJsplumbElements, mainManagedElements), {deep: true,});
-      })
-    }
-  });
-
-  // Watch for changes in workspaceContentRef
-  watch(secondaryWorkspaceContentRef, (newWorkspaceContentRef) => {
-    if (newWorkspaceContentRef) {
-      ready(() => {
-        secondaryJsplumbInstance = initializeJsPlumb(newWorkspaceContentRef);
-        watch(secondary_workspace_items, createUpdateItemListHandler(secondaryJsplumbInstance, secondaryJsplumbElements, secondaryManagedElements), {deep: true,});
-    })
-    }
-  });
-  
   // Function to initialize jsPlumb
   function initializeJsPlumb(container) {
     var instance = newInstance({
@@ -118,93 +98,6 @@
     instance.setZoom(1);
     return instance
   }
-
-  function addSourceEndpoint(instance, element){
-    const sourceEndpoint = instance.addEndpoint(element, {
-        source: true,
-        anchor: "Bottom",
-        endpoint: { type: "Dot" }
-      });
-      return sourceEndpoint
-  }
-
-  function addTargetEndpoint(instance, element){
-    const targetEndpoint = instance.addEndpoint(element, {
-        target: true,
-        anchor: "Top",
-        endpoint: { type: "Dot" }
-      });
-    return targetEndpoint
-  }
-
-  // add endpoints and attach the element id as data to the endpoint. 
-  // When exporting to xml we can iterate through the connections and when accessing the source Endpoint and Target endpoint we can now read the corresponding element
-  async function addJsPlumbEndpoints(instance, element, item) {
-    console.log("entered addJSEndpoints")
-    console.log(instance)
-    console.log(element)
-    console.log(item)
-    //await nextTick(); // we need this for smooth rendering
-    // add source and target endpoint. That way the element is automatically added to jsplumb
-    // if elements are managed by js plumb that also does the drag/drop functionality 
-    if (element) {
-      var sourceEndpoint = {}
-      var targetEndpoint = {}
-      if(item.type === "material"){
-        if(item.name === "Eingangsmaterial"){
-          console.log("add Eingangsmaterial")
-          sourceEndpoint = addSourceEndpoint(instance, element)
-          targetEndpoint = {id: ''}
-          console.log("added SourceEndpoint")
-        }else if(item.name === "Zwischenprodukt"){
-          console.log("add Zwischenprodukt")
-          sourceEndpoint = addSourceEndpoint(instance, element)
-          targetEndpoint = addTargetEndpoint(instance, element)
-          console.log("added Source- and Target-Endpoint")
-        }else if(item.name === "Endprodukt"){
-          console.log("add Endproduct")
-          sourceEndpoint = {id: ''}
-          targetEndpoint = addTargetEndpoint(instance, element)
-          console.log("added TargetEndpoint")
-        }else{
-          console.error("unknown material type: " + item.name)
-        }
-      }else if(item.type === "process"){
-        console.log("add process")
-        sourceEndpoint = addSourceEndpoint(instance, element)
-        targetEndpoint = addTargetEndpoint(instance, element)
-        console.log("added Source and Target Endpoint")
-      }else{
-          console.error("unknown type: " + item.type)
-      }
-
-      // Save the endpoint IDs to the workspace_items list That way exporting the xml is easier as all connections can be easily read
-      if (item) {
-        item.sourceEndpointId = sourceEndpoint.id;
-        item.targetEndpointId = targetEndpoint.id;
-      }
-    }
-  }
-
-  function createUpdateItemListHandler(instance, jsplumbElements, managedElements) {
-  return async (newItems) => {
-    console.debug("workspace_items updated, watcher triggered");
-    await nextTick();
-    newItems.forEach((item) => {
-      const elementRef = jsplumbElements.value.value.find(
-        (element) => element.id === item.id
-      );
-      if (!managedElements.value[item.id]) {
-        console.debug("changed element not yet managed placing adding endpoints");
-        addJsPlumbEndpoints(instance, elementRef, item);
-        console.debug("placing new element at x:", item.x+"px", " , y:", item.y+"px");
-        elementRef.style.left = item.x + "px";
-        elementRef.style.top = item.y + "px";
-        managedElements.value[item.id] = true;
-      }
-    });
-  };
-}
 
   //watch(secondary_workspace_items, createUpdateItemListHandler(secondary_js_plumb_instance, secondary_js_plumb_elements, secondary_managed_elements), {deep: true,});
 
