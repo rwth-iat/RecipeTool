@@ -30,7 +30,6 @@
     //here we make the ref to the workspace_content availible in the parent
     onMounted(() => {
         workspaceContentRef.value.focus();
-        emit('jsplumbElements', jsplumbElements);
         if (workspaceContentRef.value) {
             ready(() => {
                 jsplumbInstance.value = initializeJsPlumb(workspaceContentRef);
@@ -277,25 +276,17 @@
         console.log("zoom out");
     }
 
-    function getConnections(){
-        return jsplumbInstance.value.getConnections();
-    }
-    function removeConnections(){
-        for(let con of jsplumbInstance.value.getConnections()){
-            jsplumbInstance.value.deleteConnection(con)
-        }
-    }
     function removeElements(){
         jsplumbInstance.value.deleteEveryConnection();
-        jsplumbInstance.value.removeAllEndpoints();
         for(let item of computedWorkspaceItems.value){
             const elementRef = jsplumbElements.value.find(
                 (element) => element.id === item.id
             );
+            jsplumbInstance.value.removeAllEndpoints(elementRef);
             elementRef.remove();
         }
-        managedElements.value = [];
-        computedWorkspaceItems.value = [];
+        //managedElements.value = [];
+        //computedWorkspaceItems.value = [];
     }
 
     //expose this funciton so that i can be called from the Topbar export button
@@ -303,8 +294,6 @@
         zoomIn,
         zoomOut,
         resetJsPlumb,
-        getConnections,
-        removeConnections,
         removeElements
     });
 </script>

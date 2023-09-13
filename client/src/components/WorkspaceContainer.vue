@@ -136,14 +136,11 @@
 
     //reset secondary workspace variables
     secondaryWorkspaceContent.value.removeElements() //reset connections
-    secondary_workspace_items.value = [] // reset elements
-    secondaryWorkspaceContent.value.removeElements() //reset connections
-    //await secondaryWorkspaceContent.value.resetJsPlumb()
 
     //add the materials and the processes to workspace items
     //the ... pushes every single element one by one instead of the whole list as one entry
-    secondary_workspace_items.value.push(...selectedElement.value.processElement);
-    secondary_workspace_items.value.push(...selectedElement.value.materials);
+    //secondary_workspace_items.value.push(...selectedElement.value.processElement);
+    //secondary_workspace_items.value.push(...selectedElement.value.materials);
 
     //open the actual secondary workspace
     showSecondaryWorkspace.value=true;
