@@ -1,4 +1,3 @@
-<!--Draw all workspace elements. Connections are drawn by jsplumb in the background-->
 <template>
   <div id="workspace" @dragenter.prevent @dragover.prevent>
     <!-- Main workspace where the top level processes are located -->
@@ -37,7 +36,7 @@
     <transition name="property-window">
       <div v-show="isPropertyWindowOpen" >
         <PropertyWindowContent
-        :selectedElement="selectedElement" 
+        v-model:selectedElement="selectedElement" 
         @close="closePropertyWindow"
         @openInWorkspace="openInWorkspace"/>
       </div>
@@ -48,7 +47,7 @@
 
 
 <script setup>
-  import { ref, onMounted, onUpdated, watch, nextTick, VueElement } from 'vue';
+  import { ref, watch, nextTick } from 'vue';
   import axios from 'axios'
   import { newInstance, ready } from "@jsplumb/browser-ui";
   import { create_validate_download_batchml } from './create_xml/new_export_xml.js';
@@ -72,7 +71,7 @@
   
   var selectedElement = ref({});
   const client = axios.create({
-    	//baseURL: process.env.VUE_APP_BASE_URL
+    //baseURL: process.env.VUE_APP_BASE_URL
 		baseURL: ''
 	});
 
@@ -82,10 +81,10 @@
   const isPropertyWindowOpen = ref(false);
   function openPropertyWindow(){
     isPropertyWindowOpen.value = true;
-  };
+  }
   function closePropertyWindow(){
     isPropertyWindowOpen.value = false;
-  };
+  }
   
   // Watch for changes in workspaceContentRef
   watch(mainWorkspaceContentRef, (newWorkspaceContentRef) => {

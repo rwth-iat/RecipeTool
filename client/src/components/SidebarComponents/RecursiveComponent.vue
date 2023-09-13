@@ -39,7 +39,7 @@
     <li v-for="item in items" 
         :key="item.name" 
         @click.stop="handleItemClick(item, $event)"
-        @dragstart.preventDefault.stop="$event => dragstart($event, 'testId', item.name, classes)"
+        @dragstart.stop="$event => dragstart($event, 'testId', item.name, classes)"
         draggable="true"
     >
       <!-- Every list element contains
@@ -87,7 +87,7 @@ export default defineComponent({
   components: {
     RecursiveComponent: () => import('./RecursiveComponent.vue'),
   },
-  setup(props) {
+  setup() {
     const state = reactive({
       toggleItem(item) {
         item.expanded = !item.expanded;
@@ -114,14 +114,14 @@ export default defineComponent({
       };
     },
     //when starting to drag an element safe attributes to datatransfer, to access them in workspace component
-	  dragstart(event, id, name, classes){
+    dragstart(event, id, name, classes){
       console.log("dragstart")
       event.dataTransfer.dropEffect = "copy"
       event.dataTransfer.effectAllowed = "copy"
       event.dataTransfer.setData("itemID", id)
       event.dataTransfer.setData("itemName", name)
       event.dataTransfer.setData("itemClasses", classes)
-	  }
+    }
   },
 });
 </script>

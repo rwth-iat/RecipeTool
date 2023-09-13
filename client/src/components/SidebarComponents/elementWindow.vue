@@ -62,7 +62,7 @@
                             ]
                         }]
     }else{
-        console.log("unknown element type: " + element_type)
+        console.log("unknown element type: " + element_type.value)
     }
 
 	function addElements(elements_json){

@@ -1,6 +1,6 @@
 <template>
   <div class="workspace_content" ref="workspaceContentRef" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent draggable="false" @mousedown="startPanning" @mousemove="handlePanning" @mouseup="stopPanning">
-      <!-- Your flowchart elements here -->
+      <!--Draw all workspace elements. Connections are drawn by jsplumb in the background-->
         <div :class="'workspace_element ' + item.type" 
             v-for="item in workspace_items" 
             :key="item.id" 
