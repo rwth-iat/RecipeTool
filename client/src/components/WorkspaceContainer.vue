@@ -22,10 +22,17 @@
 
     <!-- Zoom Buttons-->
     <div class="buttons-container">
-      <button class="buttons" @click="zoomIn"><span class="material-icons">+</span></button>
-      <button class="buttons" @click="zoomOut"><span class="material-icons">-</span></button>
+      <button class="buttons" @click="zoomIn">
+        <span class="material-icons">+</span>
+      </button>
+      <button class="buttons" @click="zoomOut">
+        <span class="material-icons">-</span>
+      </button>
       <button class="buttons" v-show="showSecondaryWorkspace" @click="showSecondaryWorkspace=false">
         <span class="material-icons" style="color:red">x</span>
+      </button>
+      <button class="buttons" v-show="showSecondaryWorkspace" @click="saveSecondaryWorkspace">
+        <span style="color:green">save</span>
       </button>
     </div>
 
@@ -58,6 +65,7 @@
 //variables for secondary workspace
   const secondary_workspace_items = ref([]); // when an element is dropped into the workspace workspace_items  
   const secondaryWorkspaceContent = ref(null)
+  const secondaryWorkspaceParent = ref(null)
   
   var selectedElement = ref({});
   const client = axios.create({
@@ -145,6 +153,40 @@
 
     //open the actual secondary workspace
     showSecondaryWorkspace.value=true;
+
+    //set the current parent
+    secondaryWorkspaceParent.value = selectedElement.value;
+  }
+
+  var map = {};
+  (function recurse(processElements) {
+    for (var i=0; i<processElements.length; i++) {
+        var processElement = processElements[i];
+        map[ processElement.id ] = processElement;
+        if ("processElement" in processElement)
+            recurse(processElement.processElement);
+    }
+  })(main_workspace_items.value);
+
+function updateObjectByID(id, newobj) {
+    map[id] = newobj;
+}
+
+
+  function saveSecondaryWorkspace(){
+    //build the parent object
+    for(var element of secondary_workspace_items.value){
+      secondaryWorkspaceParent.value.materials = []
+      secondaryWorkspaceParent.value.processElement = []
+      if (element.type == "material"){
+        secondaryWorkspaceParent.value.materials.push(element)
+      }else if(element.type == "process"){
+        secondaryWorkspaceParent.value.processElement.push(element)
+      }
+    }
+
+        //replace original parent obj with the new build
+    updateObjectByID(secondaryWorkspaceParent.value.id, secondaryWorkspaceParent.value)
   }
 </script>
 
@@ -189,12 +231,14 @@
     border-color: black;
     background-color: white;
     position: absolute;
+    align-items: center;
     top: 10px; /* Adjust the top distance as needed */
     left: 10px; /* Adjust the left distance as needed */
     z-index: 2; /* Ensure buttons appear above the workspace content */
   }
   .buttons{
     margin: 10px;
+    vertical-align: middle;
   }
 
   .property-window-enter-active, .property-window-leave-active {
