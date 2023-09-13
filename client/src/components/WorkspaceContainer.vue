@@ -7,7 +7,6 @@
       v-show="!showSecondaryWorkspace"
       :workspace_items="main_workspace_items"
       @changeSelectedElement="selectedElement = $event"
-      @jsplumbElements="mainJsplumbElements = $event" 
       @openPropertyWindow="openPropertyWindow"
     />
 
@@ -18,7 +17,6 @@
       v-show="showSecondaryWorkspace"
       :workspace_items="secondary_workspace_items"
       @changeSelectedElement="selectedElement = $event"
-      @jsplumbElements="secondaryJsplumbElements = $event"  
       @openPropertyWindow="openPropertyWindow"
     />
 
@@ -27,7 +25,7 @@
       <button class="buttons" @click="zoomIn"><span class="material-icons">+</span></button>
       <button class="buttons" @click="zoomOut"><span class="material-icons">-</span></button>
       <button class="buttons" v-show="showSecondaryWorkspace" @click="showSecondaryWorkspace=false">
-        close secondary workspace
+        <span class="material-icons" style="color:red">x</span>
       </button>
     </div>
 
@@ -54,14 +52,11 @@
   import WorkspaceContent from './WorkspaceComponents/WorkspaceContent.vue';
 
   //variables for main workspace
-  const main_workspace_items = ref([]); // when an element is dropped into the workspace workspace_items
-  let mainJsplumbInstance = null; //the jsplumb instance, this is a library which handles the drag and drop as well as the connections 
-  const mainJsplumbElements = ref([]);
+  const main_workspace_items = ref([]); // when an element is dropped into the workspace workspace_items 
   const mainWorkspaceContent = ref(null)
 
 //variables for secondary workspace
   const secondary_workspace_items = ref([]); // when an element is dropped into the workspace workspace_items  
-  const secondaryJsplumbElements = ref([]);
   const secondaryWorkspaceContent = ref(null)
   
   var selectedElement = ref({});
@@ -119,7 +114,7 @@
   });
 
 
-  function openInWorkspace(){
+  async function openInWorkspace(){
     // check if this element already has children processes else define empty list
     if(!Array.isArray(selectedElement.value.processElement)){
       console.debug("no child processelements: ", selectedElement.value.processElements)
@@ -130,18 +125,20 @@
       console.debug("no child materials: ", selectedElement.value.materials)
       //if no materials exist yet add an input and output knot
       selectedElement.value.materials = [];
-      selectedElement.value.materials.push({ id: "IN", name: "Eingangsmaterial", type: "material", x: "300", y: "100" })
-      selectedElement.value.materials.push({ id: "OUT", name: "Endprodukt", type: "material", x: "300", y: "400" })
+      selectedElement.value.materials.push({ id: "IN", name: "Eingangsmaterial", type: "material", x: 300, y: 100 })
+      selectedElement.value.materials.push({ id: "OUT", name: "Endprodukt", type: "material", x: 300, y: 400 })
     }
 
+    //var unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
+    //var unique_id = id;
+    //computedWorkspaceItems.value.push({ id: unique_id, name: name, type: type, x: x, y: y });
+    //console.log("dragged from sidebar, dropped in workspace at absolute position: " + event.clientX.toString() + " " + event.clientY.toString());
+
     //reset secondary workspace variables
-    //secondaryJsplumbInstance.reset(); // reset Jsplumbinstance
-    //console.debug(secondaryWorkspaceContentRef)
-    //secondaryJsplumbInstance = initializeJsPlumb(secondaryWorkspaceContentRef.value);
+    secondaryWorkspaceContent.value.removeElements() //reset connections
     secondary_workspace_items.value = [] // reset elements
-    secondaryWorkspaceContent.value.resetJsPlumb()
-    //secondaryJsplumbElements.value = [];
-    //secondaryManagedElements.value = {};
+    secondaryWorkspaceContent.value.removeElements() //reset connections
+    //await secondaryWorkspaceContent.value.resetJsPlumb()
 
     //add the materials and the processes to workspace items
     //the ... pushes every single element one by one instead of the whole list as one entry

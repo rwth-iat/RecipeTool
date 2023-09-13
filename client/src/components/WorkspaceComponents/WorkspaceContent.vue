@@ -17,7 +17,7 @@
     import { onMounted, ref, computed, watch, nextTick } from 'vue';
     import { newInstance, ready } from "@jsplumb/browser-ui";
     const props = defineProps(['workspace_items']);
-    const emit = defineEmits(['jsplumbElements', 'openPropertyWindow']);  
+    const emit = defineEmits(['changeSelectedElement', 'openPropertyWindow']);  
     const workspaceContentRef = ref(null)
     const jsplumbInstance = ref(null) //the jsplumb instance, this is a library which handles the drag and drop as well as the connections
     const jsplumbElements = ref([])
@@ -31,7 +31,6 @@
     onMounted(() => {
         workspaceContentRef.value.focus();
         emit('jsplumbElements', jsplumbElements);
-        console.debug("secondaryWorkspaceContent set, watcher triggered: ", workspaceContentRef)
         if (workspaceContentRef.value) {
             ready(() => {
                 jsplumbInstance.value = initializeJsPlumb(workspaceContentRef);
@@ -161,6 +160,9 @@
   function resetJsPlumb(){
     jsplumbInstance.value.reset()
     jsplumbInstance.value = initializeJsPlumb(workspaceContentRef)
+    watch(computedWorkspaceItems, createUpdateItemListHandler(jsplumbInstance, jsplumbElements, managedElements), {deep: true,});
+    managedElements.value = []
+    jsplumbElements.value = []
   }
 
   function addSourceEndpoint(instance, element){
@@ -234,17 +236,24 @@
         return async (newItems) => {
             console.debug("workspace_items updated, watcher triggered");
             await nextTick();
+            await nextTick();
             newItems.forEach((item) => {
             const elementRef = jsplumbElements.value.find(
                 (element) => element.id === item.id
             );
-            if (!managedElements.value[item.id]) {
-                console.debug("changed element not yet managed placing adding endpoints");
-                addJsPlumbEndpoints(instance.value, elementRef, item);
-                console.debug("placing new element at x:", item.x+"px", " , y:", item.y+"px");
-                elementRef.style.left = item.x + "px";
-                elementRef.style.top = item.y + "px";
-                managedElements.value[item.id] = true;
+            if(elementRef){
+                if (!managedElements.value[item.id]) {
+                    console.debug("changed element not managed yet, place and adding endpoints:");
+                    addJsPlumbEndpoints(instance.value, elementRef, item);
+                    console.debug("placing new element at x:", item.x+"px", " , y:", item.y+"px");
+                    elementRef.style.left = item.x + "px";
+                    elementRef.style.top = item.y + "px";
+                    managedElements.value[item.id] = true;
+                }else{
+                    console.debug("element already managed");
+                }
+            }else{
+                console.debug("element not found in jsplumbelements:", item)
             }
             });
         };
@@ -271,6 +280,23 @@
     function getConnections(){
         return jsplumbInstance.value.getConnections();
     }
+    function removeConnections(){
+        for(let con of jsplumbInstance.value.getConnections()){
+            jsplumbInstance.value.deleteConnection(con)
+        }
+    }
+    function removeElements(){
+        jsplumbInstance.value.deleteEveryConnection();
+        jsplumbInstance.value.removeAllEndpoints();
+        for(let item of computedWorkspaceItems.value){
+            const elementRef = jsplumbElements.value.find(
+                (element) => element.id === item.id
+            );
+            elementRef.remove();
+        }
+        managedElements.value = [];
+        computedWorkspaceItems.value = [];
+    }
 
     //expose this funciton so that i can be called from the Topbar export button
     defineExpose({
@@ -278,6 +304,8 @@
         zoomOut,
         resetJsPlumb,
         getConnections,
+        removeConnections,
+        removeElements
     });
 </script>
 
