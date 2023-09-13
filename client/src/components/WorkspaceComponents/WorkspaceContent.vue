@@ -21,7 +21,7 @@
     const workspaceContentRef = ref(null)
     const jsplumbInstance = ref(null) //the jsplumb instance, this is a library which handles the drag and drop as well as the connections
     const jsplumbElements = ref([])
-    const managedElements = ref([]) //object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
+    const managedElements = ref({}) //object to mark to which elements Endpoints where already added. That why when detecting a change in workspace elemets we know which items are new 
     const zoomLevel       = ref(1)
 
     //need this as the developer server "npm run dev" will run into error using a normal ref of a v-for. This skips the unwrapping
@@ -54,9 +54,9 @@
         const currentTime = new Date().getTime();
         console.log("click_detected")
         if (currentTime - lastClickTime.value < doubleClickThreshold) {
-        handleDoubleClick(item);
+            handleDoubleClick(item);
         } else {
-        lastClickTime.value = currentTime;
+            lastClickTime.value = currentTime;
         }
     };
     const handleDoubleClick = (item) => {
@@ -138,7 +138,7 @@
             var unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
             //var unique_id = id;
             computedWorkspaceItems.value.push({ id: unique_id, name: name, type: type, x: x, y: y });
-            console.log("dragged from sidebar, dropped in workspace at absolute position: " + event.clientX.toString() + " " + event.clientY.toString());
+            console.log("dragged from sidebar, dropped in workspace at absolute position: " + x + " " + y);
             console.log(props.workspace_items);
         }
     }
@@ -160,7 +160,7 @@
     jsplumbInstance.value.reset()
     jsplumbInstance.value = initializeJsPlumb(workspaceContentRef)
     watch(computedWorkspaceItems, createUpdateItemListHandler(jsplumbInstance, jsplumbElements, managedElements), {deep: true,});
-    managedElements.value = []
+    managedElements.value = {}
     jsplumbElements.value = []
   }
 
@@ -185,10 +185,10 @@
   // add endpoints and attach the element id as data to the endpoint. 
   // When exporting to xml we can iterate through the connections and when accessing the source Endpoint and Target endpoint we can now read the corresponding element
   async function addJsPlumbEndpoints(instance, element, item) {
-    console.log("entered addJSEndpoints")
-    console.log(instance)
-    console.log(element)
-    console.log(item)
+    console.log("Adding JS Endpoints to new Element")
+    console.debug("jsplumbInstance: ", instance)
+    console.debug("Element to add Endpoints to: ", element)
+    console.debug("workspace item with info about the element: ", item)
     //await nextTick(); // we need this for smooth rendering
     // add source and target endpoint. That way the element is automatically added to jsplumb
     // if elements are managed by js plumb that also does the drag/drop functionality 
@@ -241,7 +241,7 @@
                 (element) => element.id === item.id
             );
             if(elementRef){
-                if (!managedElements.value[item.id]) {
+                if (managedElements.value[item.id]===undefined || managedElements.value[item.id]===false) {
                     console.debug("changed element not managed yet, place and adding endpoints:");
                     addJsPlumbEndpoints(instance.value, elementRef, item);
                     console.debug("placing new element at x:", item.x+"px", " , y:", item.y+"px");
@@ -258,22 +258,20 @@
         };
     }
 
+    var zoomincrement = 0.1
     // Zoom in by incrementing the zoom level
     function zoomIn(){
-        zoomLevel.value += 0.1;
-        console.log(zoomLevel)
+        console.log("zoomin from zoom level: ", zoomLevel, " to: ", zoomLevel.value + zoomincrement)
+        zoomLevel.value += zoomincrement;
         workspaceContentRef.value.style.transform = `scale(${zoomLevel.value})`;
-        console.log(workspaceContentRef)
-        console.log(jsplumbInstance)
         jsplumbInstance.value.setZoom(zoomLevel.value);
-        console.log("zoom in");
     }
     // Zoom out by decrementing the zoom level
     function zoomOut(){
-        zoomLevel.value -= 0.1;
+        console.log("zoomout from zoom level: ", zoomLevel, " to: ", zoomLevel.value + zoomincrement)
+        zoomLevel.value -= zoomincrement ;
         workspaceContentRef.value.style.transform = `scale(${zoomLevel.value})`;
         jsplumbInstance.value.setZoom(zoomLevel.value);
-        console.log("zoom out");
     }
 
     function removeElements(){
@@ -282,11 +280,22 @@
             const elementRef = jsplumbElements.value.find(
                 (element) => element.id === item.id
             );
-            jsplumbInstance.value.removeAllEndpoints(elementRef);
-            elementRef.remove();
+            if(elementRef!==undefined){
+                jsplumbInstance.value.removeAllEndpoints(elementRef);
+                elementRef.remove();
+            }
         }
-        managedElements.value = [];
+        managedElements.value = {};
         computedWorkspaceItems.value = [];
+    }
+    function addElements(list){
+        console.debug("entered addElements")
+        for(var element of list){
+            var unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
+            //var unique_id = id;
+            console.log("add element to second workspace programatically at position: x=" + element.y + "px  y=" + element.y+"px");
+            computedWorkspaceItems.value.push({ id: unique_id, name: element.name, type: element.type, x: element.x, y: element.y });
+        }
     }
 
     //expose this funciton so that i can be called from the Topbar export button
@@ -294,7 +303,8 @@
         zoomIn,
         zoomOut,
         resetJsPlumb,
-        removeElements
+        removeElements,
+        addElements
     });
 </script>
 

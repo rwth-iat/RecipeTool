@@ -136,6 +136,7 @@
 
     //reset secondary workspace variables
     secondaryWorkspaceContent.value.removeElements() //reset connections
+    secondaryWorkspaceContent.value.addElements(selectedElement.value.materials) //reset connections
 
     //add the materials and the processes to workspace items
     //the ... pushes every single element one by one instead of the whole list as one entry
