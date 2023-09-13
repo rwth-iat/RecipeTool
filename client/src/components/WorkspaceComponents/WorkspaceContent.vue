@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-    import { onMounted, ref, defineProps, defineEmits, computed, watch, nextTick } from 'vue';
+    import { onMounted, ref, computed, watch, nextTick } from 'vue';
     import { newInstance, ready } from "@jsplumb/browser-ui";
     const props = defineProps(['workspace_items']);
     const emit = defineEmits(['content-ref', 'jsplumbElements', 'openPropertyWindow']);  

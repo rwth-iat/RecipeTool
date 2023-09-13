@@ -167,9 +167,9 @@
     }
 
     //reset secondary workspace variables
-    secondaryJsplumbInstance.reset(); // reset Jsplumbinstance
-    console.debug(secondaryWorkspaceContentRef)
-    secondaryJsplumbInstance = initializeJsPlumb(secondaryWorkspaceContentRef.value);
+    //secondaryJsplumbInstance.reset(); // reset Jsplumbinstance
+    //console.debug(secondaryWorkspaceContentRef)
+    //secondaryJsplumbInstance = initializeJsPlumb(secondaryWorkspaceContentRef.value);
     secondary_workspace_items.value = [] // reset elements
     //secondaryJsplumbElements.value = [];
     //secondaryManagedElements.value = {};
