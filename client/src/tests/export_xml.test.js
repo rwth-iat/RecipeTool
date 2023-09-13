@@ -1,6 +1,5 @@
 import { create_process_element_type } from "../components/export_xml.js"; // Adjust the path as needed
-import { test } from "@vue/test-utils";
-import { expect } from "vitest";
+import { expect, test } from "vitest";
 
 test("mount Processes component", async () => {
     var xmlDocument = document.implementation.createDocument("", "BatchInformation");

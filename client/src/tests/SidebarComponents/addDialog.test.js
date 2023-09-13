@@ -1,6 +1,6 @@
-import { mount, test, afterAll} from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 import addDialog from "../../components/SidebarComponents/addDialog.vue";
-import { expect } from "vitest";
+import { expect, test, afterAll } from "vitest";
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 
