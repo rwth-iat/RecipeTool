@@ -24,8 +24,8 @@
 
     <!-- Zoom Buttons-->
     <div class="buttons-container">
-      <button class="buttons" @click="zoomIn">Zoom In</button>
-      <button class="buttons" @click="zoomOut">Zoom Out</button>
+      <button class="buttons" @click="zoomIn"><span class="material-icons">+</span></button>
+      <button class="buttons" @click="zoomOut"><span class="material-icons">-</span></button>
       <button class="buttons" v-show="showSecondaryWorkspace" @click="showSecondaryWorkspace=false">
         close secondary workspace
       </button>
@@ -111,7 +111,7 @@
         - if unknown error while creating or validating it gives the user the error message
   */ 
   function export_batchml (){
-    create_validate_download_batchml(main_workspace_items.value, mainJsplumbInstance.getConnections(), client)
+    create_validate_download_batchml(main_workspace_items.value, mainWorkspaceContent.value.getConnections(), client)
   }
   //expose this funciton so that i can be called from the Topbar export button
   defineExpose({
@@ -157,6 +157,11 @@
 
 
 <style>
+	.material-icons {
+        font-size: 2rem;
+        color: var(--dark);
+        transition: 0.2s ease-in-out;
+    }
   #workspace {
     background-color: black;
     position: relative;
@@ -183,6 +188,10 @@
 
   /* Position buttons and property window */
   .buttons-container {
+    border-radius: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
     background-color: white;
     position: absolute;
     top: 10px; /* Adjust the top distance as needed */

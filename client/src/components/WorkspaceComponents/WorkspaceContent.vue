@@ -267,11 +267,17 @@
         jsplumbInstance.value.setZoom(zoomLevel.value);
         console.log("zoom out");
     }
+
+    function getConnections(){
+        return jsplumbInstance.value.getConnections();
+    }
+
     //expose this funciton so that i can be called from the Topbar export button
     defineExpose({
         zoomIn,
         zoomOut,
-        resetJsPlumb
+        resetJsPlumb,
+        getConnections,
     });
 </script>
 
