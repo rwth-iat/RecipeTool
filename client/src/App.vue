@@ -1,7 +1,7 @@
 <script setup>
-  import Topbar from './components/Topbar.vue'
-  import Sidebar from './components/Sidebar.vue'
-  import workspace from './components/workspace.vue'
+  import Topbar from './components/TopBar.vue'
+  import Sidebar from './components/SideBar.vue'
+  import workspace from './components/WorkspaceContainer.vue'
   import { ref } from 'vue'
   
   const workspaceRef = ref(null);
