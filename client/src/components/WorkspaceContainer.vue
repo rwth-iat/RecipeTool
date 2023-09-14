@@ -85,8 +85,6 @@
     isPropertyWindowOpen.value = false;
   }
 
-  //watch(secondary_workspace_items, createUpdateItemListHandler(secondary_js_plumb_instance, secondary_js_plumb_elements, secondary_managed_elements), {deep: true,});
-
   /*
     the following paramters and functions handle the zooming of the workspace
     to zoom the workspace you use the zoomin and zoomout buttons in the upper left corner
@@ -138,27 +136,14 @@
       selectedElement.value.materials.push({ id: "OUT", name: "Endprodukt", type: "material", x: 300, y: 400 })
     }
 
-    //var unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
-    //var unique_id = id;
-    //computedWorkspaceItems.value.push({ id: unique_id, name: name, type: type, x: x, y: y });
-    //console.log("dragged from sidebar, dropped in workspace at absolute position: " + event.clientX.toString() + " " + event.clientY.toString());
-
     //reset secondary workspace variables
     secondaryWorkspaceContent.value.removeElements() //reset connections
-    secondaryWorkspaceContent.value.addElements(selectedElement.value.materials) //reset connections
-
-    //add the materials and the processes to workspace items
-    //the ... pushes every single element one by one instead of the whole list as one entry
-    //secondary_workspace_items.value.push(...selectedElement.value.processElement);
-    //secondary_workspace_items.value.push(...selectedElement.value.materials);
-
-    //open the actual secondary workspace
-    showSecondaryWorkspace.value=true;
-
-    //set the current parent
-    secondaryWorkspaceParent.value = selectedElement.value;
+    secondaryWorkspaceContent.value.addElements(selectedElement.value.materials) //add elements to workspace item list
+    showSecondaryWorkspace.value=true;//visually open the actual secondary workspace
+    secondaryWorkspaceParent.value = selectedElement.value;//set the current parent
   }
 
+  //function needed to replace the original item with the edited item 
   var map = {};
   (function recurse(processElements) {
     for (var i=0; i<processElements.length; i++) {
@@ -168,10 +153,10 @@
             recurse(processElement.processElement);
     }
   })(main_workspace_items.value);
-
-function updateObjectByID(id, newobj) {
+  
+  function updateObjectByID(id, newobj) {
     map[id] = newobj;
-}
+  }
 
 
   function saveSecondaryWorkspace(){
@@ -191,11 +176,12 @@ function updateObjectByID(id, newobj) {
         console.debug("type not known")
       }
     }
-        //replace original parent obj with the new build
+    //replace original parent obj with the new build
     updateObjectByID(secondaryWorkspaceParent.value.id, secondaryWorkspaceParent.value)
     console.debug("complete workspace parent object right before saving:", secondaryWorkspaceParent.value)
     console.debug("inserting into Main Workspace items: ", main_workspace_items.value)
   }
+  
   function deleteElement(element){
     //search for item in main_workspace
     mainWorkspaceContent.value.deleteElement(element)
