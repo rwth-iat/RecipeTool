@@ -33,7 +33,8 @@
         if (workspaceContentRef.value) {
             ready(() => {
                 jsplumbInstance.value = initializeJsPlumb(workspaceContentRef);
-                watch(computedWorkspaceItems, createUpdateItemListHandler(jsplumbInstance, jsplumbElements, managedElements), {deep: true,});
+                watch(computedWorkspaceItems, createUpdateItemListHandler(jsplumbElements, managedElements), {deep: true,});
+                //const unwatch = watchEffect(() => {})
             })
         }
     });
@@ -156,12 +157,9 @@
     return instance
   }
 
-  function resetJsPlumb(){
+  async function resetJsPlumb(){
     jsplumbInstance.value.reset()
-    jsplumbInstance.value = initializeJsPlumb(workspaceContentRef)
-    watch(computedWorkspaceItems.value, createUpdateItemListHandler(jsplumbInstance, jsplumbElements, managedElements), {deep: true,});
-    managedElements.value = {}
-    jsplumbElements.value = []
+    console.debug("resetted jsplumb:", jsplumbInstance.value)
   }
 
   function addSourceEndpoint(instance, element){
@@ -231,28 +229,42 @@
     }
   }
 
-    function createUpdateItemListHandler(instance, jsplumbElements, managedElements) {
+    function createUpdateItemListHandler(jsplumbElements, managedElements) {
         return async (newItems) => {
             console.debug("workspace_items updated, watcher triggered");
             await nextTick(); //wait one tick otherwise the new workspace item is not yet in jsplumbElements
-            newItems.forEach((item) => {
-            const elementRef = jsplumbElements.value.find(
-                (element) => element.id === item.id
-            );
-            if(elementRef){
-                if (managedElements.value[item.id]===undefined || managedElements.value[item.id]===false) {
-                    console.debug("changed element not managed yet, place and adding endpoints:");
-                    addJsPlumbEndpoints(instance.value, elementRef, item);
-                    console.debug("placing new element at x:", item.x+"px", " , y:", item.y+"px");
-                    elementRef.style.left = item.x + "px";
-                    elementRef.style.top = item.y + "px";
-                    managedElements.value[item.id] = true;
+            await nextTick();
+
+            // Detect popped items
+            console.debug("newitems:", newItems)
+            console.debug("computedWorkspaceItems:", computedWorkspaceItems.value)
+            const poppedItems = newItems.filter((newItem) => !computedWorkspaceItems.value.some((item) => newItem.id === item.id));
+            poppedItems.forEach((poppedItem) => {
+                console.debug("Item popped:", poppedItem);
+                // Handle the pop operation here
+            });
+            
+            // Detect popped items
+            const pushedItems = computedWorkspaceItems.value.filter((item) => newItems.includes(item));
+            pushedItems.forEach((pushedItem) => {
+                console.debug("Item pushed:", pushedItem);
+                // Handle the pop operation here
+                const elementRef = jsplumbElements.value.find(
+                    (element) => element.id === pushedItem.id
+                );
+                if(elementRef){
+                    if (managedElements.value[pushedItem.id]===undefined || managedElements.value[pushedItem.id]===false) {
+                        console.debug("changed element not managed yet, place at[", pushedItem.x+"px,", pushedItem.y+"px","] and add endpoints:", pushedItem);
+                        addJsPlumbEndpoints(jsplumbInstance.value, elementRef, pushedItem);
+                        elementRef.style.left = pushedItem.x + "px";
+                        elementRef.style.top = pushedItem.y + "px";
+                        managedElements.value[pushedItem.id] = true;
+                    }else{
+                        console.debug("pushed element already managed: ", pushedItem);
+                    }
                 }else{
-                    console.debug("element already managed");
+                    console.debug("pushed element not found in jsplumbelements:", pushedItem)
                 }
-            }else{
-                console.debug("element not found in jsplumbelements:", item)
-            }
             });
         };
     }
@@ -284,18 +296,19 @@
                 //elementRef.remove();
             }
         }
+        //jsplumbElements.value=[]
+        managedElements.value = {};
         while(computedWorkspaceItems.value.length>0){ //simply setting to [] did not work
             console.debug("pop item out of computedWorkspaceItems")
             computedWorkspaceItems.value.pop();
         }
-        await nextTick();
-        //jsplumbElements.value=[]
-        managedElements.value = {};
         console.log("deleted all Elements from secondary workspace")
-        console.log("computedWorkspaceItems:", computedWorkspaceItems.value)
-        console.log("jsplumbElements:", jsplumbElements.value)
-        console.log("managedElements:", managedElements.value)
+        console.debug("computedWorkspaceItems:", computedWorkspaceItems.value)
+        console.debug("jsplumbElements:", jsplumbElements.value)
+        console.debug("managedElements:", managedElements.value)
+        await resetJsPlumb()
     }
+
     async function addElements(list){
         console.debug("add list:", list, " to Workspace:", computedWorkspaceItems)
         for(var element of list){

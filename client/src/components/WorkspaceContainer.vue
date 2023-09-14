@@ -53,7 +53,7 @@
 
 
 <script setup>
-  import { ref} from 'vue';
+  import { ref, nextTick } from 'vue';
   import axios from 'axios'
   import { create_validate_download_batchml } from './create_xml/new_export_xml.js';
   import PropertyWindowContent from './WorkspaceComponents/PropertyWindow.vue'; // Import your property window content component
@@ -139,6 +139,8 @@
       selectedElement.value.materials.push({ id: unique_id, name: "Endprodukt", type: "material", x: 300, y: 400 })
     }
 
+    await nextTick();
+    await nextTick();
     //reset secondary workspace variables
     await secondaryWorkspaceContent.value.addElements(selectedElement.value.materials) //add elements to workspace item list
     showSecondaryWorkspace.value=true;//visually open the actual secondary workspace
