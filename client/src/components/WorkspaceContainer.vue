@@ -43,7 +43,8 @@
         <PropertyWindowContent
         v-model:selectedElement="selectedElement" 
         @close="closePropertyWindow"
-        @openInWorkspace="openInWorkspace"/>
+        @openInWorkspace="openInWorkspace"
+        @deleteElement="deleteElement($event)"/>
       </div>
     </transition>
     </div>
@@ -194,6 +195,18 @@ function updateObjectByID(id, newobj) {
     updateObjectByID(secondaryWorkspaceParent.value.id, secondaryWorkspaceParent.value)
     console.debug("complete workspace parent object right before saving:", secondaryWorkspaceParent.value)
     console.debug("inserting into Main Workspace items: ", main_workspace_items.value)
+  }
+  function deleteElement(element){
+    //search for item in main_workspace
+    var index = main_workspace_items.value.findIndex(item => item.id === element.id);
+    if(index !== -1){
+      main_workspace_items.value.splice(index, 1);
+    }
+    //search for item in secondary_workspace
+    index = secondary_workspace_items.value.findIndex(item => item.id === element.id);
+    if(index !== -1){
+      secondary_workspace_items.value.splice(index, 1);
+    }
   }
 </script>
 

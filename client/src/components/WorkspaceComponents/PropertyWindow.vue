@@ -57,115 +57,118 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+  import { computed } from 'vue';
 
-const props = defineProps(['selectedElement']);
-const emit = defineEmits(['close', 'openInWorkspace']);
+  const props = defineProps(['selectedElement']);
+  const emit = defineEmits(['close', 'openInWorkspace', 'deleteElement']);
 
-const selectedElementProperties = computed(() => {
-  return {
-    id: props.selectedElement.id,
-    description: props.selectedElement.description,
-    processElementType: props.selectedElement.description,
-    processElementParameter: props.selectedElement.processElementParameter
-  };
-});
+  const selectedElementProperties = computed(() => {
+    return {
+      id: props.selectedElement.id,
+      description: props.selectedElement.description,
+      processElementType: props.selectedElement.description,
+      processElementParameter: props.selectedElement.processElementParameter
+    };
+  });
 
-const parameterProperties = computed(() => {
-  return props.selectedElement.processElementParameter.map((parameter) => ({
-    id: parameter.id || '',
-    description: parameter.description || '',
-    valueString: parameter.valueString || '',
-    dataType: parameter.dataType || '',
-    unitOfMeasure: parameter.unitOfMeasure || '',
-    key: parameter.key || '',
-    // Add other properties from parameter as needed
-  }));
-});
+  const parameterProperties = computed(() => {
+    return props.selectedElement.processElementParameter.map((parameter) => ({
+      id: parameter.id || '',
+      description: parameter.description || '',
+      valueString: parameter.valueString || '',
+      dataType: parameter.dataType || '',
+      unitOfMeasure: parameter.unitOfMeasure || '',
+      key: parameter.key || '',
+      // Add other properties from parameter as needed
+    }));
+  });
 
-function close() {
-  emit('close');
-}
+  function close() {
+    emit('close');
+  }
 
-function openInWorkspace() {
-  emit('openInWorkspace');
-}
+  function openInWorkspace() {
+    emit('openInWorkspace');
+  }
 
-function addProcessElementParameter() {
-  selectedElementProperties.value.processElementParameter.push({});
-}
+  function addProcessElementParameter() {
+    selectedElementProperties.value.processElementParameter.push({});
+  }
+
+  function deleteElement(){
+    emit('deleteElement', props.selectedElement)
+  }
 </script>
 
   
-  <style scoped>
-    #parameter-container{
+<style scoped>
+  #parameter-container{
       width: 100%;
       padding: 8px;
       margin-top: 5px;
       border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;
-    }
-    input.locked-input, textarea { 
-      background: lightslategrey; 
-    }
-    .property-window-content {
-        overflow-y: scroll;
-        height: calc(100vh - var(--topbar-height));
-        float:right;
-        background-color: var(--dark);
-        color: var(--light);
-        /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column; /* Arrange children vertically */
-        padding: 20px;
-        transition: transform 0.8s ease-in-out; /* Adjust the duration as needed */
-        border-radius: 5px;
-    }
-    .deleteBtt{
-        margin-left: 15px;
-        padding: 5px;
-        color: red;
-        float: right;
-        background-color: var(--light) ;
-        border: 1px solid red;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-    .openWorkspaceBtt{
-        padding: 5px;
-        color: black;
-        float: right;
-        background-color: var(--light) ;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
+  }
+  input.locked-input, textarea { 
+    background: lightslategrey; 
+  }
+  .property-window-content {
+      overflow-y: scroll;
+      height: calc(100vh - var(--topbar-height));
+      float:right;
+      background-color: var(--dark);
+      color: var(--light);
+      /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column; /* Arrange children vertically */
+      padding: 20px;
+      transition: transform 0.8s ease-in-out; /* Adjust the duration as needed */
+      border-radius: 5px;
+  }
+  .deleteBtt{
+      margin-left: 15px;
+      padding: 5px;
+      color: red;
+      float: right;
+      background-color: var(--light) ;
+      border: 1px solid red;
+      border-radius: 4px;
+      box-sizing: border-box;
+  }
+  .openWorkspaceBtt{
+      padding: 5px;
+      color: black;
+      float: right;
+      background-color: var(--light) ;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+  }
 
-	.material-icons {
-        font-size: 2rem;
-        color: var(--light);
-        transition: 0.2s ease-in-out;
-    }
+.material-icons {
+      font-size: 2rem;
+      color: var(--light);
+      transition: 0.2s ease-in-out;
+  }
 
-    .property-window-content h2 {
-        margin-top: 0;
-    }
+  .property-window-content h2 {
+      margin-top: 0;
+  }
 
-    .property-window-content label {
-        display: block;
-        margin-top: 10px;
-    }
+  .property-window-content label {
+      display: block;
+      margin-top: 10px;
+  }
 
-    .property-window-content input {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-    
-  </style>
+  .property-window-content input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+  }
   
+</style>
