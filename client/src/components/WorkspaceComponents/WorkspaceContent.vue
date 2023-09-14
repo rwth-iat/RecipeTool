@@ -159,7 +159,7 @@
   function resetJsPlumb(){
     jsplumbInstance.value.reset()
     jsplumbInstance.value = initializeJsPlumb(workspaceContentRef)
-    watch(computedWorkspaceItems, createUpdateItemListHandler(jsplumbInstance, jsplumbElements, managedElements), {deep: true,});
+    watch(computedWorkspaceItems.value, createUpdateItemListHandler(jsplumbInstance, jsplumbElements, managedElements), {deep: true,});
     managedElements.value = {}
     jsplumbElements.value = []
   }
@@ -234,8 +234,7 @@
     function createUpdateItemListHandler(instance, jsplumbElements, managedElements) {
         return async (newItems) => {
             console.debug("workspace_items updated, watcher triggered");
-            await nextTick();
-            await nextTick();
+            await nextTick(); //wait one tick otherwise the new workspace item is not yet in jsplumbElements
             newItems.forEach((item) => {
             const elementRef = jsplumbElements.value.find(
                 (element) => element.id === item.id
@@ -274,7 +273,7 @@
         jsplumbInstance.value.setZoom(zoomLevel.value);
     }
 
-    function removeElements(){
+    async function removeElements(){
         jsplumbInstance.value.deleteEveryConnection();
         for(let item of computedWorkspaceItems.value){
             const elementRef = jsplumbElements.value.find(
@@ -282,20 +281,30 @@
             );
             if(elementRef!==undefined){
                 jsplumbInstance.value.removeAllEndpoints(elementRef);
-                elementRef.remove();
+                //elementRef.remove();
             }
         }
-        managedElements.value = {};
-        computedWorkspaceItems.value = [];
-    }
-    function addElements(list){
-        console.debug("entered addElements")
-        for(var element of list){
-            var unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
-            //var unique_id = id;
-            console.log("add element to second workspace programatically at position: x=" + element.y + "px  y=" + element.y+"px");
-            computedWorkspaceItems.value.push({ id: unique_id, name: element.name, type: element.type, x: element.x, y: element.y });
+        while(computedWorkspaceItems.value.length>0){ //simply setting to [] did not work
+            console.debug("pop item out of computedWorkspaceItems")
+            computedWorkspaceItems.value.pop();
         }
+        await nextTick();
+        //jsplumbElements.value=[]
+        managedElements.value = {};
+        console.log("deleted all Elements from secondary workspace")
+        console.log("computedWorkspaceItems:", computedWorkspaceItems.value)
+        console.log("jsplumbElements:", jsplumbElements.value)
+        console.log("managedElements:", managedElements.value)
+    }
+    async function addElements(list){
+        console.debug("add list:", list, " to Workspace:", computedWorkspaceItems)
+        for(var element of list){
+            if(!(computedWorkspaceItems.value.some(({ id }) => id === element.id))){ // check if element already exists
+                console.log("add element to second workspace programatically at position: x=" + element.x + "px  y=" + element.y+"px");
+                computedWorkspaceItems.value.push({ id: element.id, name: element.name, type: element.type, x: element.x, y: element.y });
+            }
+        }
+        await jsplumbInstance.value.repaintEverything();
     }
 
     function deleteElement(item){

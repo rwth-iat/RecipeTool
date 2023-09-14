@@ -122,6 +122,7 @@
 
 
   async function openInWorkspace(){
+    await secondaryWorkspaceContent.value.removeElements() //reset secondary workspace
     // check if this element already has children processes else define empty list
     if(!Array.isArray(selectedElement.value.processElement)){
       console.debug("no child processelements: ", selectedElement.value.processElements)
@@ -132,13 +133,14 @@
       console.debug("no child materials: ", selectedElement.value.materials)
       //if no materials exist yet add an input and output knot
       selectedElement.value.materials = [];
-      selectedElement.value.materials.push({ id: "IN", name: "Eingangsmaterial", type: "material", x: 300, y: 100 })
-      selectedElement.value.materials.push({ id: "OUT", name: "Endprodukt", type: "material", x: 300, y: 400 })
+      var unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
+      selectedElement.value.materials.push({ id: unique_id, name: "Eingangsmaterial", type: "material", x: 300, y: 100 })
+      unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
+      selectedElement.value.materials.push({ id: unique_id, name: "Endprodukt", type: "material", x: 300, y: 400 })
     }
 
     //reset secondary workspace variables
-    secondaryWorkspaceContent.value.removeElements() //reset connections
-    secondaryWorkspaceContent.value.addElements(selectedElement.value.materials) //add elements to workspace item list
+    await secondaryWorkspaceContent.value.addElements(selectedElement.value.materials) //add elements to workspace item list
     showSecondaryWorkspace.value=true;//visually open the actual secondary workspace
     secondaryWorkspaceParent.value = selectedElement.value;//set the current parent
   }
@@ -181,7 +183,7 @@
     console.debug("complete workspace parent object right before saving:", secondaryWorkspaceParent.value)
     console.debug("inserting into Main Workspace items: ", main_workspace_items.value)
   }
-  
+
   function deleteElement(element){
     //search for item in main_workspace
     mainWorkspaceContent.value.deleteElement(element)
