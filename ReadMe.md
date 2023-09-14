@@ -14,8 +14,8 @@ The following lines make sure you are in the "server" subfolder, install needed 
   ```
 
 After that the server is running under:
-- "https://127.0.0.1:5000/apidocs" for the documentation
-- "https://127.0.0.1:5000/editor" for the GUI.
+- https://127.0.0.1:5000/apidocs for the documentation
+- https://127.0.0.1:5000/editor for the GUI.
 
 # Functionality
 ## already implemented
