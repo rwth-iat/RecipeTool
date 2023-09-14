@@ -151,7 +151,7 @@ function create_process_element_type(item, workspace_items, jsplumb_connections)
             }
             //materialsType: ""
             )
-        }; 
+        }
         });
     
     //add directed links
@@ -172,7 +172,7 @@ function create_process_element_type(item, workspace_items, jsplumb_connections)
                 //add child itemlist and connections here here to enable makro steps 
                 create_process_element_type(child_item, [], [])
             )
-        }; 
+        } 
     });
     return process_element
 }
@@ -208,7 +208,6 @@ export function generate_batchml(workspace_items, jsplumb_connections){
 
     // Marshal the JavaScript object to XML
     const marshaller = context.createMarshaller();
-    const document = marshaller.marshalDocument(gRecipe);
     const xmlString = marshaller.marshalString(gRecipe);
     return xmlString
 }

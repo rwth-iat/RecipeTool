@@ -298,13 +298,30 @@
         }
     }
 
+    function deleteElement(item){
+        const elementRef = jsplumbElements.value.find(
+            (element) => element.id === item.id
+        );
+        if(elementRef!==undefined){
+            jsplumbInstance.value.removeAllEndpoints(elementRef);
+            jsplumbInstance.value.deleteConnectionsForElement(elementRef)
+            elementRef.remove();
+        }
+        //search for item in also delete from workspaceitemslist
+        var index = computedWorkspaceItems.value.findIndex(element => element.id === item.id);
+        if(index !== -1){
+            computedWorkspaceItems.value.splice(index, 1);
+        }
+    }
+
     //expose this funciton so that i can be called from the Topbar export button
     defineExpose({
         zoomIn,
         zoomOut,
         resetJsPlumb,
         removeElements,
-        addElements
+        addElements,
+        deleteElement
     });
 </script>
 

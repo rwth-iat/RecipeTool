@@ -198,15 +198,8 @@ function updateObjectByID(id, newobj) {
   }
   function deleteElement(element){
     //search for item in main_workspace
-    var index = main_workspace_items.value.findIndex(item => item.id === element.id);
-    if(index !== -1){
-      main_workspace_items.value.splice(index, 1);
-    }
-    //search for item in secondary_workspace
-    index = secondary_workspace_items.value.findIndex(item => item.id === element.id);
-    if(index !== -1){
-      secondary_workspace_items.value.splice(index, 1);
-    }
+    mainWorkspaceContent.value.deleteElement(element)
+    secondaryWorkspaceContent.value.deleteElement(element)
   }
 </script>
 
