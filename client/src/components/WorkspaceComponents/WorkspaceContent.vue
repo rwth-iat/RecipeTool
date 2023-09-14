@@ -15,7 +15,7 @@
 
 <script setup>
     import { onMounted, ref, computed, watch, nextTick } from 'vue';
-    import { newInstance, ready } from "@jsplumb/browser-ui";
+    import { JsPlumbInstance, newInstance, ready } from "@jsplumb/browser-ui";
     const props = defineProps(['workspace_items']);
     const emit = defineEmits(['changeSelectedElement', 'openPropertyWindow']);  
     const workspaceContentRef = ref(null)
@@ -339,6 +339,26 @@
     function getConnections(){
         return jsplumbInstance.value.getConnections()
     }
+    function addConnections(connections){
+        for (var connectionId in connections) {
+            var connection = connections[connectionId];
+            var sourceId = connection.sourceId;
+            var targetId = connection.targetId;
+            const sourceElementRef = jsplumbElements.value.find(
+                    (element) => element.id === sourceId
+                );
+            const targetElementRef = jsplumbElements.value.find(
+                    (element) => element.id === targetId
+                );
+            
+            if(sourceElementRef && targetElementRef){
+                jsplumbInstance.value.connect({
+                    source:sourceElementRef,
+                    target:targetElementRef
+                })
+            }
+        }
+    }
 
     //expose this funciton so that i can be called from the Topbar export button
     defineExpose({
@@ -347,8 +367,9 @@
         resetJsPlumb,
         removeElements,
         addElements,
+        addConnections,
         deleteElement,
-        getConnections
+        getConnections,
     });
 </script>
 
