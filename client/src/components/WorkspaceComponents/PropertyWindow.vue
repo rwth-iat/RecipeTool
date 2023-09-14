@@ -4,6 +4,9 @@
       <button @click="close">
         <span class="material-icons">>></span>
       </button>
+      <button class="deleteBtt" @click="deleteElement">
+        <span>delete</span>
+      </button>
       <button v-show='selectedElement.type=="process"' class="openWorkspaceBtt" @click="openInWorkspace">
         <span>Open in Workspace</span>
       </button>
@@ -120,7 +123,16 @@ function addProcessElementParameter() {
         transition: transform 0.8s ease-in-out; /* Adjust the duration as needed */
         border-radius: 5px;
     }
-  
+    .deleteBtt{
+        margin-left: 15px;
+        padding: 5px;
+        color: red;
+        float: right;
+        background-color: var(--light) ;
+        border: 1px solid red;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
     .openWorkspaceBtt{
         padding: 5px;
         color: black;

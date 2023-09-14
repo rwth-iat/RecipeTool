@@ -175,18 +175,25 @@ function updateObjectByID(id, newobj) {
 
   function saveSecondaryWorkspace(){
     //build the parent object
+    console.debug("Saving secondary Workspace: ", secondary_workspace_items.value)
+    secondaryWorkspaceParent.value.materials = []
+    secondaryWorkspaceParent.value.processElement = []
     for(var element of secondary_workspace_items.value){
-      secondaryWorkspaceParent.value.materials = []
-      secondaryWorkspaceParent.value.processElement = []
+      console.debug("adding element: ", element)
       if (element.type == "material"){
+        console.debug("adding as material")
         secondaryWorkspaceParent.value.materials.push(element)
       }else if(element.type == "process"){
+        console.debug("adding as process")
         secondaryWorkspaceParent.value.processElement.push(element)
+      }else{
+        console.debug("type not known")
       }
     }
-
         //replace original parent obj with the new build
     updateObjectByID(secondaryWorkspaceParent.value.id, secondaryWorkspaceParent.value)
+    console.debug("complete workspace parent object right before saving:", secondaryWorkspaceParent.value)
+    console.debug("inserting into Main Workspace items: ", main_workspace_items.value)
   }
 </script>
 
