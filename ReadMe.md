@@ -30,12 +30,12 @@ After that the server is running under:
 - [X] generate simple BatchML (needs to be extended)
 - [X] validate BatchML
 - [X] automated testing pipeline with every project push (tests need to be extended)
+- [X] delete elements
+- [X] open macro steps in new workspace
  
 ## under development
-- [ ] delete elements
 - [ ] change element styles to oficial Chart elements
-- [ ] enable creation of macro Steps
-- [ ] open macro steps in new workspace 
+- [ ] enable creation of macro Steps 
 - [ ] enable macro processParameters (only simple ones possible yet)
 - [ ] enable possibillity to save current workspace
 - [ ] add Ressource Constraints
