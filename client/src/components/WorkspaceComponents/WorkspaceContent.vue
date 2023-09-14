@@ -15,7 +15,7 @@
 
 <script setup>
     import { onMounted, ref, computed, watch, nextTick } from 'vue';
-    import { JsPlumbInstance, newInstance, ready } from "@jsplumb/browser-ui";
+    import { newInstance, ready } from "@jsplumb/browser-ui";
     const props = defineProps(['workspace_items']);
     const emit = defineEmits(['changeSelectedElement', 'openPropertyWindow']);  
     const workspaceContentRef = ref(null)
@@ -225,6 +225,8 @@
       if (item) {
         item.sourceEndpointId = sourceEndpoint.id;
         item.targetEndpointId = targetEndpoint.id;
+        item.sourceEndpoint = sourceEndpoint;
+        item.targetEndpoint = targetEndpoint;
       }
     }
   }
@@ -344,17 +346,17 @@
             var connection = connections[connectionId];
             var sourceId = connection.sourceId;
             var targetId = connection.targetId;
-            const sourceElementRef = jsplumbElements.value.find(
+            const sourceElementRef = computedWorkspaceItems.value.find(
                     (element) => element.id === sourceId
                 );
-            const targetElementRef = jsplumbElements.value.find(
+            const targetElementRef = computedWorkspaceItems.value.find(
                     (element) => element.id === targetId
                 );
             
             if(sourceElementRef && targetElementRef){
                 jsplumbInstance.value.connect({
-                    source:sourceElementRef,
-                    target:targetElementRef
+                    source:sourceElementRef.sourceEndpoint,
+                    target:targetElementRef.targetEndpoint
                 })
             }
         }
