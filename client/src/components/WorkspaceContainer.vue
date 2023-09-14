@@ -142,7 +142,8 @@
     await nextTick();
     await nextTick();
     //reset secondary workspace variables
-    await secondaryWorkspaceContent.value.addElements(selectedElement.value.materials) //add elements to workspace item list
+    await secondaryWorkspaceContent.value.addElements(selectedElement.value.materials) //add materials to workspace item list
+    await secondaryWorkspaceContent.value.addElements(selectedElement.value.processElement) //add processes to workspace item list
     showSecondaryWorkspace.value=true;//visually open the actual secondary workspace
     secondaryWorkspaceParent.value = selectedElement.value;//set the current parent
   }
@@ -180,6 +181,14 @@
         console.debug("type not known")
       }
     }
+
+    secondaryWorkspaceParent.value.directedLink = []
+    var connections = secondaryWorkspaceContent.value.getConnections()
+    for (var connectionId in connections) {
+      var connection = connections[connectionId];
+      secondaryWorkspaceParent.value.processElement.push(connection)
+    }
+
     //replace original parent obj with the new build
     updateObjectByID(secondaryWorkspaceParent.value.id, secondaryWorkspaceParent.value)
     console.debug("complete workspace parent object right before saving:", secondaryWorkspaceParent.value)

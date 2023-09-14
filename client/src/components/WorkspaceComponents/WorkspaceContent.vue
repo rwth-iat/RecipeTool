@@ -336,6 +336,10 @@
         }
     }
 
+    function getConnections(){
+        return jsplumbInstance.value.getConnections()
+    }
+
     //expose this funciton so that i can be called from the Topbar export button
     defineExpose({
         zoomIn,
@@ -343,7 +347,8 @@
         resetJsPlumb,
         removeElements,
         addElements,
-        deleteElement
+        deleteElement,
+        getConnections
     });
 </script>
 
