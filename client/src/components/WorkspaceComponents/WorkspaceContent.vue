@@ -33,7 +33,7 @@
         if (workspaceContentRef.value) {
             ready(() => {
                 jsplumbInstance.value = initializeJsPlumb(workspaceContentRef);
-                watch(computedWorkspaceItems, createUpdateItemListHandler(jsplumbElements, managedElements), {deep: true,});
+                watch(computedWorkspaceItems, createUpdateItemListHandler(jsplumbInstance, jsplumbElements, managedElements), {deep: true,});
                 //const unwatch = watchEffect(() => {})
             })
         }
@@ -229,7 +229,7 @@
     }
   }
 
-    function createUpdateItemListHandler(jsplumbElements, managedElements) {
+    function createUpdateItemListHandler(instance, jsplumbElements, managedElements) {
         return async (newItems) => {
             console.debug("workspace_items updated, watcher triggered");
             await nextTick(); //wait one tick otherwise the new workspace item is not yet in jsplumbElements
@@ -255,7 +255,7 @@
                 if(elementRef){
                     if (managedElements.value[pushedItem.id]===undefined || managedElements.value[pushedItem.id]===false) {
                         console.debug("changed element not managed yet, place at[", pushedItem.x+"px,", pushedItem.y+"px","] and add endpoints:", pushedItem);
-                        addJsPlumbEndpoints(jsplumbInstance.value, elementRef, pushedItem);
+                        addJsPlumbEndpoints(instance.value, elementRef, pushedItem);
                         elementRef.style.left = pushedItem.x + "px";
                         elementRef.style.top = pushedItem.y + "px";
                         managedElements.value[pushedItem.id] = true;
