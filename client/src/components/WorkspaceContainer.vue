@@ -133,9 +133,9 @@
       console.debug("no child materials: ", selectedElement.value.materials)
       //if no materials exist yet add an input and output knot
       selectedElement.value.materials = [];
-      var unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
+      var unique_id = secondaryWorkspaceContent.value.createUniqueId()
       selectedElement.value.materials.push({ id: unique_id, name: "Eingangsmaterial", type: "material", x: 300, y: 100 })
-      unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
+      unique_id = secondaryWorkspaceContent.value.createUniqueId()
       selectedElement.value.materials.push({ id: unique_id, name: "Endprodukt", type: "material", x: 300, y: 400 })
     }
 
@@ -192,7 +192,7 @@
   }
 
   function deleteElement(element){
-    //search for item in main_workspace
+    //try to delete it in both workspaces. As ids are unique and only toplevel of elements are searched this will delete only in one of the two
     mainWorkspaceContent.value.deleteElement(element)
     secondaryWorkspaceContent.value.deleteElement(element)
   }

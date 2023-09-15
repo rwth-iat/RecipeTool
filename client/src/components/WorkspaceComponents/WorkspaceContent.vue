@@ -136,7 +136,7 @@
 
         // if it is a sidebar element add new item to workspace list. Drag and drop of workspace elements is handled by jsplumb
         if (classes.includes("sidebar_element")) {
-            var unique_id = Date.now().toString(36) + Math.random().toString(36).substring(2);
+            var unique_id = createUniqueId()
             //var unique_id = id;
             computedWorkspaceItems.value.push({ id: unique_id, name: name, type: type, x: x, y: y });
             console.log("dragged from sidebar, dropped in workspace at absolute position: " + x + " " + y);
@@ -164,7 +164,7 @@
 
   function addSourceEndpoint(instance, element, uniqueId){
     if(uniqueId===undefined){
-        uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+        uniqueId = createUniqueId()
     }
     const sourceEndpoint = instance.addEndpoint(element, {
         uuid: uniqueId,
@@ -177,7 +177,7 @@
 
   function addTargetEndpoint(instance, element, uniqueId){
     if(uniqueId===undefined){
-        uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+        uniqueId = createUniqueId()
     }
     const targetEndpoint = instance.addEndpoint(element, {
         uuid: uniqueId,
@@ -383,17 +383,20 @@
             console.debug("connected sourceUuid: ", sourceElementRef.sourceEndpoint.uuid, " with targetUuid: ", targetElementRef.targetEndpoint.uuid)
         }
     }
+    function createUniqueId(){
+        return Date.now().toString(36) + Math.random().toString(36).substring(2);
+    }
 
     //expose this funciton so that i can be called from the Topbar export button
     defineExpose({
         zoomIn,
         zoomOut,
-        resetJsPlumb,
         clearWorkspace,
         addElements,
         addConnections,
         deleteElement,
         getConnections,
+        createUniqueId
     });
 </script>
 
