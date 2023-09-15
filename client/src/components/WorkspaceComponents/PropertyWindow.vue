@@ -35,17 +35,17 @@
         <h2>ProcessElementParameter</h2>
         <div v-for="(parameter, index) in computedSelectedElement.processElementParameter" :key="index" id="parameter-container">
           <label :for="'parameter_' + index + '_id'">ID:</label>
-          <input type="text" :id="'parameter_' + index + '_id'" v-model="parameterProperties[index].id" />
+          <input type="text" :id="'parameter_' + index + '_id'" v-model="computedSelectedElement.processElementParameter[index].id" />
           <label :for="'parameter_' + index + '_description'">Description:</label>
-          <input type="text" :id="'parameter_' + index + '_description'" v-model="parameterProperties[index].description" />
+          <input type="text" :id="'parameter_' + index + '_description'" v-model="computedSelectedElement.processElementParameter[index].description" />
           <label :for="'parameter_' + index + '_valueString'">ValueString:</label>
-          <input type="text" :id="'parameter_' + index + '_valueString'" v-model="parameterProperties[index].valueString" />
+          <input type="text" :id="'parameter_' + index + '_valueString'" v-model="computedSelectedElement.processElementParameter[index].valueString" />
           <label :for="'parameter_' + index + '_dataType'">DataType:</label>
-          <input type="text" :id="'parameter_' + index + '_dataType'" v-model="parameterProperties[index].valueString" />
+          <input type="text" :id="'parameter_' + index + '_dataType'" v-model="computedSelectedElement.processElementParameter[index].dataType" />
           <label :for="'parameter_' + index + '_unitOfMeasure'">UnitOfMeasure:</label>
-          <input type="text" :id="'parameter_' + index + '_unitOfMeasure'" v-model="parameterProperties[index].valueString" />
+          <input type="text" :id="'parameter_' + index + '_unitOfMeasure'" v-model="computedSelectedElement.processElementParameter[index].unitOfMeasure" />
           <label :for="'parameter_' + index + '_key'">Key:</label>
-          <input type="text" :id="'parameter_' + index + '_key'" v-model="parameterProperties[index].valueString" />
+          <input type="text" :id="'parameter_' + index + '_key'" v-model="computedSelectedElement.processElementParameter[index].key" />
         </div>
 
         <button @click="addProcessElementParameter" id="addProcessElementParameter">
@@ -63,23 +63,16 @@
   const emit = defineEmits(['close', 'openInWorkspace', 'deleteElement', 'update:selectedElement']);
 
   // Create a computed property that represents the entire selectedElement
+  // this is recommended solution to achieve two way binding between the parent and this child component
+  // this way the parent component is the only one setting values.
+  // it define a get and set method:
+  //    -get: take the given object from the parent
+  //    -set: emit to parent new object. The parent then sets the new value
   const computedSelectedElement = computed({
     get: () => props.selectedElement,
     set: (newValue) => {
       emit('update:selectedElement', newValue);
     },
-  });
-
-  const parameterProperties = computed(() => {
-    return props.selectedElement.processElementParameter.map((parameter) => ({
-      id: parameter.id || '',
-      description: parameter.description || '',
-      valueString: parameter.valueString || '',
-      dataType: parameter.dataType || '',
-      unitOfMeasure: parameter.unitOfMeasure || '',
-      key: parameter.key || '',
-      // Add other properties from parameter as needed
-    }));
   });
   
   function close() {
