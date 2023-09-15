@@ -168,9 +168,17 @@ function create_process_element_type(item, workspace_items, jsplumb_connections)
     //add Process Elements
     workspace_items.forEach(function (child_item) {
         if(child_item.type == "process"){
+            let child_workspace_items = []
+            if(child_item.materials){
+                child_workspace_items.push(...child_item.materials)
+            }
+            if(child_item.processElement){
+                child_workspace_items.push(...child_item.processElement)
+            }
+
             process_element.processElement.push(
                 //add child itemlist and connections here here to enable makro steps 
-                create_process_element_type(child_item, [], [])
+                create_process_element_type(child_item, child_workspace_items, child_item.directedLink)
             )
         } 
     });
