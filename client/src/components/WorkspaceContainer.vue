@@ -8,6 +8,7 @@
       :workspace_items="main_workspace_items"
       @changeSelectedElement="selectedElement = $event"
       @openPropertyWindow="openPropertyWindow"
+      @update:workspace_items="main_workspace_items = $event"
     />
 
     <!-- secondary workspace for when the inner steps of a single process are edited -->
@@ -18,6 +19,7 @@
       :workspace_items="secondary_workspace_items"
       @changeSelectedElement="selectedElement = $event"
       @openPropertyWindow="openPropertyWindow"
+      @update:workspace_items="secondary_workspace_items = $event"
     />
 
     <!-- Zoom Buttons-->
@@ -42,7 +44,7 @@
       <div v-show="isPropertyWindowOpen" >
         <PropertyWindowContent
         v-model:selectedElement="selectedElement"
-        @update:selectedElement="selectedElement = $event" 
+        @update:selectedElement="selectedElement = $event"
         @close="closePropertyWindow"
         @openInWorkspace="openInWorkspace"
         @deleteElement="deleteElement($event)"/>

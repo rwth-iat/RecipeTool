@@ -17,7 +17,7 @@
     import { onMounted, ref, computed, watch, nextTick } from 'vue';
     import { newInstance, ready } from "@jsplumb/browser-ui";
     const props = defineProps(['workspace_items']);
-    const emit = defineEmits(['changeSelectedElement', 'openPropertyWindow']);  
+    const emit = defineEmits(['changeSelectedElement', 'openPropertyWindow', 'update:workspace_items']);  
     const workspaceContentRef = ref(null)
     const jsplumbInstance = ref(null) //the jsplumb instance, this is a library which handles the drag and drop as well as the connections
     const jsplumbElements = ref([])
@@ -34,13 +34,21 @@
             ready(() => {
                 jsplumbInstance.value = initializeJsPlumb(workspaceContentRef);
                 watch(computedWorkspaceItems, createUpdateItemListHandler(jsplumbInstance, jsplumbElements, managedElements), {deep: true,});
-                //const unwatch = watchEffect(() => {})
             })
         }
     });
-
-    const computedWorkspaceItems = computed(() => {
-        return props.workspace_items || [];
+    
+    // Create a computed property that represents the entire selectedElement
+    // this is recommended solution to achieve two way binding between the parent and this child component
+    // this way the parent component is the only one setting values.
+    // it define a get and set method:
+    //    -get: take the given object from the parent
+    //    -set: emit to parent new object. The parent then sets the new value
+    const computedWorkspaceItems = computed({
+        get: () => props.workspace_items,
+        set: (newValue) => {
+            emit('update:workspace_items', newValue);
+        },
     });
 
     /*
