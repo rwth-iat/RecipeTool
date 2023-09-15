@@ -162,16 +162,12 @@
     console.debug("resetted jsplumb:", jsplumbInstance.value)
   }
 
-  function addEndpoint(instance, element, uniqueId, options){
+  function addEndpoint(instance, element, options){
     var anchor
-    if(uniqueId===undefined){
-        uniqueId = createUniqueId()
-    }
     if(options.source){ anchor = "Bottom"}
     else if(options.target){anchor = "Top"}
 
     const sourceEndpoint = instance.addEndpoint(element, {
-        uuid: uniqueId,
         source: options.source,
         target: options.target,
         anchor: anchor,
@@ -193,37 +189,29 @@
     if (element) {
       var sourceEndpoint = {}
       var targetEndpoint = {}
-      var sourceEndpointUuid = undefined
-      var targetEndpointUuid = undefined
-      if(item.sourceEndpoint!==undefined){
-        sourceEndpointUuid = item.sourceEndpoint.uuid
-      }
-      if(item.targetEndpointUuid!==undefined){
-        targetEndpointUuid = item.targetEndpoint.uuid
-      }
       if(item.type === "material"){
         if(item.name === "Eingangsmaterial"){
           console.log("add Eingangsmaterial")
-          sourceEndpoint = addEndpoint(instance, element, sourceEndpointUuid, {source: true, target: false})
+          sourceEndpoint = addEndpoint(instance, element, {source: true, target: false})
           targetEndpoint = {id: ''}
           console.log("added SourceEndpoint")
         }else if(item.name === "Zwischenprodukt"){
           console.log("add Zwischenprodukt")
-          sourceEndpoint = addEndpoint(instance, element, sourceEndpointUuid, {source: true, target: false})
-          targetEndpoint = addEndpoint(instance, element, targetEndpointUuid, {source: false, target: true})
+          sourceEndpoint = addEndpoint(instance, element, {source: true, target: false})
+          targetEndpoint = addEndpoint(instance, element, {source: false, target: true})
           console.log("added Source- and Target-Endpoint")
         }else if(item.name === "Endprodukt"){
           console.log("add Endproduct")
           sourceEndpoint = {id: ''}
-          targetEndpoint = addEndpoint(instance, element, targetEndpointUuid, {source: false, target: true})
+          targetEndpoint = addEndpoint(instance, element, {source: false, target: true})
           console.log("added TargetEndpoint")
         }else{
           console.error("unknown material type: " + item.name)
         }
       }else if(item.type === "process"){
         console.log("add process")
-        sourceEndpoint = addEndpoint(instance, element, sourceEndpointUuid, {source: true, target: false})
-        targetEndpoint = addEndpoint(instance, element, targetEndpointUuid, {source: false, target: true})
+        sourceEndpoint = addEndpoint(instance, element, {source: true, target: false})
+        targetEndpoint = addEndpoint(instance, element, {source: false, target: true})
         console.log("added Source and Target Endpoint")
       }else{
           console.error("unknown type: " + item.type)
@@ -300,7 +288,6 @@
             );
             if(elementRef!==undefined){
                 jsplumbInstance.value.removeAllEndpoints(elementRef);
-                //elementRef.remove();
             }
         }
         //jsplumbElements.value=[]
@@ -365,8 +352,6 @@
             }
             nextTick()
             jsplumbInstance.value.connect({ source:sourceElementRef.sourceEndpoint, target:targetElementRef.targetEndpoint})
-            //jsplumbInstance.value.connect({ uuids:[sourceElementRef.sourceEndpoint.uuid, targetElementRef.targetEndpoint.uuid] })
-            console.debug("connected sourceUuid: ", sourceElementRef.sourceEndpoint.uuid, " with targetUuid: ", targetElementRef.targetEndpoint.uuid)
         }
     }
     function createUniqueId(){
