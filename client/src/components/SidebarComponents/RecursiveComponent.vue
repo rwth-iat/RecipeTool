@@ -1,5 +1,4 @@
 <!-- This component results in an recursive structure like this:
-  
   <recursive-component>
     <ul>
       <li>
@@ -45,13 +44,13 @@
       <!-- Every list element contains
              - a span to display their name in the tree 
              - an new recursive component containing the list of their children if not empty
-      --> 
-      <span
-        :style="getIndentationStyle(indentationLevel)"
-        :class="{ expandable: hasChildItems(item) }"
-      ></span>
-      {{ item.name }}
-
+      -->
+      <div :style="getIndentationStyle(indentationLevel)" :class="{ expandable: hasChildItems(item) }">
+        <div class="material-icons" v-show="!item.expanded">+</div>
+        <div class="material-icons" v-show="item.expanded">-</div>
+        <div class="material-icons" style="width:10px;"></div>
+        <span>{{ item.name }}</span> 
+      </div> 
       <!--
         for the new recursice component we increase the intendationLevel to get that tree view
       -->
@@ -136,4 +135,10 @@ ul {
 .expandable {
   cursor: pointer;
 }
+.material-icons {
+      font-size: 20px;
+      color: var(--light);
+      transition: 0.2s ease-in-out;
+      display: inline-block;
+  }
 </style>
