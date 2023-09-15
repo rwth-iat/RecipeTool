@@ -271,19 +271,21 @@
                 const elementRef = jsplumbElements.value.find(
                     (element) => element.id === pushedItem.id
                 );
-                if(elementRef){
-                    if (managedElements.value[pushedItem.id]===undefined || managedElements.value[pushedItem.id]===false) {
-                        console.debug("changed element not managed yet, place at[", pushedItem.x+"px,", pushedItem.y+"px","] and add endpoints:", pushedItem);
-                        addJsPlumbEndpoints(instance.value, elementRef, pushedItem);
-                        elementRef.style.left = pushedItem.x + "px";
-                        elementRef.style.top = pushedItem.y + "px";
-                        managedElements.value[pushedItem.id] = true;
-                    }else{
-                        console.debug("pushed element already managed: ", pushedItem);
-                    }
-                }else{
+                if(!elementRef){
                     console.debug("pushed element not found in jsplumbelements:", pushedItem)
+                    return; // onoly returns the pushedItems.forEach function, effectively working as a continue
                 }
+
+                if (managedElements.value[pushedItem.id]===true) {
+                    console.debug("pushed element already managed: ", pushedItem);
+                    return;
+                }
+
+                console.debug("changed element not managed yet, place at[", pushedItem.x+"px,", pushedItem.y+"px","] and add endpoints:", pushedItem);
+                addJsPlumbEndpoints(instance.value, elementRef, pushedItem);
+                elementRef.style.left = pushedItem.x + "px";
+                elementRef.style.top = pushedItem.y + "px";
+                managedElements.value[pushedItem.id] = true;
             });
         };
     }
@@ -371,9 +373,7 @@
                 console.warn("either sourceElement: ", sourceElementRef, " or targetElement:", targetElementRef, " is undefined")
                 return
             }
-            console.debug("trying to conenct sourceElement: ", sourceElementRef, " or targetElement:", targetElementRef)
             if(!sourceElementRef.sourceEndpoint || !targetElementRef.targetEndpoint){
-                console.log(targetElementRef.targetEndpoint)
                 console.warn("either sourceEndpoint: ", sourceElementRef.sourceEndpoint, " or targetEndpoint:", targetElementRef.targetEndpoint, " is undefined")
                 return
             }
