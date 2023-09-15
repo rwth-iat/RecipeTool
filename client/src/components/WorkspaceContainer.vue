@@ -125,7 +125,7 @@
     await secondaryWorkspaceContent.value.removeElements() //reset secondary workspace
     // check if this element already has children processes else define empty list
     if(!Array.isArray(selectedElement.value.processElement)){
-      console.debug("no child processelements: ", selectedElement.value.processElements)
+      console.debug("no child processelements: ", selectedElement.value.processElement)
       selectedElement.value.processElement = [];
     }
     // check if this element already has children processes else define empty list

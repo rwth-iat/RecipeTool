@@ -162,8 +162,12 @@
     console.debug("resetted jsplumb:", jsplumbInstance.value)
   }
 
-  function addSourceEndpoint(instance, element){
+  function addSourceEndpoint(instance, element, uniqueId){
+    if(uniqueId===undefined){
+        uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+    }
     const sourceEndpoint = instance.addEndpoint(element, {
+        uuid: uniqueId,
         source: true,
         anchor: "Bottom",
         endpoint: { type: "Dot" }
@@ -171,8 +175,12 @@
       return sourceEndpoint
   }
 
-  function addTargetEndpoint(instance, element){
+  function addTargetEndpoint(instance, element, uniqueId){
+    if(uniqueId===undefined){
+        uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+    }
     const targetEndpoint = instance.addEndpoint(element, {
+        uuid: uniqueId,
         target: true,
         anchor: "Top",
         endpoint: { type: "Dot" }
@@ -193,29 +201,37 @@
     if (element) {
       var sourceEndpoint = {}
       var targetEndpoint = {}
+      var sourceEndpointUuid = undefined
+      var targetEndpointUuid = undefined
+      if(item.sourceEndpoint!==undefined){
+        sourceEndpointUuid = item.sourceEndpoint.uuid
+      }
+      if(item.targetEndpointUuid!==undefined){
+        targetEndpointUuid = item.targetEndpoint.uuid
+      }
       if(item.type === "material"){
         if(item.name === "Eingangsmaterial"){
           console.log("add Eingangsmaterial")
-          sourceEndpoint = addSourceEndpoint(instance, element)
+          sourceEndpoint = addSourceEndpoint(instance, element, sourceEndpointUuid)
           targetEndpoint = {id: ''}
           console.log("added SourceEndpoint")
         }else if(item.name === "Zwischenprodukt"){
           console.log("add Zwischenprodukt")
-          sourceEndpoint = addSourceEndpoint(instance, element)
-          targetEndpoint = addTargetEndpoint(instance, element)
+          sourceEndpoint = addSourceEndpoint(instance, element, sourceEndpointUuid)
+          targetEndpoint = addTargetEndpoint(instance, element, targetEndpointUuid)
           console.log("added Source- and Target-Endpoint")
         }else if(item.name === "Endprodukt"){
           console.log("add Endproduct")
           sourceEndpoint = {id: ''}
-          targetEndpoint = addTargetEndpoint(instance, element)
+          targetEndpoint = addTargetEndpoint(instance, element, targetEndpointUuid)
           console.log("added TargetEndpoint")
         }else{
           console.error("unknown material type: " + item.name)
         }
       }else if(item.type === "process"){
         console.log("add process")
-        sourceEndpoint = addSourceEndpoint(instance, element)
-        targetEndpoint = addTargetEndpoint(instance, element)
+        sourceEndpoint = addSourceEndpoint(instance, element, sourceEndpointUuid)
+        targetEndpoint = addTargetEndpoint(instance, element, targetEndpointUuid)
         console.log("added Source and Target Endpoint")
       }else{
           console.error("unknown type: " + item.type)
@@ -228,6 +244,7 @@
         item.sourceEndpoint = sourceEndpoint;
         item.targetEndpoint = targetEndpoint;
       }
+      console.log("item", item)
     }
   }
 
@@ -316,10 +333,11 @@
         for(var element of list){
             if(!(computedWorkspaceItems.value.some(({ id }) => id === element.id))){ // check if element already exists
                 console.log("add element to second workspace programatically at position: x=" + element.x + "px  y=" + element.y+"px");
-                computedWorkspaceItems.value.push({ id: element.id, name: element.name, type: element.type, x: element.x, y: element.y });
+                computedWorkspaceItems.value.push(element);
             }
         }
         await jsplumbInstance.value.repaintEverything();
+        await nextTick()
     }
 
     function deleteElement(item){
@@ -352,13 +370,20 @@
             const targetElementRef = computedWorkspaceItems.value.find(
                     (element) => element.id === targetId
                 );
-            
-            if(sourceElementRef && targetElementRef){
-                jsplumbInstance.value.connect({
-                    source:sourceElementRef.sourceEndpoint,
-                    target:targetElementRef.targetEndpoint
-                })
+            if(!sourceElementRef || !targetElementRef){
+                console.warn("either sourceElement: ", sourceElementRef, " or targetElement:", targetElementRef, " is undefined")
+                return
             }
+            console.debug("trying to conenct sourceElement: ", sourceElementRef, " or targetElement:", targetElementRef)
+            if(!sourceElementRef.sourceEndpoint || !targetElementRef.targetEndpoint){
+                console.log(targetElementRef.targetEndpoint)
+                console.warn("either sourceEndpoint: ", sourceElementRef.sourceEndpoint, " or targetEndpoint:", targetElementRef.targetEndpoint, " is undefined")
+                return
+            }
+            nextTick()
+            jsplumbInstance.value.connect({ source:sourceElementRef.sourceEndpoint, target:targetElementRef.targetEndpoint})
+            //jsplumbInstance.value.connect({ uuids:[sourceElementRef.sourceEndpoint.uuid, targetElementRef.targetEndpoint.uuid] })
+            console.debug("connected sourceUuid: ", sourceElementRef.sourceEndpoint.uuid, " with targetUuid: ", targetElementRef.targetEndpoint.uuid)
         }
     }
 
