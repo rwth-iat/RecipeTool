@@ -162,30 +162,22 @@
     console.debug("resetted jsplumb:", jsplumbInstance.value)
   }
 
-  function addSourceEndpoint(instance, element, uniqueId){
+  function addEndpoint(instance, element, uniqueId, options){
+    var anchor
     if(uniqueId===undefined){
         uniqueId = createUniqueId()
     }
+    if(options.source){ anchor = "Bottom"}
+    else if(options.target){anchor = "Top"}
+
     const sourceEndpoint = instance.addEndpoint(element, {
         uuid: uniqueId,
-        source: true,
-        anchor: "Bottom",
+        source: options.source,
+        target: options.target,
+        anchor: anchor,
         endpoint: { type: "Dot" }
       });
       return sourceEndpoint
-  }
-
-  function addTargetEndpoint(instance, element, uniqueId){
-    if(uniqueId===undefined){
-        uniqueId = createUniqueId()
-    }
-    const targetEndpoint = instance.addEndpoint(element, {
-        uuid: uniqueId,
-        target: true,
-        anchor: "Top",
-        endpoint: { type: "Dot" }
-      });
-    return targetEndpoint
   }
 
   // add endpoints and attach the element id as data to the endpoint. 
@@ -212,26 +204,26 @@
       if(item.type === "material"){
         if(item.name === "Eingangsmaterial"){
           console.log("add Eingangsmaterial")
-          sourceEndpoint = addSourceEndpoint(instance, element, sourceEndpointUuid)
+          sourceEndpoint = addEndpoint(instance, element, sourceEndpointUuid, {source: true, target: false})
           targetEndpoint = {id: ''}
           console.log("added SourceEndpoint")
         }else if(item.name === "Zwischenprodukt"){
           console.log("add Zwischenprodukt")
-          sourceEndpoint = addSourceEndpoint(instance, element, sourceEndpointUuid)
-          targetEndpoint = addTargetEndpoint(instance, element, targetEndpointUuid)
+          sourceEndpoint = addEndpoint(instance, element, sourceEndpointUuid, {source: true, target: false})
+          targetEndpoint = addEndpoint(instance, element, targetEndpointUuid, {source: false, target: true})
           console.log("added Source- and Target-Endpoint")
         }else if(item.name === "Endprodukt"){
           console.log("add Endproduct")
           sourceEndpoint = {id: ''}
-          targetEndpoint = addTargetEndpoint(instance, element, targetEndpointUuid)
+          targetEndpoint = addEndpoint(instance, element, targetEndpointUuid, {source: false, target: true})
           console.log("added TargetEndpoint")
         }else{
           console.error("unknown material type: " + item.name)
         }
       }else if(item.type === "process"){
         console.log("add process")
-        sourceEndpoint = addSourceEndpoint(instance, element, sourceEndpointUuid)
-        targetEndpoint = addTargetEndpoint(instance, element, targetEndpointUuid)
+        sourceEndpoint = addEndpoint(instance, element, sourceEndpointUuid, {source: true, target: false})
+        targetEndpoint = addEndpoint(instance, element, targetEndpointUuid, {source: false, target: true})
         console.log("added Source and Target Endpoint")
       }else{
           console.error("unknown type: " + item.type)
@@ -244,7 +236,6 @@
         item.sourceEndpoint = sourceEndpoint;
         item.targetEndpoint = targetEndpoint;
       }
-      console.log("item", item)
     }
   }
 
@@ -257,13 +248,8 @@
             // Detect popped items
             console.debug("newitems:", newItems)
             console.debug("computedWorkspaceItems:", computedWorkspaceItems.value)
-            const poppedItems = newItems.filter((newItem) => !computedWorkspaceItems.value.some((item) => newItem.id === item.id));
-            poppedItems.forEach((poppedItem) => {
-                console.debug("Item popped:", poppedItem);
-                // Handle the pop operation here
-            });
             
-            // Detect popped items
+            // only handle elements that were added to the list (pushed), not removed ones (popped)
             const pushedItems = computedWorkspaceItems.value.filter((item) => newItems.includes(item));
             pushedItems.forEach((pushedItem) => {
                 console.debug("Item pushed:", pushedItem);
@@ -291,19 +277,19 @@
     }
 
     var zoomincrement = 0.1
-    // Zoom in by incrementing the zoom level
-    function zoomIn(){
-        console.log("zoomin from zoom level: ", zoomLevel, " to: ", zoomLevel.value + zoomincrement)
-        zoomLevel.value += zoomincrement;
+    function zoom(newZoomLevel){
+        console.log("zoom from zoom level: ", zoomLevel, " to: ", newZoomLevel)
+        zoomLevel.value = newZoomLevel;
         workspaceContentRef.value.style.transform = `scale(${zoomLevel.value})`;
         jsplumbInstance.value.setZoom(zoomLevel.value);
     }
+    // Zoom in by incrementing the zoom level
+    function zoomIn(){
+        zoom(zoomLevel.value+zoomincrement)
+    }
     // Zoom out by decrementing the zoom level
     function zoomOut(){
-        console.log("zoomout from zoom level: ", zoomLevel, " to: ", zoomLevel.value + zoomincrement)
-        zoomLevel.value -= zoomincrement ;
-        workspaceContentRef.value.style.transform = `scale(${zoomLevel.value})`;
-        jsplumbInstance.value.setZoom(zoomLevel.value);
+        zoom(zoomLevel.value-zoomincrement)
     }
 
     async function clearWorkspace(){
