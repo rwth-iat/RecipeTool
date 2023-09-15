@@ -179,10 +179,7 @@
   // add endpoints and attach the element id as data to the endpoint. 
   // When exporting to xml we can iterate through the connections and when accessing the source Endpoint and Target endpoint we can now read the corresponding element
   async function addJsPlumbEndpoints(instance, element, item) {
-    console.log("Adding JS Endpoints to new Element")
-    console.debug("jsplumbInstance: ", instance)
-    console.debug("Element to add Endpoints to: ", element)
-    console.debug("workspace item with info about the element: ", item)
+    console.log("Adding JS Endpoints to new Element", element)
     //await nextTick(); // we need this for smooth rendering
     // add source and target endpoint. That way the element is automatically added to jsplumb
     // if elements are managed by js plumb that also does the drag/drop functionality 
@@ -191,36 +188,29 @@
       var targetEndpoint = {}
       if(item.type === "material"){
         if(item.name === "Eingangsmaterial"){
-          console.log("add Eingangsmaterial")
           sourceEndpoint = addEndpoint(instance, element, {source: true, target: false})
           targetEndpoint = {id: ''}
-          console.log("added SourceEndpoint")
+          console.log("added SourceEndpoint to Eingangsmaterial")
         }else if(item.name === "Zwischenprodukt"){
-          console.log("add Zwischenprodukt")
           sourceEndpoint = addEndpoint(instance, element, {source: true, target: false})
           targetEndpoint = addEndpoint(instance, element, {source: false, target: true})
-          console.log("added Source- and Target-Endpoint")
+          console.debug("added Source- and Target-Endpoint to Zwischenprodukt")
         }else if(item.name === "Endprodukt"){
-          console.log("add Endproduct")
           sourceEndpoint = {id: ''}
           targetEndpoint = addEndpoint(instance, element, {source: false, target: true})
-          console.log("added TargetEndpoint")
+          console.log("added TargetEndpoint to Endprodukt")
         }else{
           console.error("unknown material type: " + item.name)
         }
       }else if(item.type === "process"){
-        console.log("add process")
         sourceEndpoint = addEndpoint(instance, element, {source: true, target: false})
         targetEndpoint = addEndpoint(instance, element, {source: false, target: true})
-        console.log("added Source and Target Endpoint")
+        console.log("added Source and Target Endpoint to process")
       }else{
-          console.error("unknown type: " + item.type)
+          console.warn("unknown type: " + item.type)
       }
-
       // Save the endpoint IDs to the workspace_items list That way exporting the xml is easier as all connections can be easily read
       if (item) {
-        item.sourceEndpointId = sourceEndpoint.id;
-        item.targetEndpointId = targetEndpoint.id;
         item.sourceEndpoint = sourceEndpoint;
         item.targetEndpoint = targetEndpoint;
       }
@@ -232,15 +222,11 @@
             console.debug("workspace_items updated, watcher triggered");
             await nextTick(); //wait one tick otherwise the new workspace item is not yet in jsplumbElements
             await nextTick();
-
-            // Detect popped items
-            console.debug("newitems:", newItems)
-            console.debug("computedWorkspaceItems:", computedWorkspaceItems.value)
             
             // only handle elements that were added to the list (pushed), not removed ones (popped)
             const pushedItems = computedWorkspaceItems.value.filter((item) => newItems.includes(item));
             pushedItems.forEach((pushedItem) => {
-                console.debug("Item pushed:", pushedItem);
+                console.debug("New pushed element found:", pushedItem);
                 // Handle the pop operation here
                 const elementRef = jsplumbElements.value.find(
                     (element) => element.id === pushedItem.id
@@ -255,7 +241,7 @@
                     return;
                 }
 
-                console.debug("changed element not managed yet, place at[", pushedItem.x+"px,", pushedItem.y+"px","] and add endpoints:", pushedItem);
+                console.debug("changed element not managed yet, placing in workspace and adding endpoints:", pushedItem);
                 addJsPlumbEndpoints(instance.value, elementRef, pushedItem);
                 elementRef.style.left = pushedItem.x + "px";
                 elementRef.style.top = pushedItem.y + "px";
