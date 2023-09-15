@@ -304,7 +304,7 @@
         jsplumbInstance.value.setZoom(zoomLevel.value);
     }
 
-    async function removeElements(){
+    async function clearWorkspace(){
         jsplumbInstance.value.deleteEveryConnection();
         for(let item of computedWorkspaceItems.value){
             const elementRef = jsplumbElements.value.find(
@@ -321,18 +321,15 @@
             console.debug("pop item out of computedWorkspaceItems")
             computedWorkspaceItems.value.pop();
         }
-        console.log("deleted all Elements from secondary workspace")
-        console.debug("computedWorkspaceItems:", computedWorkspaceItems.value)
-        console.debug("jsplumbElements:", jsplumbElements.value)
-        console.debug("managedElements:", managedElements.value)
         await resetJsPlumb()
+        console.log("deleted all Elements from secondary workspace")
     }
 
     async function addElements(list){
         console.debug("add list:", list, " to Workspace:", computedWorkspaceItems)
         for(var element of list){
             if(!(computedWorkspaceItems.value.some(({ id }) => id === element.id))){ // check if element already exists
-                console.log("add element to second workspace programatically at position: x=" + element.x + "px  y=" + element.y+"px");
+                console.log("add element to second workspace programatically: ",element);
                 computedWorkspaceItems.value.push(element);
             }
         }
@@ -392,7 +389,7 @@
         zoomIn,
         zoomOut,
         resetJsPlumb,
-        removeElements,
+        clearWorkspace,
         addElements,
         addConnections,
         deleteElement,
