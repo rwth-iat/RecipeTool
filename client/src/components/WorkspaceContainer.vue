@@ -63,15 +63,16 @@
   import WorkspaceContent from './WorkspaceComponents/WorkspaceContent.vue';
 
   //variables for main workspace
-  const main_workspace_items = ref([]); // when an element is dropped into the workspace workspace_items 
-  const mainWorkspaceContent = ref(null)
+  const main_workspace_items = ref([]); //containing processes and materials of the main workspace
+  const mainWorkspaceContent = ref(null) //reference to the mainWorkspace Component
 
-//variables for secondary workspace
-  const secondary_workspace_items = ref([]); // when an element is dropped into the workspace workspace_items  
-  const secondaryWorkspaceContent = ref(null)
-  const secondaryWorkspaceParent = ref(null)
+  //variables for secondary workspace
+  const secondary_workspace_items = ref([]); //containing processes and materials of the secondary workspace
+  const secondaryWorkspaceContent = ref(null) //reference to the secondary Workspace Component
+  const secondaryWorkspaceParent = ref(null) //when inspecting subprocesses, the parent object is saved here
   
-  var selectedElement = ref({});
+  var selectedElement = ref({}); // currently selected Element. Its propertys are displayed in the property window. Double click selects an element.
+
   const client = axios.create({
     //baseURL: process.env.VUE_APP_BASE_URL
 		baseURL: ''
@@ -175,18 +176,17 @@
     secondaryWorkspaceParent.value.processElement = []
     for(var element of secondary_workspace_items.value){
       console.debug("adding element: ", element)
-      if (element.type == "material"){
+      if (element.type == "material"){ // add materials
         console.debug("adding as material")
         secondaryWorkspaceParent.value.materials.push(element)
-      }else if(element.type == "process"){
+      }else if(element.type == "process"){ // add processes
         console.debug("adding as process")
         secondaryWorkspaceParent.value.processElement.push(element)
       }else{
         console.debug("type not known")
       }
     }
-    
-    secondaryWorkspaceParent.value.directedLink = secondaryWorkspaceContent.value.getConnections()
+    secondaryWorkspaceParent.value.directedLink = secondaryWorkspaceContent.value.getConnections() //add connections
 
     //replace original parent obj with the new build
     updateObjectByID(secondaryWorkspaceParent.value.id, secondaryWorkspaceParent.value)
@@ -200,9 +200,6 @@
     secondaryWorkspaceContent.value.deleteElement(element)
   }
 </script>
-
-
-
 
 <style>
 	.material-icons {
@@ -251,7 +248,7 @@
     margin: 10px;
     vertical-align: middle;
   }
-
+  
   .property-window-enter-active, .property-window-leave-active {
     transition: transform 0.5s ease-in-out; /* Adjust the duration as needed */
   }
