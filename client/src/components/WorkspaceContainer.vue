@@ -41,7 +41,8 @@
     <transition name="property-window">
       <div v-show="isPropertyWindowOpen" >
         <PropertyWindowContent
-        v-model:selectedElement="selectedElement" 
+        v-model:selectedElement="selectedElement"
+        @update:selectedElement="selectedElement = $event" 
         @close="closePropertyWindow"
         @openInWorkspace="openInWorkspace"
         @deleteElement="deleteElement($event)"/>

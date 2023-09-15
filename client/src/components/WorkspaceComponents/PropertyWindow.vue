@@ -7,25 +7,25 @@
       <button class="deleteBtt" @click="deleteElement">
         <span>delete</span>
       </button>
-      <button v-show='selectedElement.type=="process"' class="openWorkspaceBtt" @click="openInWorkspace">
+      <button v-show='computedSelectedElement.type=="process"' class="openWorkspaceBtt" @click="openInWorkspace">
         <span>Open in Workspace</span>
       </button>
     </div>
     <h2>Properties</h2>
     <!--General Properties-->
     <label for="id">ID:</label>
-    <input type="text" id="id" v-model="selectedElementProperties.id" readonly class="locked-input" />
+    <input type="text" id="id" v-model="computedSelectedElement.id" readonly class="locked-input"/>
 
     <label for="description">Description:</label>
-    <input type="text" id="description" v-model="selectedElementProperties.description" />
+    <input type="text" id="description" v-model="computedSelectedElement.description"/>
 
     <!--Material Properties-->
-    <div v-show='selectedElement.type=="material"'></div>
+    <div v-show='computedSelectedElement.type=="material"'></div>
 
     <!--Process Properties-->
-    <div v-show='selectedElement.type=="process"'>
+    <div v-show='computedSelectedElement.type=="process"'>
       <label for="processElementType">processElementType:</label>
-      <select id="processElementType" v-model="selectedElementProperties.processElementType">
+      <select id="processElementType" v-model="computedSelectedElement.processElementType">
         <option value="Process">Process</option>
         <option value="Process Stage">Process Stage</option>
         <option value="Process Operation">Process Operation</option>
@@ -33,7 +33,7 @@
       </select>
       <div>
         <h2>ProcessElementParameter</h2>
-        <div v-for="(parameter, index) in selectedElement.processElementParameter" :key="index" id="parameter-container">
+        <div v-for="(parameter, index) in computedSelectedElement.processElementParameter" :key="index" id="parameter-container">
           <label :for="'parameter_' + index + '_id'">ID:</label>
           <input type="text" :id="'parameter_' + index + '_id'" v-model="parameterProperties[index].id" />
           <label :for="'parameter_' + index + '_description'">Description:</label>
@@ -60,15 +60,14 @@
   import { computed } from 'vue';
 
   const props = defineProps(['selectedElement']);
-  const emit = defineEmits(['close', 'openInWorkspace', 'deleteElement']);
+  const emit = defineEmits(['close', 'openInWorkspace', 'deleteElement', 'update:selectedElement']);
 
-  const selectedElementProperties = computed(() => {
-    return {
-      id: props.selectedElement.id,
-      description: props.selectedElement.description,
-      processElementType: props.selectedElement.description,
-      processElementParameter: props.selectedElement.processElementParameter
-    };
+  // Create a computed property that represents the entire selectedElement
+  const computedSelectedElement = computed({
+    get: () => props.selectedElement,
+    set: (newValue) => {
+      emit('update:selectedElement', newValue);
+    },
   });
 
   const parameterProperties = computed(() => {
@@ -82,7 +81,7 @@
       // Add other properties from parameter as needed
     }));
   });
-
+  
   function close() {
     emit('close');
   }
@@ -92,7 +91,10 @@
   }
 
   function addProcessElementParameter() {
-    selectedElementProperties.value.processElementParameter.push({});
+    if (!Array.isArray(computedSelectedElement.value.processElementParameter)){
+      computedSelectedElement.value.processElementParameter = []  
+    }
+    computedSelectedElement.value.processElementParameter.push({});
   }
 
   function deleteElement(){
