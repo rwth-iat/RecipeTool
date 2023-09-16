@@ -15,9 +15,9 @@
 		
 		<div v-show="is_expanded">
 			<div class="element_spacer"></div>
-				<elementWindow element_type="Materials"> Test </elementWindow>
-				<div class="element_spacer"></div>
-				<elementWindow element_type="Processes"> Test </elementWindow>
+			<elementWindow element_type="Materials"> Test </elementWindow>
+			<div class="element_spacer"></div>
+			<elementWindow element_type="Processes"> Test </elementWindow>
 		</div>
 	</aside>
 </template>

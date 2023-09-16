@@ -146,7 +146,7 @@
         if (classes.includes("sidebar_element")) {
             var unique_id = createUniqueId()
             //var unique_id = id;
-            computedWorkspaceItems.value.push({ id: unique_id, name: name, type: type, x: x, y: y });
+            computedWorkspaceItems.value.push({ id: unique_id, name: name, description:name, type: type, x: x, y: y });
             console.log("dragged from sidebar, dropped in workspace at absolute position: " + x + " " + y);
             console.log(props.workspace_items);
         }
