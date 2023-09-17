@@ -71,7 +71,7 @@
   const secondaryWorkspaceContent = ref(null) //reference to the secondary Workspace Component
   const secondaryWorkspaceParent = ref(null) //when inspecting subprocesses, the parent object is saved here
   
-  var selectedElement = ref({}); // currently selected Element. Its propertys are displayed in the property window. Double click selects an element.
+  let selectedElement = ref({}); // currently selected Element. Its propertys are displayed in the property window. Double click selects an element.
 
   const client = axios.create({
     //baseURL: process.env.VUE_APP_BASE_URL
@@ -137,7 +137,7 @@
       console.debug("no child materials: ", selectedElement.value.materials)
       //if no materials exist yet add an input and output knot
       selectedElement.value.materials = [];
-      var unique_id = secondaryWorkspaceContent.value.createUniqueId()
+      let unique_id = secondaryWorkspaceContent.value.createUniqueId()
       selectedElement.value.materials.push({ id: unique_id, name: "Eingangsmaterial", type: "material", x: 300, y: 100 })
       unique_id = secondaryWorkspaceContent.value.createUniqueId()
       selectedElement.value.materials.push({ id: unique_id, name: "Endprodukt", type: "material", x: 300, y: 400 })
@@ -154,10 +154,10 @@
   }
 
   //function needed to replace the original item with the edited item 
-  var map = {};
+  let map = {};
   (function recurse(processElements) {
-    for (var i=0; i<processElements.length; i++) {
-        var processElement = processElements[i];
+    for (let i=0; i<processElements.length; i++) {
+        let processElement = processElements[i];
         map[ processElement.id ] = processElement;
         if ("processElement" in processElement)
             recurse(processElement.processElement);
@@ -174,7 +174,7 @@
     console.debug("Saving secondary Workspace: ", secondary_workspace_items.value)
     secondaryWorkspaceParent.value.materials = []
     secondaryWorkspaceParent.value.processElement = []
-    for(var element of secondary_workspace_items.value){
+    for(let element of secondary_workspace_items.value){
       console.debug("adding element: ", element)
       if (element.type == "material"){ // add materials
         console.debug("adding as material")

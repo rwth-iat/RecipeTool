@@ -9,18 +9,18 @@ Given the jsplumb connections, this function returns two lists:
 */
 function list_source_target(jsplumb_connections) {
     //check wether elements are inputs, outputs, or intermediates
-    var elementsWithSourceConnection = [];
-    var elementsWithTargetConnection = [];
+    let elementsWithSourceConnection = [];
+    let elementsWithTargetConnection = [];
   
     // Iterate through connections and collect elements
-    for (var connectionId in jsplumb_connections) {
-      var connection = jsplumb_connections[connectionId];
-      var sourceId = connection.sourceId;
-      var targetId = connection.targetId;
+    for (let connectionId in jsplumb_connections) {
+      let connection = jsplumb_connections[connectionId];
+      let sourceId = connection.sourceId;
+      let targetId = connection.targetId;
   
       // Find source and target elements
-      var sourceElement = document.getElementById(sourceId);
-      var targetElement = document.getElementById(targetId);
+      let sourceElement = document.getElementById(sourceId);
+      let targetElement = document.getElementById(targetId);
   
       // Check if source element already added to list
       if (elementsWithSourceConnection.indexOf(sourceElement) === -1) {
@@ -37,7 +37,7 @@ function list_source_target(jsplumb_connections) {
 
 
 function create_material(id, description){
-    var materials = {
+    let materials = {
         id: id,
         description: [description],
         materialID: "",
@@ -48,7 +48,7 @@ function create_material(id, description){
 }
 
 function create_materials(id, description, materials_type){
-    var materials = {
+    let materials = {
             id: id, 
             description:[description],
             materialsType:materials_type,
@@ -58,7 +58,7 @@ function create_materials(id, description, materials_type){
 }
 
 function create_formula(workspace_items, jsplumb_connections){
-    var formula = {
+    let formula = {
         description:["The formula defines the Inputs, Intermediates and Outputs of the Procedure"],
         processInputs:{},
         processOutputs:{},
@@ -105,7 +105,7 @@ function create_formula(workspace_items, jsplumb_connections){
     return formula
 }
 function create_process_element_parameter(item){
-    var parameter = {
+    let parameter = {
         id: item.id,
         description: [item.description],
         valueString: item.valueString,
@@ -121,7 +121,7 @@ function create_process_element_type(item, workspace_items, jsplumb_connections)
     //     - lifeCycleState:{},
     //     - sequenceOrder: {},
     //     - sequencePath: {},
-    var process_element = {
+    let process_element = {
         id: item.id,
         description: [item.description],
         processElementType: item.processElementType,
@@ -229,8 +229,8 @@ export function generate_batchml(workspace_items, jsplumb_connections){
 
 export function start_download(filename, file_string){
     //automatically start download
-    var pom = document.createElement('a');
-    var bb = new Blob([file_string], {type: 'text/plain'});
+    let pom = document.createElement('a');
+    let bb = new Blob([file_string], {type: 'text/plain'});
     pom.setAttribute('href', window.URL.createObjectURL(bb));
     pom.setAttribute('download', filename);
     pom.dataset.downloadurl = ['text/plain', pom.download, pom.href].join(':');
@@ -241,7 +241,7 @@ export function start_download(filename, file_string){
 }
 
 export function create_validate_download_batchml(items, jsplumb_connections, client){
-    var xml_string = generate_batchml(items, jsplumb_connections)
+    let xml_string = generate_batchml(items, jsplumb_connections)
     client.get('/validate', {
             params: {
               "xml_string": xml_string
