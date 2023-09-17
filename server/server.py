@@ -356,8 +356,6 @@ def create_app():
           return response
     
     ontologies = load_ontologies()
-    print(ontologies)
-    print(dir(ontologies['Capability_with_Query.owl'].Draining))
     #ontologies = {}  #uncomment this is for offline development
     return app
 
