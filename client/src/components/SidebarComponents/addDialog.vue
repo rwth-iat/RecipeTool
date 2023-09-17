@@ -174,7 +174,7 @@
 
     //function to upload Ontologie to the server 
     function addOntoToServer(name, file){
-        var formData = new FormData();
+        let formData = new FormData();
         formData.append("file", file);
         console.log("test")
         client.post('/onto', formData, {

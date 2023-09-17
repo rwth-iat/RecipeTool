@@ -25,7 +25,7 @@
     const zoomLevel       = ref(1)
 
     //need this as the developer server "npm run dev" will run into error using a normal ref of a v-for. This skips the unwrapping
-    var skipUnwrap = {jsplumbElements}
+    let skipUnwrap = {jsplumbElements}
 
     //here we make the ref to the workspace_content availible in the parent
     onMounted(() => {
@@ -125,10 +125,10 @@
         event.preventDefault();
         //var id = event.dataTransfer.getData("itemID");
         //var name = event.dataTransfer.getData("itemName");
-        var item = JSON.parse(event.dataTransfer.getData("item"));
-        var classes = event.dataTransfer.getData("itemClasses");
+        let item = JSON.parse(event.dataTransfer.getData("item"));
+        let classes = event.dataTransfer.getData("itemClasses");
         
-        var type 
+        let type 
         console.log(classes)
         if (classes.includes("material_element")){
             type = "material"
@@ -139,13 +139,13 @@
         }
 
         //get mouse postion and substrac workspace position to get relative position as workspace elemenets are positioned relative (is needed for jsplumb)
-        var rect = event.target.getBoundingClientRect();
-        var x = event.clientX - rect.left; //+ "px"  x position within the element.
-        var y = event.clientY - rect.top;
+        let rect = event.target.getBoundingClientRect();
+        let x = event.clientX - rect.left; //+ "px"  x position within the element.
+        let y = event.clientY - rect.top;
 
         // if it is a sidebar element add new item to workspace list. Drag and drop of workspace elements is handled by jsplumb
         if (classes.includes("sidebar_element")) {
-            var uniqueId = createUniqueId()
+            let uniqueId = createUniqueId()
             //var unique_id = id;
             item.x=x
             item.y=y
@@ -160,7 +160,7 @@
 
       // Function to initialize jsPlumb
   function initializeJsPlumb(container) {
-    var instance = newInstance({
+    let instance = newInstance({
       container: container.value,
       maxConnections: -1,
       connectionOverlays: [{ type: "Arrow", options: { location: 1 } }],
@@ -177,7 +177,7 @@
   }
 
   function addEndpoint(instance, element, options){
-    var anchor
+    let anchor
     if(options.source){ anchor = "Bottom"}
     else if(options.target){anchor = "Top"}
 
@@ -198,8 +198,8 @@
     // add source and target endpoint. That way the element is automatically added to jsplumb
     // if elements are managed by js plumb that also does the drag/drop functionality 
     if (element) {
-      var sourceEndpoint = {}
-      var targetEndpoint = {}
+      let sourceEndpoint = {}
+      let targetEndpoint = {}
       if(item.type === "material"){
         if(item.name === "Eingangsmaterial"){
           sourceEndpoint = addEndpoint(instance, element, {source: true, target: false})
@@ -264,7 +264,7 @@
         };
     }
 
-    var zoomincrement = 0.1
+    let zoomincrement = 0.1
     function zoom(newZoomLevel){
         console.log("zoom from zoom level: ", zoomLevel, " to: ", newZoomLevel)
         zoomLevel.value = newZoomLevel;
@@ -302,7 +302,7 @@
 
     async function addElements(list){
         console.debug("add list:", list, " to Workspace:", computedWorkspaceItems)
-        for(var element of list){
+        for(let element of list){
             if(!(computedWorkspaceItems.value.some(({ id }) => id === element.id))){ // check if element already exists
                 console.log("add element to second workspace programatically: ",element);
                 computedWorkspaceItems.value.push(element);
@@ -322,7 +322,7 @@
             elementRef.remove();
         }
         //search for item in also delete from workspaceitemslist
-        var index = computedWorkspaceItems.value.findIndex(element => element.id === item.id);
+        let index = computedWorkspaceItems.value.findIndex(element => element.id === item.id);
         if(index !== -1){
             computedWorkspaceItems.value.splice(index, 1);
         }
@@ -332,10 +332,10 @@
         return jsplumbInstance.value.getConnections()
     }
     function addConnections(connections){
-        for (var connectionId in connections) {
-            var connection = connections[connectionId];
-            var sourceId = connection.sourceId;
-            var targetId = connection.targetId;
+        for (let connectionId in connections) {
+            let connection = connections[connectionId];
+            let sourceId = connection.sourceId;
+            let targetId = connection.targetId;
             const sourceElementRef = computedWorkspaceItems.value.find(
                     (element) => element.id === sourceId
                 );

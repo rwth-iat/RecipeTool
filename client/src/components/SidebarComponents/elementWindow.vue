@@ -14,7 +14,7 @@
 
     let element_packages = ref({})
 
-    var element_class = "" 
+    let element_class = "" 
     if(element_type.value === "Processes"){
         element_class = "process_element sidebar_element"
         element_packages.value = [{
