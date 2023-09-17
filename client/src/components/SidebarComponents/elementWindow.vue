@@ -18,46 +18,56 @@
     if(element_type.value === "Processes"){
         element_class = "process_element sidebar_element"
         element_packages.value = [{
-                                    "name": "GeneralCapabilityEffecting",
-                                    "type":"process",
-                                    "children":[{
-                                            "name": "Draining",
-                                            "type":"process",
-                                            "children":[
+                                    name: "GeneralCapabilityEffecting",
+                                    type:"process",
+                                    children:[{
+                                            name: "Draining",
+                                            type:"process",
+                                            otherValue:{
+                                                otherInfoID:"testOtherInfoID",
+                                                description:["testDescription"],
+                                                otherValue:{
+                                                    valueString:"test value string",
+                                                    dataType:"test datatype",
+                                                    unitOfMeasure:"test unit of measure",
+                                                    key:"testkey"
+                                                }
+                                            },
+                                            children:[
                                                 {
-                                                "type":"process",
-                                                "name":"test1",
-                                                "children":[
+                                                type:"process",
+                                                name:"test1",
+                                                children:[
                                                     {
-                                                        "name":"test2",
-                                                        "type":"process"
+                                                        name:"test2",
+                                                        type:"process"
                                                     }
                                                 ]}
                                                 ]
                                             },
                                             {
-                                                "type": "process",
-                                                "name": "Pumping"
+                                                type: "process",
+                                                name: "Pumping"
                                             }
                                         ]
                                 }]
     }else if (element_type.value ==="Materials"){
         element_class = "material_element sidebar_element"
         element_packages.value = [{
-                            "name":"Grundmaterialien",
-                            "type": "material",
-                            "children":[
+                            name:"Grundmaterialien",
+                            type: "material",
+                            children:[
                                 {
-                                    "type": "material",
-                                    "name": "Eingangsmaterial"
+                                    type: "material",
+                                    name: "Eingangsmaterial"
                                 },
                                 {
-                                    "type": "material",
-                                    "name": "Zwischenprodukt"
+                                    type: "material",
+                                    name: "Zwischenprodukt"
                                 },
                                 {
-                                    "type": "material",
-                                    "name": "Endprodukt"
+                                    type: "material",
+                                    name: "Endprodukt"
                                 }
                             ]
                         }]

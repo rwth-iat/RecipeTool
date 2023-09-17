@@ -33,22 +33,46 @@
       </select>
       <div>
         <h2>ProcessElementParameter</h2>
-        <div v-for="(parameter, index) in computedSelectedElement.processElementParameter" :key="index" id="parameter-container">
+        <div v-for="(parameter, index) in computedSelectedElement.processElementParameter" :key="index" id="valueContainer">
           <label :for="'parameter_' + index + '_id'">ID:</label>
-          <input type="text" :id="'parameter_' + index + '_id'" v-model="computedSelectedElement.processElementParameter[index].id" />
+          <input type="text" :id="'parameter_' + index + '_id'" v-model="parameter.id" />
           <label :for="'parameter_' + index + '_description'">Description:</label>
-          <input type="text" :id="'parameter_' + index + '_description'" v-model="computedSelectedElement.processElementParameter[index].description" />
-          <label :for="'parameter_' + index + '_valueString'">ValueString:</label>
-          <input type="text" :id="'parameter_' + index + '_valueString'" v-model="computedSelectedElement.processElementParameter[index].valueString" />
-          <label :for="'parameter_' + index + '_dataType'">DataType:</label>
-          <input type="text" :id="'parameter_' + index + '_dataType'" v-model="computedSelectedElement.processElementParameter[index].dataType" />
-          <label :for="'parameter_' + index + '_unitOfMeasure'">UnitOfMeasure:</label>
-          <input type="text" :id="'parameter_' + index + '_unitOfMeasure'" v-model="computedSelectedElement.processElementParameter[index].unitOfMeasure" />
-          <label :for="'parameter_' + index + '_key'">Key:</label>
-          <input type="text" :id="'parameter_' + index + '_key'" v-model="computedSelectedElement.processElementParameter[index].key" />
+          <input type="text" :id="'parameter_' + index + '_description'" v-model="parameter.description" />
+          <label :for="'valueString'">ValueString:</label>
+          <input type="text" :id="'valueString'" v-model="parameter.valueType.valueString" />
+          <label :for="'dataType'">DataType:</label>
+          <input type="text" :id="'dataType'" v-model="parameter.valueType.dataType" />
+          <label :for="'unitOfMeasure'">UnitOfMeasure:</label>
+          <input type="text" :id="'unitOfMeasure'" v-model="parameter.valueType.unitOfMeasure" />
+          <label :for="'key'">Key:</label>
+          <input type="text" :id="'key'" v-model="parameter.valueType.key" />
+          <!--<ValueTypeProperty
+            v-if="parameter.valueType"
+            :valueType="parameter.valueType" 
+            @update:valueType="parameter.valueType = $event"
+          />-->
         </div>
-
         <button @click="addProcessElementParameter" id="addProcessElementParameter">
+          <span class="material-icons">+</span>
+        </button>
+      </div>
+      <div>
+        <h2>OtherValue</h2>
+        <div v-for="(otherValue, index) in computedSelectedElement.otherValue" :key="index" id="valueContainer">
+          <label :for="'otherValue_' + index + '_id'">ID:</label>
+          <input type="text" :id="'otherValue_' + index + '_id'" v-model="otherValue.id" />
+          <label :for="'otherValue_' + index + '_description'">Description:</label>
+          <input type="text" :id="'otherValue_' + index + '_description'" v-model="otherValue.description" />
+          <label :for="'valueString'">ValueString:</label>
+          <input type="text" :id="'otherValue_' + index + '_valueString'" v-model="otherValue.valueType.valueString" />
+          <label :for="'dataType'">DataType:</label>
+          <input type="text" :id="'otherValue_' + index + '_dataType'" v-model="otherValue.valueType.dataType" />
+          <label :for="'unitOfMeasure'">UnitOfMeasure:</label>
+          <input type="text" :id="'otherValue_' + index + '_unitOfMeasure'" v-model="otherValue.valueType.unitOfMeasure" />
+          <label :for="'key'">Key:</label>
+          <input type="text" :id="'otherValue_' + index + '_key'" v-model="otherValue.valueType.key" />
+        </div>
+        <button @click="addOtherValue" id="addOtherValue">
           <span class="material-icons">+</span>
         </button>
       </div>
@@ -57,7 +81,8 @@
 </template>
 
 <script setup>
-  import { computed } from 'vue';
+  import { computed, defineProps, defineEmits} from 'vue';
+  import ValueTypeProperty from './ValueTypeProperty.vue';
 
   const props = defineProps(['selectedElement']);
   const emit = defineEmits(['close', 'openInWorkspace', 'deleteElement', 'update:selectedElement']);
@@ -87,7 +112,13 @@
     if (!Array.isArray(computedSelectedElement.value.processElementParameter)){
       computedSelectedElement.value.processElementParameter = []  
     }
-    computedSelectedElement.value.processElementParameter.push({});
+    computedSelectedElement.value.processElementParameter.push({id:'', description:'', valueType:{valueString:'', dataType:'', unitOfMeasure:'', key:''}});
+  }
+  function addOtherValue() {
+    if (!Array.isArray(computedSelectedElement.value.otherValue)){
+      computedSelectedElement.value.otherValue = []  
+    }
+    computedSelectedElement.value.otherValue.push({id:'', description:'', valueType:{valueString:'', dataType:'', unitOfMeasure:'', key:''}});
   }
 
   function deleteElement(){
@@ -97,7 +128,7 @@
 
   
 <style scoped>
-  #parameter-container{
+  #valueContainer{
       width: 100%;
       padding: 8px;
       margin-top: 5px;
