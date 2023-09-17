@@ -155,8 +155,8 @@ function create_process_element_type(item, workspace_items, jsplumb_connections)
         });
     
     //add directed links
-    for (var connectionId in jsplumb_connections) {
-        var connection = jsplumb_connections[connectionId]
+    for (let connectionId in jsplumb_connections) {
+        let connection = jsplumb_connections[connectionId]
         process_element.directedLink.push({
             id: connectionId,
             description: [],
@@ -184,10 +184,11 @@ function create_process_element_type(item, workspace_items, jsplumb_connections)
     });
 
     //add directed links
-    for (var otherInformation in item.otherInformation) {
+    for (let otherInformation of item.otherInformation) {
         process_element.otherInformation.push(otherInformation)
     }
-
+    console.debug(item)
+    console.debug(process_element.otherInformation)
     return process_element
 }
 
@@ -214,12 +215,12 @@ export function generate_batchml(workspace_items, jsplumb_connections){
             description: [{}],
             gRecipeType: "General",
             formula: create_formula(workspace_items, jsplumb_connections),
-            processProcedure: create_process_element_type({id:"Procedure1", description:"This is the top level ProcessElement", processElementType:"Process", processElementParameter:[]}, workspace_items, jsplumb_connections),
+            processProcedure: create_process_element_type({id:"Procedure1", description:"This is the top level ProcessElement", processElementType:"Process", processElementParameter:[], otherInformation:[]}, workspace_items, jsplumb_connections),
             resourceConstraint:[{}],
             otherInformation:[{}]
         }
     }
-
+    console.debug("rigth before marschalling")
     // Marshal the JavaScript object to XML
     const marshaller = context.createMarshaller();
     const xmlString = marshaller.marshalString(gRecipe);

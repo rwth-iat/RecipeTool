@@ -58,19 +58,19 @@
       </div>
       <div>
         <h2>OtherValue</h2>
-        <div v-for="(otherValue, index) in computedSelectedElement.otherValue" :key="index" id="valueContainer">
-          <label :for="'otherValue_' + index + '_id'">ID:</label>
-          <input type="text" :id="'otherValue_' + index + '_id'" v-model="otherValue.id" />
-          <label :for="'otherValue_' + index + '_description'">Description:</label>
-          <input type="text" :id="'otherValue_' + index + '_description'" v-model="otherValue.description" />
+        <div v-for="(otherInformation, index) in computedSelectedElement.otherInformation" :key="index" id="valueContainer">
+          <label :for="'otherInformation_' + index + '_otherInfoID'">ID:</label>
+          <input type="text" :id="'otherInformation_' + index + '_otherInfoID'" v-model="otherInformation.otherInfoID" />
+          <label :for="'otherInformation_' + index + '_description'">Description:</label>
+          <input type="text" :id="'otherInformation_' + index + '_description'" v-model="otherInformation.description[0]" />
           <label :for="'valueString'">ValueString:</label>
-          <input type="text" :id="'otherValue_' + index + '_valueString'" v-model="otherValue.valueType.valueString" />
+          <input type="text" :id="'otherInformation_' + index + '_valueString'" v-model="otherInformation.otherValue[0].valueString" />
           <label :for="'dataType'">DataType:</label>
-          <input type="text" :id="'otherValue_' + index + '_dataType'" v-model="otherValue.valueType.dataType" />
+          <input type="text" :id="'otherInformation_' + index + '_dataType'" v-model="otherInformation.otherValue[0].dataType" />
           <label :for="'unitOfMeasure'">UnitOfMeasure:</label>
-          <input type="text" :id="'otherValue_' + index + '_unitOfMeasure'" v-model="otherValue.valueType.unitOfMeasure" />
+          <input type="text" :id="'otherInformation_' + index + '_unitOfMeasure'" v-model="otherInformation.otherValue[0].unitOfMeasure" />
           <label :for="'key'">Key:</label>
-          <input type="text" :id="'otherValue_' + index + '_key'" v-model="otherValue.valueType.key" />
+          <input type="text" :id="'otherInformation_' + index + '_key'" v-model="otherInformation.otherValue[0].key" />
         </div>
         <button @click="addOtherValue" id="addOtherValue">
           <span class="material-icons">+</span>

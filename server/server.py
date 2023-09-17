@@ -40,15 +40,15 @@ def allowed_file(filename):
 def recursivly_add_subclasses(super_class):
     output_obj = {
                 "name": str(super_class).split(".")[-1],
-                "otherValue":[{
+                "otherInformation":[{
                             "otherInfoID":"OntologyIRI",
                             "description":["Iri referencing the Ontology Class definition"],
-                            "valueType":{
+                            "otherValue":[{
                                 "valueString": super_class.iri,
-                                "dataType":"URL",
-                                "unitOfMeasure":"test unit of measure",
+                                #"dataType":"URL",
+                                #"unitOfMeasure":"",
                                 "key":"testkey"
-                            }
+                            }]
                         }],
                 "children": []
             }
