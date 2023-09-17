@@ -182,6 +182,12 @@ function create_process_element_type(item, workspace_items, jsplumb_connections)
             )
         } 
     });
+
+    //add directed links
+    for (var otherInformation in item.otherInformation) {
+        process_element.otherInformation.push(otherInformation)
+    }
+
     return process_element
 }
 
