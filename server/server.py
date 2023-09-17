@@ -1,5 +1,6 @@
 # webserver
 from flask import Flask, flash, request, send_from_directory, make_response, redirect
+from waitress import serve #this is for the production server
 # from flask_restful import Api, Resource
 from werkzeug.utils import secure_filename
 from flasgger import Swagger
@@ -365,4 +366,5 @@ def create_app():
 if __name__ == '__main__':
     app = create_app()
     swagger = Swagger(app)
-    app.run(debug=True)
+    #serve(app, host='0.0.0.0', port=8080) #this starts the production server
+    app.run(debug=True) #this starts the development server
