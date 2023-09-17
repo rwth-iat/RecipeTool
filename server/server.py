@@ -39,8 +39,18 @@ def allowed_file(filename):
 
 def recursivly_add_subclasses(super_class):
     output_obj = {
-            "name": str(super_class).split(".")[-1],
-            "children": []
+                "name": str(super_class).split(".")[-1],
+                "otherValue":[{
+                            "otherInfoID":"OntologyIRI",
+                            "description":["Iri referencing the Ontology Class definition"],
+                            "valueType":{
+                                "valueString": super_class.iri,
+                                "dataType":"URL",
+                                "unitOfMeasure":"test unit of measure",
+                                "key":"testkey"
+                            }
+                        }],
+                "children": []
             }
     if super_class is not None:
         subclasses_list = list(super_class.subclasses())
@@ -346,6 +356,8 @@ def create_app():
           return response
     
     ontologies = load_ontologies()
+    print(ontologies)
+    print(dir(ontologies['Capability_with_Query.owl'].Draining))
     #ontologies = {}  #uncomment this is for offline development
     return app
 
