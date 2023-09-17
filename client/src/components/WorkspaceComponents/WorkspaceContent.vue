@@ -124,7 +124,8 @@
         console.log("Drop");
         event.preventDefault();
         //var id = event.dataTransfer.getData("itemID");
-        var name = event.dataTransfer.getData("itemName");
+        //var name = event.dataTransfer.getData("itemName");
+        var item = JSON.parse(event.dataTransfer.getData("item"));
         var classes = event.dataTransfer.getData("itemClasses");
         
         var type 
@@ -144,9 +145,14 @@
 
         // if it is a sidebar element add new item to workspace list. Drag and drop of workspace elements is handled by jsplumb
         if (classes.includes("sidebar_element")) {
-            var unique_id = createUniqueId()
+            var uniqueId = createUniqueId()
             //var unique_id = id;
-            computedWorkspaceItems.value.push({ id: unique_id, name: name, description:name, type: type, x: x, y: y });
+            item.x=x
+            item.y=y
+            item.type=type
+            item.description = item.name
+            item.id=uniqueId
+            computedWorkspaceItems.value.push(item);
             console.log("dragged from sidebar, dropped in workspace at absolute position: " + x + " " + y);
             console.log(props.workspace_items);
         }

@@ -23,31 +23,61 @@
                                     children:[{
                                             name: "Draining",
                                             type:"process",
-                                            otherValue:{
+                                            otherValue:[{
                                                 otherInfoID:"testOtherInfoID",
                                                 description:["testDescription"],
-                                                otherValue:{
+                                                valueType:{
                                                     valueString:"test value string",
                                                     dataType:"test datatype",
                                                     unitOfMeasure:"test unit of measure",
                                                     key:"testkey"
                                                 }
-                                            },
+                                            }],
                                             children:[
                                                 {
                                                 type:"process",
                                                 name:"test1",
+                                                otherValue:[{
+                                                    otherInfoID:"testOtherInfoID",
+                                                    description:["testDescription"],
+                                                    valueType:{
+                                                        valueString:"test value string",
+                                                        dataType:"test datatype",
+                                                        unitOfMeasure:"test unit of measure",
+                                                        key:"testkey"
+                                                    }
+                                                }],
                                                 children:[
                                                     {
                                                         name:"test2",
-                                                        type:"process"
+                                                        type:"process",
+                                                        otherValue:[{
+                                                            otherInfoID:"testOtherInfoID",
+                                                            description:["testDescription"],
+                                                            valueType:{
+                                                                valueString:"test value string",
+                                                                dataType:"test datatype",
+                                                                unitOfMeasure:"test unit of measure",
+                                                                key:"testkey"
+                                                            }
+                                                        }]
                                                     }
                                                 ]}
                                                 ]
                                             },
                                             {
                                                 type: "process",
-                                                name: "Pumping"
+                                                name: "Pumping",
+                                                otherValue:[{
+                                                            otherInfoID:"testOtherInfoID",
+                                                            description:["testDescription"],
+                                                            valueType:{
+                                                                valueString:"test value string",
+                                                                dataType:"test datatype",
+                                                                unitOfMeasure:"test unit of measure",
+                                                                key:"testkey"
+                                                            }
+                                                        }]
                                             }
                                         ]
                                 }]

@@ -38,7 +38,7 @@
     <li v-for="item in items" 
         :key="item.name" 
         @click.stop="handleItemClick(item, $event)"
-        @dragstart.stop="$event => dragstart($event, 'testId', item.name, classes)"
+        @dragstart.stop="$event => dragstart($event, item, classes)"
         draggable="true"
     >
       <!-- Every list element contains
@@ -113,12 +113,13 @@ export default defineComponent({
       };
     },
     //when starting to drag an element safe attributes to datatransfer, to access them in workspace component
-    dragstart(event, id, name, classes){
+    dragstart(event, item, classes){
       console.log("dragstart")
       event.dataTransfer.dropEffect = "copy"
       event.dataTransfer.effectAllowed = "copy"
-      event.dataTransfer.setData("itemID", id)
-      event.dataTransfer.setData("itemName", name)
+      event.dataTransfer.setData("item", JSON.stringify(item))
+      //event.dataTransfer.setData("itemID", id)
+      //event.dataTransfer.setData("itemName", name)
       event.dataTransfer.setData("itemClasses", classes)
     }
   },
