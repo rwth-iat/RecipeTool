@@ -70,8 +70,9 @@
   const secondary_workspace_items = ref([]); //containing processes and materials of the secondary workspace
   const secondaryWorkspaceContent = ref(null) //reference to the secondary Workspace Component
   const secondaryWorkspaceParent = ref(null) //when inspecting subprocesses, the parent object is saved here
-  
-  let selectedElement = ref({}); // currently selected Element. Its propertys are displayed in the property window. Double click selects an element.
+
+  //initiate amount to avoid undefined error in property window
+  let selectedElement = ref({amount:{}}); // currently selected Element. Its propertys are displayed in the property window. Double click selects an element.
 
   const client = axios.create({
     //baseURL: process.env.VUE_APP_BASE_URL

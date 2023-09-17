@@ -152,6 +152,7 @@
             item.type=type
             item.description = item.name
             item.id=uniqueId
+            item.amount = {} // set to obj so that input field in property window can be bound to "amount.valueString" etc
             computedWorkspaceItems.value.push(item);
             console.log("dragged from sidebar, dropped in workspace at absolute position: " + x + " " + y);
             console.log(props.workspace_items);

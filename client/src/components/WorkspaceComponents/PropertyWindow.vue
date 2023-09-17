@@ -20,7 +20,32 @@
     <input type="text" id="description" v-model="computedSelectedElement.description"/>
 
     <!--Material Properties-->
-    <div v-show='computedSelectedElement.type=="material"'></div>
+    <div v-show='computedSelectedElement.type=="material"'>
+      <label for="materialType">MaterialType:</label>
+      <select id="materialType" v-model="computedSelectedElement.materialType">
+        <option value="Input">Input</option>
+        <option value="Intermediate">Intermediate</option>
+        <option value="output">Output</option>
+      </select>
+
+      <label for="materialId">MaterialId:</label>
+      <input type="text" id="materialId" v-model="computedSelectedElement.materialId"/>
+      
+      <label for="order">Order:</label>
+      <input type="text" id="order" v-model="computedSelectedElement.order"/>
+      
+      <label for="amount">Amount:</label>
+      <div id="valueContainer">
+          <label :for="'valueString'">ValueString:</label>
+          <input type="text" :id="'valueString'" v-model="computedSelectedElement.amount.valueString" />
+          <label :for="'dataType'">DataType:</label>
+          <input type="text" :id="'dataType'" v-model="computedSelectedElement.amount.dataType" />
+          <label :for="'unitOfMeasure'">UnitOfMeasure:</label>
+          <input type="text" :id="'unitOfMeasure'" v-model="computedSelectedElement.amount.unitOfMeasure" />
+          <label :for="'key'">Key:</label>
+          <input type="text" :id="'key'" v-model="computedSelectedElement.amount.key" />
+      </div>
+    </div>
 
     <!--Process Properties-->
     <div v-show='computedSelectedElement.type=="process"'>
