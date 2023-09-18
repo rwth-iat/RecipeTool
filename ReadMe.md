@@ -88,10 +88,13 @@ The commands in the build file are explained in the following and can also be ru
     ```
 
 # Notes for developers
-- After Making changes to the Client code, the project needs to be rebuild in order for the changes to arrive in the python server. Therefore after Changes you at least need to run `npm build` in the client folder and afterwards restart the python server. Therefore after changes you can simply run the batch file which will rebuild and start the server for you.
+- After Making changes to the Client code, the project needs to be rebuild in order for the changes to arrive in the python server. Therefore after Changes you at least need to run `npm build` in the client folder and afterwards restart the python server. Therefore after changes you can simply run the batch file which will rebuild and start the server for you. to run the batch file run `./build_run.bat` in the root folder.
 - As the build takes quite a bit of time, when simply developing the client code which does not need the functionality of the python server api, running `npm run dev` in the client folder. This runs a development server at "http://localhost:5173". This starts up much faster and allows for the browser integrated debuggers to work. Also every change in code is directly used in the browser after saving the file with ctrl+s (hotfix)
 
 # Troubleshooting while installing
-If you run into problems trying to install/build the project you may look into the github acitons. As the automated tests run successfully, installing the same environment as them should definetly also work. So try to use the same Pyhton/nodejs version and install the dependencies the same way. 
+If you run into problems trying to install/build the project you may look into the github acitons. As the automated tests run successfully, installing the same environment as them should definetly also work. So try to use the same Pyhton/nodejs version and install the dependencies the same way.
 
+For example the NodeJs Version used is: 18.17.1
+The Python version used is: 3.10
 
+If you are still facing problems, you can look further into it in the actions, trying to use the same pip version etc.
