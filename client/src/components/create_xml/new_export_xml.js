@@ -116,7 +116,7 @@ function create_process_element_parameter(item){
     return parameter
 }
 
-function create_process_element_type(item, workspace_items, jsplumb_connections){
+export function create_process_element_type(item, workspace_items, jsplumb_connections){
     // removed yet unimplemented fields which caused invalid xml
     //     - lifeCycleState:{},
     //     - sequenceOrder: {},
