@@ -18,7 +18,7 @@ After that the server is running under:
 - https://127.0.0.1:5000/editor for the GUI.
 
 # Functionality
-## already implemented
+## already implemented Features
 - [X] upload ontologies
 - [X] load ontology classes as processes
 - [X] drag & drop processes and materials into workspace
@@ -35,13 +35,21 @@ After that the server is running under:
  
 ## under development
 - [ ] change element styles to oficial Chart elements
-- [ ] enable creation of macro Steps 
-- [ ] enable macro processParameters (only simple ones possible yet)
-- [ ] enable possibillity to save current workspace
+- [ ] add creation of macro Steps 
+- [ ] add macro processParameters (only simple ones possible yet)
+- [ ] add possibillity to save current workspace
 - [ ] add Ressource Constraints
 - [ ] multiple workspace tabs (one for main process, others for opened subprocesses)
 - [ ] extend generated BatchML
 - [ ] Capability Matching
+- [ ] add parallel process logic
+
+## Outlook
+- [ ] extend capability matching
+- [ ] extend BatchML creation
+- [ ] add chartelements
+- [ ] import material library
+- [ ] import BatchML into workspace
 
 # Structure
 As a complex Ui is needed for the Editor, a Javascript Framework is recommended to handle the complexity.
