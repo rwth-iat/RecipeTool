@@ -55,13 +55,15 @@ After that the server is running under:
 As a complex Ui is needed for the Editor, a Javascript Framework is recommended to handle the complexity.
 Vue.js was chosen as it is one of the most used Frameworks and recommended for solo Programming, while other frameworks have benefits in Enterprise setting.
 
-Therefore the Projekt will be build on those two main technologies:
-- Python + Flask library for Backend.
-- Vue.js for Frontend
-
-This is also displayed in the folder structure:
-- "server" is for the Flask app.
-- "client" is for the Vue.js Frontend.
+Therefore the Project will be build on those two main technologies. This is also displayed in the folder structure:
+- client/
+  - contains the frontend code
+  - is a Vue.js Project
+  - contains the logic for the Graphical Editor
+- server/
+  - contains the backend code
+  - uses Python + Flask
+  - servers the Editor to the user, manages the ontologies, etc. ...
 
 # Building the project
 After changing the client code, a new Build is necessary for the changes to effect in the server. All steps necessary to Build and start the project are combined in one Batch File. Make sure you are in the root folder of the project and run:
