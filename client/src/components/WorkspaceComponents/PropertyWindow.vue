@@ -88,16 +88,40 @@
           <input type="text" :id="'otherInformation_' + index + '_otherInfoID'" v-model="otherInformation.otherInfoID" />
           <label :for="'otherInformation_' + index + '_description'">Description:</label>
           <input type="text" :id="'otherInformation_' + index + '_description'" v-model="otherInformation.description[0]" />
-          <label :for="'valueString'">ValueString:</label>
+          <label :for="'otherInformation_' + index + '_valueString'">ValueString:</label>
           <input type="text" :id="'otherInformation_' + index + '_valueString'" v-model="otherInformation.otherValue[0].valueString" />
-          <label :for="'dataType'">DataType:</label>
+          <label :for="'otherInformation_' + index + '_dataType'">DataType:</label>
           <input type="text" :id="'otherInformation_' + index + '_dataType'" v-model="otherInformation.otherValue[0].dataType" />
-          <label :for="'unitOfMeasure'">UnitOfMeasure:</label>
+          <label :for="'otherInformation_' + index + '_unitOfMeasure'">UnitOfMeasure:</label>
           <input type="text" :id="'otherInformation_' + index + '_unitOfMeasure'" v-model="otherInformation.otherValue[0].unitOfMeasure" />
-          <label :for="'key'">Key:</label>
+          <label :for="'otherInformation_' + index + '_key'">Key:</label>
           <input type="text" :id="'otherInformation_' + index + '_key'" v-model="otherInformation.otherValue[0].key" />
         </div>
         <button @click="addOtherValue" id="addOtherValue">
+          <span class="material-icons">+</span>
+        </button>
+      </div>
+      <div>
+        <h2>Resource Constraint</h2>
+        <div v-for="(resourceConstraint, index) in computedSelectedElement.resourceConstraint" :key="index" id="valueContainer">
+          <label :for="'resourceConstraint_' + index + '_constraianedID'">ID:</label>
+          <input type="text" :id="'resourceConstraint_' + index + '_constrainedID'" v-model="resourceConstraint.constrinedID" />
+          <label :for="'resourceConstraint_' + index + '_description'">Description:</label>
+          <input type="text" :id="'resourceConstraint_' + index + '_description'" v-model="resourceConstraint.description[0]" />
+          <label :for="'resourceContstraint_' + index + '_constraintType'">ConstraintType:</label>
+          <select :id="'resourceContstraint_' + index + '_constraintType'" v-model="resourceConstraint.constraintType">
+            <option value="Required">Required</option>
+            <option value="Optional">Optional</option>
+            <option value="Other">Other</option>
+          </select>
+          <label :for="'resourceConstraiant_' + index + '_lifeCycleState'">LifeCycleState:</label>
+          <input type="text" :id="'resourceConstraiant_' + index + '_lifeCycleState'" v-model="resourceConstraint.lifeCycleState" />
+          <label :for="'resourceConstraint_' + index + '_range'">Range:</label>
+          <input type="text" :id="'resourceConstraint_' + index + '_range'" v-model="resourceConstraint.range" />
+          <label :for="'resourceConstraint_' + index + '_resourceConstraintProperty'">ResourceConstraintProperty:</label>
+          <input type="text" :id="'resourceConstraint_' + index + '_resourceConstraintProperty'" v-model="resourceConstraint.resourceConstraintProperty" />
+        </div>
+        <button @click="addResourceConstraint" id="addResourceConstraint">
           <span class="material-icons">+</span>
         </button>
       </div>
@@ -139,11 +163,19 @@
     }
     computedSelectedElement.value.processElementParameter.push({id:'', description:'', valueType:{valueString:'', dataType:'', unitOfMeasure:'', key:''}});
   }
+
   function addOtherValue() {
     if (!Array.isArray(computedSelectedElement.value.otherValue)){
       computedSelectedElement.value.otherValue = []  
     }
     computedSelectedElement.value.otherValue.push({id:'', description:'', valueType:{valueString:'', dataType:'', unitOfMeasure:'', key:''}});
+  }
+
+  function addResourceConstraint() {
+    if (!Array.isArray(computedSelectedElement.value.resourceConstraint)){
+      computedSelectedElement.value.resourceConstraint = []  
+    }
+    computedSelectedElement.value.resourceConstraint.push({constraintID:'', description:'', constraintType:'', lifeCycleState:'', range:'', resourceConstraintProperty:''});
   }
 
   function deleteElement(){
