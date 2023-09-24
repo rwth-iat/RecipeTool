@@ -35,6 +35,15 @@ function list_source_target(jsplumb_connections) {
     return [elementsWithSourceConnection, elementsWithTargetConnection]
   }
 
+function createValueType(valueType){
+    let newValueType = {}
+    newValueType.valueString = valueType.valueString 
+    newValueType.dataType = valueType.dataType
+    newValueType.unitOfMeasure = valueType.unitOfMeasure
+    newValueType.key = valueType.key 
+    
+    return newValueType
+}
 
 function create_material(id, description){
     let materials = {
@@ -116,6 +125,18 @@ function create_process_element_parameter(item){
     return parameter
 }
 
+function createResourceConstraint(item){
+    let resourceConstraint = {
+        constraintID: item.id,
+        description: [item.description[0]], // put in array as array input is not implemented in editor yet
+        constraintType: [item.constraintType],
+        lifeCycleState: {},
+        range: [createValueType(item.range)], //put in array as array input is not implemented in editor yet 
+        resourceContraintProperty: [{}] //put it in array as array inputs are not implemented into editor yet. Object not implemented yet 
+    }
+    return resourceConstraint
+}
+
 export function create_process_element_type(item, workspace_items, jsplumb_connections){
     // removed yet unimplemented fields which caused invalid xml
     //     - lifeCycleState:{},
@@ -183,12 +204,24 @@ export function create_process_element_type(item, workspace_items, jsplumb_conne
         } 
     });
 
-    //add directed links
-    for (let otherInformation of item.otherInformation) {
-        process_element.otherInformation.push(otherInformation)
+    //add Other Information
+    if(item.otherInformation !== undefined){
+        for (let otherInformation of item.otherInformation) {
+            process_element.otherInformation.push(otherInformation)
+        }
     }
     console.debug(item)
     console.debug(process_element.otherInformation)
+    
+    //add resourceConstraints
+    if(item.resourceConstraint !== undefined){
+        for (let resourceConstraint of item.resourceConstraint) {
+            process_element.resourceConstraint.push(createResourceConstraint(resourceConstraint))
+        }
+    }
+    console.debug(process_element.resourceConstraint)
+ 
+    //return the created Object
     return process_element
 }
 
@@ -215,7 +248,7 @@ export function generate_batchml(workspace_items, jsplumb_connections){
             description: [{}],
             gRecipeType: "General",
             formula: create_formula(workspace_items, jsplumb_connections),
-            processProcedure: create_process_element_type({id:"Procedure1", description:"This is the top level ProcessElement", processElementType:"Process", processElementParameter:[], otherInformation:[]}, workspace_items, jsplumb_connections),
+            processProcedure: create_process_element_type({id:"Procedure1", description:"This is the top level ProcessElement", processElementType:"Process", processElementParameter:[], otherInformation:[], resourceConstraint:[]}, workspace_items, jsplumb_connections),
             resourceConstraint:[{}],
             otherInformation:[{}]
         }

@@ -1,6 +1,5 @@
 <template>
   <div v-if="computedValueType">
-    Test
     <label :for="'valueString'">ValueString:</label>
     <input type="text" :id="'valueString'" v-model="computedValueType.valueString" />
     <label :for="'dataType'">DataType:</label>
@@ -12,10 +11,10 @@
   </div>
 </template>
 
-<script>
+<script setup>
   import { defineProps, defineEmits, computed } from 'vue'; 
-  const props = defineProps(['selectedElement']);
-  const emit = defineEmits(['close', 'openInWorkspace', 'deleteElement', 'update:selectedElement']);
+  const props = defineProps(['valueType']);
+  const emit = defineEmits(['update:valueType']);
 
   // Create a computed property that represents the entire selectedElement
   // this is recommended solution to achieve two way binding between the parent and this child component

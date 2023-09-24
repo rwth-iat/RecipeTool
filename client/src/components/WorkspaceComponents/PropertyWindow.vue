@@ -114,10 +114,10 @@
             <option value="Optional">Optional</option>
             <option value="Other">Other</option>
           </select>
-          <label :for="'resourceConstraiant_' + index + '_lifeCycleState'">LifeCycleState:</label>
-          <input type="text" :id="'resourceConstraiant_' + index + '_lifeCycleState'" v-model="resourceConstraint.lifeCycleState" />
+          <label :for="'resourceConstraint_' + index + '_lifeCycleState'">LifeCycleState:</label>
+          <input type="text" :id="'resourceConstraint_' + index + '_lifeCycleState'" v-model="resourceConstraint.lifeCycleState" />
           <label :for="'resourceConstraint_' + index + '_range'">Range:</label>
-          <input type="text" :id="'resourceConstraint_' + index + '_range'" v-model="resourceConstraint.range" />
+          <ValueTypeProperty :valueType="resourceConstraint.range" @update:valueType="resourceConstraint.valueType = $event"></ValueTypeProperty>
           <label :for="'resourceConstraint_' + index + '_resourceConstraintProperty'">ResourceConstraintProperty:</label>
           <input type="text" :id="'resourceConstraint_' + index + '_resourceConstraintProperty'" v-model="resourceConstraint.resourceConstraintProperty" />
         </div>
@@ -161,21 +161,21 @@
     if (!Array.isArray(computedSelectedElement.value.processElementParameter)){
       computedSelectedElement.value.processElementParameter = []  
     }
-    computedSelectedElement.value.processElementParameter.push({id:'', description:'', valueType:{valueString:'', dataType:'', unitOfMeasure:'', key:''}});
+    computedSelectedElement.value.processElementParameter.push({id:'', description:[''], valueType:{valueString:'', dataType:'', unitOfMeasure:'', key:''}});
   }
 
   function addOtherValue() {
     if (!Array.isArray(computedSelectedElement.value.otherValue)){
       computedSelectedElement.value.otherValue = []  
     }
-    computedSelectedElement.value.otherValue.push({id:'', description:'', valueType:{valueString:'', dataType:'', unitOfMeasure:'', key:''}});
+    computedSelectedElement.value.otherValue.push({id:'', description:[''], valueType:{valueString:'', dataType:'', unitOfMeasure:'', key:''}});
   }
 
   function addResourceConstraint() {
     if (!Array.isArray(computedSelectedElement.value.resourceConstraint)){
       computedSelectedElement.value.resourceConstraint = []  
     }
-    computedSelectedElement.value.resourceConstraint.push({constraintID:'', description:'', constraintType:'', lifeCycleState:'', range:'', resourceConstraintProperty:''});
+    computedSelectedElement.value.resourceConstraint.push({constraintID:'', description:[''], constraintType:'', lifeCycleState:'', range:{valueString:'', dataType:'', unitOfMeasure:'', key:''}, resourceConstraintProperty:''});
   }
 
   function deleteElement(){
