@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-	import '@/assets/main.css'; //import global css
+	import '@/assets/main.scss'; //import global css
 	//import vue from 'vue'
 	import { ref } from 'vue'
 	import logoURL from '../assets/logo.png'
@@ -64,15 +64,6 @@ aside {
 		position: relative;
 		top: 0;
 		transition: 0.2s ease-in-out;
-		.menu-toggle {
-			transition: 0.2s ease-in-out;
-			&:hover {
-				.material-icons-light {
-					color: var(--primary);
-					transform: translateX(0.5rem);
-				}
-			}
-		}
 	}
 	h3, .button .text {
 		opacity: 0;
@@ -95,12 +86,6 @@ aside {
 			.text {
 				color: var(--light);
 				transition: 0.2s ease-in-out;
-			}
-			&:hover {
-				background-color: var(--dark-alt);
-				.material-icons-light, .text {
-					color: var(--primary);
-				}
 			}
 		}
 	}

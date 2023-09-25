@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-  import '@/assets/main.css'; //import global css
+  import '@/assets/main.scss'; //import global css
   import { computed } from 'vue'; 
   const props = defineProps(['valueType']);
   const emit = defineEmits(['update:valueType']);
