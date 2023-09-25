@@ -58,7 +58,7 @@
           <input type="text" :id="'parameter_' + index + '_id'" v-model="parameter.id" />
           <label :for="'parameter_' + index + '_description'">Description:</label>
           <input type="text" :id="'parameter_' + index + '_description'" v-model="parameter.description" />
-          <label :for="'parameter_' + index + '_valueType'">ValueType:</label>
+          <label :for="'parameter_' + index + '_valueType'">ParameterValue:</label>
           <ValueTypeProperty
             :id="'parameter_' + index + '_valueType'"
             :valueType="parameter.valueType" 
@@ -113,7 +113,7 @@
 
 <script setup>
   import '@/assets/main.css'; //import global css
-  import { computed, defineProps, defineEmits} from 'vue';
+  import { computed } from 'vue';
   import ValueTypeProperty from './ValueTypeProperty.vue';
 
   const props = defineProps(['selectedElement']);

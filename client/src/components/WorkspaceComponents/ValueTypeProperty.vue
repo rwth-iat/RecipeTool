@@ -13,7 +13,7 @@
 
 <script setup>
   import '@/assets/main.css'; //import global css
-  import { defineProps, defineEmits, computed } from 'vue'; 
+  import { computed } from 'vue'; 
   const props = defineProps(['valueType']);
   const emit = defineEmits(['update:valueType']);
 

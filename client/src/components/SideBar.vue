@@ -9,7 +9,7 @@
 		</div>
 		<div class="menu-toggle-wrap">
 			<button class="menu-toggle" @click="ToggleMenu">
-				<span class="material-icons">>></span>
+				<span class="material-icons-light">>></span>
 			</button>
 		</div>
 		
@@ -23,6 +23,7 @@
 </template>
 
 <script setup>
+	import '@/assets/main.css'; //import global css
 	//import vue from 'vue'
 	import { ref } from 'vue'
 	import logoURL from '../assets/logo.png'
@@ -65,14 +66,8 @@ aside {
 		transition: 0.2s ease-in-out;
 		.menu-toggle {
 			transition: 0.2s ease-in-out;
-			.material-icons {
-				font-size: 2rem;
-				color: var(--light);
-				transition: 0.2s ease-out;
-			}
-			
 			&:hover {
-				.material-icons {
+				.material-icons-light {
 					color: var(--primary);
 					transform: translateX(0.5rem);
 				}
@@ -97,18 +92,13 @@ aside {
 			text-decoration: none;
 			transition: 0.2s ease-in-out;
 			padding: 0.5rem 1rem;
-			.material-icons {
-				font-size: 2rem;
-				color: var(--light);
-				transition: 0.2s ease-in-out;
-			}
 			.text {
 				color: var(--light);
 				transition: 0.2s ease-in-out;
 			}
 			&:hover {
 				background-color: var(--dark-alt);
-				.material-icons, .text {
+				.material-icons-light, .text {
 					color: var(--primary);
 				}
 			}
