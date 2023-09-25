@@ -32,13 +32,13 @@ After that the server is running under:
 - [X] automated testing pipeline with every project push (tests need to be extended)
 - [X] delete elements
 - [X] open macro steps in new workspace
+- [X] add Ressource Constraints
  
 ## under development
 - [ ] change element styles to oficial Chart elements
 - [ ] add creation of macro Steps 
 - [ ] add macro processParameters (only simple ones possible yet)
 - [ ] add possibillity to save current workspace
-- [ ] add Ressource Constraints
 - [ ] multiple workspace tabs (one for main process, others for opened subprocesses)
 - [ ] extend generated BatchML
 - [ ] Capability Matching
