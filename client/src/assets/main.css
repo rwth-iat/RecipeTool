@@ -1,0 +1,29 @@
+/* In this files are some styles which are used in different components */
+
+
+/*
+    This is used to set a rounded white border around some content 
+*/
+.container-with-border{
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid var(--light);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/*
+    Material icons are used to represent Icons by normal symbols
+    for example the +, -, x, <<, >> to open and close panels
+*/
+.material-icons-light {
+    font-size: 2rem;
+    color: var(--light);
+    transition: 0.2s ease-in-out;
+}
+.material-icons-dark {
+    font-size: 2rem;
+    color: var(--dark);
+    transition: 0.2s ease-in-out;
+}

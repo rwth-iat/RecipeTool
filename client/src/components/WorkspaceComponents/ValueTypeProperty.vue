@@ -1,5 +1,5 @@
 <template>
-  <div v-if="computedValueType">
+  <div v-if="computedValueType" class="container-with-border">
     <label :for="'valueString'">ValueString:</label>
     <input type="text" :id="'valueString'" v-model="computedValueType.valueString" />
     <label :for="'dataType'">DataType:</label>
@@ -12,6 +12,7 @@
 </template>
 
 <script setup>
+  import '@/assets/main.css'; //import global css
   import { defineProps, defineEmits, computed } from 'vue'; 
   const props = defineProps(['valueType']);
   const emit = defineEmits(['update:valueType']);
@@ -29,3 +30,33 @@
     },
   });
 </script>
+
+<style>
+  /* Style inputs */
+  input[type=text], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid var(--light);
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  /* Style the submit button */
+  input[type=submit] {
+    width: 100%;
+    background-color: #04AA6D;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  /* Add a background color to the submit button on mouse-over */
+  input[type=submit]:hover {
+    background-color: #45a049;
+  } 
+</style>

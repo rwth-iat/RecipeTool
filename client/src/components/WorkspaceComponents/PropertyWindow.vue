@@ -2,7 +2,7 @@
   <div class="property-window-content">
     <div>
       <button @click="close">
-        <span class="material-icons">>></span>
+        <span class="material-icons-light">>></span>
       </button>
       <button class="deleteBtt" @click="deleteElement">
         <span>delete</span>
@@ -35,16 +35,11 @@
       <input type="text" id="order" v-model="computedSelectedElement.order"/>
       
       <label for="amount">Amount:</label>
-      <div id="valueContainer">
-          <label :for="'valueString'">ValueString:</label>
-          <input type="text" :id="'valueString'" v-model="computedSelectedElement.amount.valueString" />
-          <label :for="'dataType'">DataType:</label>
-          <input type="text" :id="'dataType'" v-model="computedSelectedElement.amount.dataType" />
-          <label :for="'unitOfMeasure'">UnitOfMeasure:</label>
-          <input type="text" :id="'unitOfMeasure'" v-model="computedSelectedElement.amount.unitOfMeasure" />
-          <label :for="'key'">Key:</label>
-          <input type="text" :id="'key'" v-model="computedSelectedElement.amount.key" />
-      </div>
+      <ValueTypeProperty
+            :id="'amount'"
+            :valueType="computedSelectedElement.amount" 
+            @update:valueType="computedSelectedElement.amount = $event"
+          /> 
     </div>
 
     <!--Process Properties-->
@@ -58,52 +53,39 @@
       </select>
       <div>
         <h2>ProcessElementParameter</h2>
-        <div v-for="(parameter, index) in computedSelectedElement.processElementParameter" :key="index" id="valueContainer">
+        <div v-for="(parameter, index) in computedSelectedElement.processElementParameter" :key="index" class="container-with-border">
           <label :for="'parameter_' + index + '_id'">ID:</label>
           <input type="text" :id="'parameter_' + index + '_id'" v-model="parameter.id" />
           <label :for="'parameter_' + index + '_description'">Description:</label>
           <input type="text" :id="'parameter_' + index + '_description'" v-model="parameter.description" />
-          <label :for="'valueString'">ValueString:</label>
-          <input type="text" :id="'valueString'" v-model="parameter.valueType.valueString" />
-          <label :for="'dataType'">DataType:</label>
-          <input type="text" :id="'dataType'" v-model="parameter.valueType.dataType" />
-          <label :for="'unitOfMeasure'">UnitOfMeasure:</label>
-          <input type="text" :id="'unitOfMeasure'" v-model="parameter.valueType.unitOfMeasure" />
-          <label :for="'key'">Key:</label>
-          <input type="text" :id="'key'" v-model="parameter.valueType.key" />
-          <!--<ValueTypeProperty
-            v-if="parameter.valueType"
+          <label :for="'parameter_' + index + '_valueType'">ValueType:</label>
+          <ValueTypeProperty
+            :id="'parameter_' + index + '_valueType'"
             :valueType="parameter.valueType" 
             @update:valueType="parameter.valueType = $event"
-          />-->
+          />
         </div>
         <button @click="addProcessElementParameter" id="addProcessElementParameter">
-          <span class="material-icons">+</span>
+          <span class="material-icons-light">+</span>
         </button>
       </div>
       <div>
         <h2>OtherValue</h2>
-        <div v-for="(otherInformation, index) in computedSelectedElement.otherInformation" :key="index" id="valueContainer">
+        <div v-for="(otherInformation, index) in computedSelectedElement.otherInformation" :key="index" class="container-with-border">
           <label :for="'otherInformation_' + index + '_otherInfoID'">ID:</label>
           <input type="text" :id="'otherInformation_' + index + '_otherInfoID'" v-model="otherInformation.otherInfoID" />
           <label :for="'otherInformation_' + index + '_description'">Description:</label>
           <input type="text" :id="'otherInformation_' + index + '_description'" v-model="otherInformation.description[0]" />
-          <label :for="'otherInformation_' + index + '_valueString'">ValueString:</label>
-          <input type="text" :id="'otherInformation_' + index + '_valueString'" v-model="otherInformation.otherValue[0].valueString" />
-          <label :for="'otherInformation_' + index + '_dataType'">DataType:</label>
-          <input type="text" :id="'otherInformation_' + index + '_dataType'" v-model="otherInformation.otherValue[0].dataType" />
-          <label :for="'otherInformation_' + index + '_unitOfMeasure'">UnitOfMeasure:</label>
-          <input type="text" :id="'otherInformation_' + index + '_unitOfMeasure'" v-model="otherInformation.otherValue[0].unitOfMeasure" />
-          <label :for="'otherInformation_' + index + '_key'">Key:</label>
-          <input type="text" :id="'otherInformation_' + index + '_key'" v-model="otherInformation.otherValue[0].key" />
+          <label :for="'otherInformation_' + index + '_otherValue'">ValueString:</label>
+          <ValueTypeProperty :valueType="otherInformation.otherValue[0]" @update:valueType="otherInformation.otherValue[0] = $event"></ValueTypeProperty> 
         </div>
         <button @click="addOtherValue" id="addOtherValue">
-          <span class="material-icons">+</span>
+          <span class="material-icons-light">+</span>
         </button>
       </div>
       <div>
         <h2>Resource Constraint</h2>
-        <div v-for="(resourceConstraint, index) in computedSelectedElement.resourceConstraint" :key="index" id="valueContainer">
+        <div v-for="(resourceConstraint, index) in computedSelectedElement.resourceConstraint" :key="index" class="container-with-border">
           <label :for="'resourceConstraint_' + index + '_constraianedID'">ID:</label>
           <input type="text" :id="'resourceConstraint_' + index + '_constrainedID'" v-model="resourceConstraint.constrinedID" />
           <label :for="'resourceConstraint_' + index + '_description'">Description:</label>
@@ -117,12 +99,12 @@
           <label :for="'resourceConstraint_' + index + '_lifeCycleState'">LifeCycleState:</label>
           <input type="text" :id="'resourceConstraint_' + index + '_lifeCycleState'" v-model="resourceConstraint.lifeCycleState" />
           <label :for="'resourceConstraint_' + index + '_range'">Range:</label>
-          <ValueTypeProperty :valueType="resourceConstraint.range" @update:valueType="resourceConstraint.valueType = $event"></ValueTypeProperty>
+          <ValueTypeProperty :id="'resourceConstraint_' + index + '_range'" :valueType="resourceConstraint.range" @update:valueType="resourceConstraint.valueType = $event"></ValueTypeProperty>
           <label :for="'resourceConstraint_' + index + '_resourceConstraintProperty'">ResourceConstraintProperty:</label>
           <input type="text" :id="'resourceConstraint_' + index + '_resourceConstraintProperty'" v-model="resourceConstraint.resourceConstraintProperty" />
         </div>
         <button @click="addResourceConstraint" id="addResourceConstraint">
-          <span class="material-icons">+</span>
+          <span class="material-icons-light">+</span>
         </button>
       </div>
     </div>
@@ -130,6 +112,7 @@
 </template>
 
 <script setup>
+  import '@/assets/main.css'; //import global css
   import { computed, defineProps, defineEmits} from 'vue';
   import ValueTypeProperty from './ValueTypeProperty.vue';
 
@@ -165,10 +148,10 @@
   }
 
   function addOtherValue() {
-    if (!Array.isArray(computedSelectedElement.value.otherValue)){
-      computedSelectedElement.value.otherValue = []  
+    if (!Array.isArray(computedSelectedElement.value.otherInformation)){
+      computedSelectedElement.value.otherInformation = []  
     }
-    computedSelectedElement.value.otherValue.push({id:'', description:[''], valueType:{valueString:'', dataType:'', unitOfMeasure:'', key:''}});
+    computedSelectedElement.value.otherInformation.push({id:'', description:[''], otherValue:{valueString:'', dataType:'', unitOfMeasure:'', key:''}});
   }
 
   function addResourceConstraint() {
@@ -184,15 +167,7 @@
 </script>
 
   
-<style scoped>
-  #valueContainer{
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-  }
+<style>
   input.locked-input, textarea { 
     background: lightslategrey; 
   }
@@ -228,12 +203,6 @@
       border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;
-  }
-
-.material-icons {
-      font-size: 2rem;
-      color: var(--light);
-      transition: 0.2s ease-in-out;
   }
 
   .property-window-content h2 {

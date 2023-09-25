@@ -25,13 +25,13 @@
     <!-- Zoom Buttons-->
     <div class="buttons-container">
       <button class="buttons" @click="zoomIn">
-        <span class="material-icons">+</span>
+        <span class="material-icons-dark">+</span>
       </button>
       <button class="buttons" @click="zoomOut">
-        <span class="material-icons">-</span>
+        <span class="material-icons-dark">-</span>
       </button>
       <button class="buttons" v-show="showSecondaryWorkspace" @click="showSecondaryWorkspace=false">
-        <span class="material-icons" style="color:red">x</span>
+        <span class="material-icons-dark" style="color:red">x</span>
       </button>
       <button class="buttons" v-show="showSecondaryWorkspace" @click="saveSecondaryWorkspace">
         <span style="color:green">save</span>
@@ -203,11 +203,6 @@
 </script>
 
 <style>
-	.material-icons {
-        font-size: 2rem;
-        color: var(--dark);
-        transition: 0.2s ease-in-out;
-    }
   #workspace {
     background-color: black;
     position: relative;
