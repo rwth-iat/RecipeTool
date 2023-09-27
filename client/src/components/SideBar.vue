@@ -47,6 +47,7 @@ aside {
 	background-color: var(--dark);
 	color: var(--light);
 	width: calc(2rem + 32px);
+	height: 100%;
 	overflow-y: scroll;
 	//min-height: calc(100vh - var(--topbar-height));
 	padding: 1rem;
