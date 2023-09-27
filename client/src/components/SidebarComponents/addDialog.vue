@@ -13,7 +13,7 @@
             <!--Drop down list of availible ontologys on the server-->
             <select v-model="current_ontology" name="Ontology" id="ontoSelect" 
                     @change="readServerOntoClasses(current_ontology)">
-                <option :value="item" v-for="item in serverProcessOntologies">{{ item }}</option>
+                <option :value="item" v-for="item in serverProcessOntologies" :key="item">{{ item }}</option>
                 <option value="new">add new to server</option>
             </select>
 
@@ -51,7 +51,7 @@
                 <select id="super_class_select"
                         v-model="current_super_class" 
                         name="super-class">
-                    <option v-for="item in onto_classes" :value="item">{{ item }}</option>
+                    <option v-for="item in onto_classes" :value="item" :key="item">{{ item }}</option>
                 </select>
                 <br/>
                 <label for="relation_input">Name of Relation: </label>

@@ -33,7 +33,7 @@
     --red: red;
     
     --sidebar-width: 300px;
-    --topbar-height: 5vh;
+    --topbar-height: auto;
     --element-height: 10px;
   }
   /*this blocks makes sure that the menu bar on the left is directly at the rim and no gap appears*/
@@ -58,25 +58,25 @@
   }
   .app {
     display: flex;
-    main {
-      display: flex;
-      flex-direction: row;
-      height:100vh;
-      width:100vw;
-    }
   }
+  main {
+    display: flex; /* Use flexbox to control child elements */
+    flex-direction: column; /* Stack child elements vertically */
+    height: 100vh; /* Make the parent container take the full screen height */
+    width:100vw;
+  }
+
   #editor{
     overflow: hidden;
     box-sizing: border-box;
-    width: 100vw;
-    height: calc(100vh - var(--topbar-height));
+    width: 100%;
     display: flex;
+    flex-grow: 1;
   }
   /*container for the page heading*/
 #top_bar{
-    width: 100vw;
-    height: var(--topbar-height);
-    float:left;
+    width: 100%;
+    height: auto;
     text-align: center;
     background-color: var(--primary);
 }

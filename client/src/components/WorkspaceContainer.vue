@@ -206,7 +206,7 @@
   #workspace {
     background-color: black;
     position: relative;
-    height: calc(100vh - var(--topbar-height));
+    /*height: calc(100vh - var(--topbar-height));*/
     flex: 1 1 0;
     border-radius: 5px;
     border-width: 1px;
@@ -221,7 +221,10 @@
     background-color: grey;
   }
   .property-window-container {
+    display: flex;
     position: absolute;
+    height: 100%;
+    overflow-y: auto;
     top: 0px; /* Adjust the top distance as needed */
     right: 0px; /* Adjust the right distance as needed */
     z-index: 2; /* Ensure property window appears above the workspace content */

@@ -8,7 +8,7 @@
 			<span class="close-icons">export</span>
     </button>
     -->
-    <button id="exportBtt" @click="triggerExportInWorkspace">Export</button>
+    <button class="button-with-border" style="float:left;" @click="triggerExportInWorkspace">Export</button>
     <h3>Verfahrensrezept-Editor</h3>
   </div>
 </template>
@@ -26,7 +26,7 @@
     /*container for the page heading*/
     #topbar{
       width: 100vw;
-      height: 10vh;
+      height: auto;
       float:left;
       text-align: center;
       background-color: --grey;
