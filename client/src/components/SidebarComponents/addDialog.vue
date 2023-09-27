@@ -2,8 +2,8 @@
     <div id="addElements" class="settings">
         <div style="display: flex;">
             <h3 style="float:left;">Add {{ element_type }}</h3>
-            <button @click="close">
-                <span class="close-icons">X</span>
+            <button @click="close" style="float:right;">
+                <span class="material-icons-red">x</span>
             </button>
         </div>
         <br/>

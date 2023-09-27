@@ -96,6 +96,7 @@ aside {
 			
 			.menu-toggle {
 				transform: rotate(-180deg);
+				transition: 0.2s ease-in-out;	
 			}
 		}
 	}

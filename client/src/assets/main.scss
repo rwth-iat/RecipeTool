@@ -30,6 +30,12 @@
     transition: 0.2s ease-in-out;
     transition: background-color 0.3s, color 0.3s;
 }
+.material-icons-red {
+    font-size: 2rem;
+    color: var(--red);
+    transition: 0.2s ease-in-out;
+    transition: background-color 0.3s, color 0.3s;
+}
 
 /*
     this file is a scss file meaning it is scripted css
@@ -40,12 +46,13 @@ button {
     &:hover {
         .material-icons-light {
             color: var(--primary);
-            transform: translateX(0.5rem);
         }
-        .material-icons-light {
+        .material-icons-dark {
             color: var(--primary);
-            transform: translateX(0.5rem);
         }
+       .material-icons-red {
+            color: var(--red);
+        } 
     }
 }
 

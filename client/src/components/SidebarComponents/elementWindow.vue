@@ -159,7 +159,7 @@
 /*container for material*/
 #elements_window{
     box-sizing: border-box;
-    width: var(--sidebar-width);
+    width: calc(var(--sidebar-width)*0.9);
     height: auto;
     float:left;
     vertical-align: top;
