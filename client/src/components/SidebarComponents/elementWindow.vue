@@ -3,6 +3,7 @@
 	import { ref, toRefs } from 'vue'
 	import addDialog from './addDialog.vue'
     import Recursive_component from './RecursiveComponent.vue';
+    import '@/assets/main.scss'; //import global css 
 
     //we define a prop elementtype so that we can use this component for materials and Processes 
     const props = defineProps({
@@ -119,10 +120,10 @@
 
 <template>
     <div id="elements_window">
-        <div id="elements_heading">
-            <div style="float:left;"><h4>{{ element_type }}</h4></div>
+        <div>
+            <div style="float:left;"><h2>{{ element_type }}</h2></div>
             <button @click="toggleAddElements">
-                <span class="toggle-icons">+</span>
+                <span class="material-icons-light">+</span>
             </button>
         </div>
         <div class="element_spacer"></div>

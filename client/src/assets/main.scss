@@ -21,12 +21,14 @@
     font-size: 2rem;
     color: var(--light);
     transition: 0.2s ease-in-out;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .material-icons-dark {
     font-size: 2rem;
     color: var(--dark);
     transition: 0.2s ease-in-out;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 /*
@@ -45,4 +47,37 @@ button {
             transform: translateX(0.5rem);
         }
     }
+}
+
+// Define a class for buttons
+.button-with-border {
+  margin: 5px;
+  padding: 5px;
+  color: var(--dark); // Use the text color from the parent element
+  float: right;
+  background-color: var(--light);
+  border: 1px solid var(--light);
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: background-color 0.3s, color 0.3s;
+
+  &:hover {
+    background-color: var(--primary); // Change background color on hover
+    //color: red; // Change text color on hover
+  }
+}
+.button-with-border-red {
+  margin: 5px;
+  color: var(--red); // Use the text color from the parent element
+  float: right;
+  background-color: var(--light);
+  border: 1px solid var(--red);
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: background-color 0.3s, color 0.3s;
+
+  &:hover {
+    background-color: lightpink; // Change background color on hover
+    //color: red; // Change text color on hover
+  }
 }

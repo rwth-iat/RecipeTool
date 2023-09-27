@@ -30,6 +30,8 @@
     --dark: #1e293b;
     --dark-alt: #334155;
     --light: #f1f5f9;
+    --red: red;
+    
     --sidebar-width: 300px;
     --topbar-height: 5vh;
     --element-height: 10px;
