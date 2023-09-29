@@ -1,7 +1,9 @@
 <template>
   <div class="workspace_content" ref="workspaceContentRef" @drop="$event => onDrop($event)" @dragenter.prevent @dragover.prevent draggable="false" @mousedown="startPanning" @mousemove="handlePanning" @mouseup="stopPanning">
       <!--Draw all workspace elements. Connections are drawn by jsplumb in the background-->
-        <div :class="'workspace_element ' + item.type" 
+      <!--item.type sets class to process or material-->
+      <!--item.materialType sets class to input/output. for processes its set to undefined which has no effect-->
+        <div :class="'workspace_element ' + item.type + ' ' + item.materialType" 
             v-for="item in computedWorkspaceItems" 
             :key="item.id" 
             :ref="skipUnwrap.jsplumbElements" 
@@ -389,7 +391,7 @@
         justify-content: center;
         align-items: center;
     }
-    .material{
+    /*.material{
         background-color:#fff;
         border:1px solid black;    
         height:100px;
@@ -397,6 +399,34 @@
         -moz-border-radius:50%;
         -webkit-border-radius:50%;
         width:100px;
+    }*/
+   .Input{
+        background-color:white;
+        border:1px solid black;    
+        height:100px;
+        width:100px; 
+        border-radius:50%;
+        -moz-border-radius:50%;
+        -webkit-border-radius:50%;
+        box-shadow: inset 0 0 0 1px black, inset 0 0 0 5px white, inset 0 0 0 7px black;
+    }
+   .Output{
+        background-color:#fff;
+        border:5px solid black;    
+        height:100px;
+        border-radius:50%;
+        -moz-border-radius:50%;
+        -webkit-border-radius:50%;
+        width:100px;
+    } 
+    .Intermediate{
+        background-color:white;
+        border:1px solid black;    
+        height:100px;
+        width:100px;
+        border-radius:50%;
+        -moz-border-radius:50%;
+        -webkit-border-radius:50%;
     }
     .process{
         background-color:#fff;

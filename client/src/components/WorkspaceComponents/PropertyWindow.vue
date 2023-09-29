@@ -25,7 +25,7 @@
       <select id="materialType" v-model="computedSelectedElement.materialType">
         <option value="Input">Input</option>
         <option value="Intermediate">Intermediate</option>
-        <option value="output">Output</option>
+        <option value="Output">Output</option>
       </select>
 
       <label for="materialId">MaterialId:</label>
