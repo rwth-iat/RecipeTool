@@ -3,14 +3,21 @@
       <!--Draw all workspace elements. Connections are drawn by jsplumb in the background-->
       <!--item.type sets class to process or material-->
       <!--item.materialType sets class to input/output. for processes its set to undefined which has no effect-->
-        <div :class="'workspace_element ' + item.type + ' ' + item.materialType" 
+        <div :class="'workspace_element'"
             v-for="item in computedWorkspaceItems" 
             :key="item.id" 
             :ref="skipUnwrap.jsplumbElements" 
             :id="item.id"
             @click="handleClick(item)"
         >
-            {{ item.name }}
+            <div :class="item.type + 'visual ' +item.type + ' ' + item.materialType">
+                <!--If its a process display name inside the process flowchart element-->
+                <span class="processName" v-if="item.type=='process'">{{ item.name }}</span>
+            </div>
+            <!--If it is a material we need to display it as an extra label-->
+            <div v-if="item.type=='material'" class="flowChartLabel" style="float: right;">
+                {{ item.name }}
+            </div>
         </div>
     </div>
 </template>
@@ -391,7 +398,6 @@
         display: flex;
         position: absolute;
         text-align: center;
-        justify-content: center;
         align-items: center;
     }
     /*.material{
@@ -404,6 +410,8 @@
         width:100px;
     }*/
    .Input{
+        flex: 1; /* Prevent child A from expanding */
+        text-align: center; /* Centers the content horizontally */
         background-color:white;
         border:1px solid black;    
         height:100px;
@@ -414,6 +422,8 @@
         box-shadow: inset 0 0 0 1px black, inset 0 0 0 5px white, inset 0 0 0 7px black;
     }
    .Output{
+        flex: 1; /* Prevent child A from expanding */
+        text-align: center; /* Centers the content horizontally */
         background-color:#fff;
         border:5px solid black;    
         height:100px;
@@ -423,6 +433,8 @@
         width:100px;
     } 
     .Intermediate{
+        flex: 1; /* Prevent child A from expanding */
+        text-align: center; /* Centers the content horizontally */
         background-color:white;
         border:1px solid black;    
         height:100px;
@@ -431,7 +443,20 @@
         -moz-border-radius:50%;
         -webkit-border-radius:50%;
     }
-    .process{
+    .flowChartLabel{
+        float: right;
+        border: 1px solid black;
+        border-radius: 5px;
+        padding: 5px;
+        display: flex;
+        margin-left: 10px; /* Spacing between child A and child B */
+        text-align: center;
+    }
+    .processvisual{
+        display: flex;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
         background-color:#fff;
         width: 200px;
         height: 30px;
