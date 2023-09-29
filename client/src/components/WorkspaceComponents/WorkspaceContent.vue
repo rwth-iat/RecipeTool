@@ -205,14 +205,17 @@
       let targetEndpoint = {}
       if(item.type === "material"){
         if(item.name === "Eingangsmaterial"){
+          item.materialType ="Input"
           sourceEndpoint = addEndpoint(instance, element, {source: true, target: false})
           targetEndpoint = {id: ''}
           console.log("added SourceEndpoint to Eingangsmaterial")
         }else if(item.name === "Zwischenprodukt"){
+          item.materialType = "Intermediate"
           sourceEndpoint = addEndpoint(instance, element, {source: true, target: false})
           targetEndpoint = addEndpoint(instance, element, {source: false, target: true})
           console.debug("added Source- and Target-Endpoint to Zwischenprodukt")
         }else if(item.name === "Endprodukt"){
+          item.materialType = "Output"
           sourceEndpoint = {id: ''}
           targetEndpoint = addEndpoint(instance, element, {source: false, target: true})
           console.log("added TargetEndpoint to Endprodukt")
