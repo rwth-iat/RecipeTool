@@ -38,10 +38,9 @@ function list_source_target(jsplumb_connections) {
 function createValueType(valueType){
     let newValueType = {}
     newValueType.valueString = valueType.valueString 
-    newValueType.dataType = valueType.dataType
-    newValueType.unitOfMeasure = valueType.unitOfMeasure
-    newValueType.key = valueType.key 
-    
+    //newValueType.dataType = valueType.dataType
+    //newValueType.unitOfMeasure = valueType.unitOfMeasure
+    newValueType.key = valueType.key
     return newValueType
 }
 
@@ -116,14 +115,29 @@ function create_formula(workspace_items, jsplumb_connections){
 function create_process_element_parameter(item){
     let parameter = {
         id: item.id,
-        description: [item.description],
-        valueString: item.valueString,
-        dataType: item.dataType,
-        unitOfMeasure: item.unitOfMeasure,
-        key: item.key
+        description: item.description,
+        value: [createValueType(item.value)]
     }
+    console.debug("processParameter:", parameter)
     return parameter
 }
+function createOtherInformation(item){
+    let otherInformation = {}
+    otherInformation.otherInfoID = item.otherInfoID;
+    if(Array.isArray(item.description)){
+        otherInformation.description = item.description;
+    }else if(typeof item.description === "string"){
+        otherInformation.description = [item.description]
+    }else{
+        console.error("otherinformation.description is of unknown type", item)
+    }
+    otherInformation.otherValue = [];
+    for(let otherValue of item.otherValue){
+        otherInformation.otherValue.push(createValueType(otherValue));    
+    }
+    return otherInformation;
+}
+
 
 function createResourceConstraint(item){
     let resourceConstraint = {
@@ -207,11 +221,11 @@ export function create_process_element_type(item, workspace_items, jsplumb_conne
     //add Other Information
     if(item.otherInformation !== undefined){
         for (let otherInformation of item.otherInformation) {
-            process_element.otherInformation.push(otherInformation)
+            process_element.otherInformation.push(createOtherInformation(otherInformation))
         }
     }
     console.debug(item)
-    console.debug(process_element.otherInformation)
+    console.debug("otherInformation: ", process_element.otherInformation)
     
     //add resourceConstraints
     if(item.resourceConstraint !== undefined){
@@ -253,6 +267,7 @@ export function generate_batchml(workspace_items, jsplumb_connections){
             otherInformation:[{}]
         }
     }
+    console.debug("JSON G-Secipe: ", gRecipe)
     console.debug("rigth before marschalling")
     // Marshal the JavaScript object to XML
     const marshaller = context.createMarshaller();
@@ -294,6 +309,7 @@ export function create_validate_download_batchml(items, jsplumb_connections, cli
           }else if(error.request.status == 404){
             console.log("Unable to reach the server, are you maybe only running the client code?")
             console.log(error)
+            start_download("unchecked_Verfahrensrezept.xml", xml_string) 
             window.alert("Error 404: Unable to reach the server, when validating the Batchml. Are you maybe only running the client code? For complete error message look into the browser devtools console")
           }else{
             // handle error

@@ -57,12 +57,12 @@
           <label :for="'parameter_' + index + '_id'">ID:</label>
           <input type="text" :id="'parameter_' + index + '_id'" v-model="parameter.id" />
           <label :for="'parameter_' + index + '_description'">Description:</label>
-          <input type="text" :id="'parameter_' + index + '_description'" v-model="parameter.description" />
+          <input type="text" :id="'parameter_' + index + '_description'" v-model="parameter.description[0]" />
           <label :for="'parameter_' + index + '_valueType'">ParameterValue:</label>
           <ValueTypeProperty
             :id="'parameter_' + index + '_valueType'"
-            :valueType="parameter.valueType" 
-            @update:valueType="parameter.valueType = $event"
+            :valueType="parameter.value" 
+            @update:valueType="parameter.value = $event"
           />
         </div>
         <button @click="addProcessElementParameter" id="addProcessElementParameter">
@@ -70,16 +70,16 @@
         </button>
       </div>
       <div>
-        <h2>OtherValue</h2>
+        <h2>OtherInformation</h2>
         <div v-for="(otherInformation, index) in computedSelectedElement.otherInformation" :key="index" class="container-with-border">
           <label :for="'otherInformation_' + index + '_otherInfoID'">ID:</label>
           <input type="text" :id="'otherInformation_' + index + '_otherInfoID'" v-model="otherInformation.otherInfoID" />
           <label :for="'otherInformation_' + index + '_description'">Description:</label>
           <input type="text" :id="'otherInformation_' + index + '_description'" v-model="otherInformation.description[0]" />
-          <label :for="'otherInformation_' + index + '_otherValue'">ValueString:</label>
+          <label :for="'otherInformation_' + index + '_otherValue'">OtherValue:</label>
           <ValueTypeProperty :valueType="otherInformation.otherValue[0]" @update:valueType="otherInformation.otherValue[0] = $event"></ValueTypeProperty> 
         </div>
-        <button @click="addOtherValue" id="addOtherValue">
+        <button @click="addOtherInformation" id="addOtherValue">
           <span class="material-icons-light">+</span>
         </button>
       </div>
@@ -145,21 +145,21 @@
     if (!Array.isArray(computedSelectedElement.value.processElementParameter)){
       computedSelectedElement.value.processElementParameter = []  
     }
-    computedSelectedElement.value.processElementParameter.push({id:'', description:[''], valueType:{valueString:'', dataType:'', unitOfMeasure:'', key:''}});
+    computedSelectedElement.value.processElementParameter.push({id:'', description:[''], value:[{valueString:'', dataType:'', unitOfMeasure:'', key:''}]});
   }
 
-  function addOtherValue() {
+  function addOtherInformation() {
     if (!Array.isArray(computedSelectedElement.value.otherInformation)){
       computedSelectedElement.value.otherInformation = []  
     }
-    computedSelectedElement.value.otherInformation.push({id:'', description:[''], otherValue:{valueString:'', dataType:'', unitOfMeasure:'', key:''}});
+    computedSelectedElement.value.otherInformation.push({otherInfoId:'', description:[''], otherValue:[{valueString:'', dataType:'', unitOfMeasure:'', key:''}]});
   }
 
   function addResourceConstraint() {
     if (!Array.isArray(computedSelectedElement.value.resourceConstraint)){
       computedSelectedElement.value.resourceConstraint = []  
     }
-    computedSelectedElement.value.resourceConstraint.push({constraintID:'', description:[''], constraintType:'', lifeCycleState:'', range:{valueString:'', dataType:'', unitOfMeasure:'', key:''}, resourceConstraintProperty:''});
+    computedSelectedElement.value.resourceConstraint.push({constraintID:'', description:[''], constraintType:'', lifeCycleState:'', range:[{valueString:'', dataType:'', unitOfMeasure:'', key:''}], resourceConstraintProperty:''});
   }
 
   function deleteElement(){
