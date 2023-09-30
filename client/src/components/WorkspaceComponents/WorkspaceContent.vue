@@ -156,9 +156,11 @@
 
         //get mouse postion and substrac workspace position to get relative position as workspace elemenets are positioned relative (is needed for jsplumb)
         let rect = event.target.getBoundingClientRect();
+        console.log("boundingRect", rect)
         let x = event.clientX - rect.left -x_offset; //+ "px"  x position within the element.
+        console.debug("clientX", event.clientX, " - rect Left ", rect.left, " - x_offset ", x_offset, " = ", x)
         let y = event.clientY - rect.top;
-
+        console.debug("clientY", event.clientY, " - rect Left ", rect.top, " = ", y)
         // if it is a sidebar element add new item to workspace list. Drag and drop of workspace elements is handled by jsplumb
         if (classes.includes("sidebar_element")) {
             let uniqueId = createUniqueId()
@@ -276,9 +278,9 @@
                 }
 
                 console.debug("changed element not managed yet, placing in workspace and adding endpoints:", pushedItem);
-                addJsPlumbEndpoints(instance.value, elementRef, pushedItem);
                 elementRef.style.left = pushedItem.x + "px";
                 elementRef.style.top = pushedItem.y + "px";
+                addJsPlumbEndpoints(instance.value, elementRef, pushedItem);
                 managedElements.value[pushedItem.id] = true;
             });
         };
@@ -402,8 +404,7 @@
         z-index: 1;
     }
     .workspace_element {
-        grid-template-columns: auto 1fr auto; /* Three columns: auto spacer, 1fr (child A), auto (child B) */
-        display: grid;
+        display: flex;
         position: absolute;
         text-align: center;
         align-items: center;
