@@ -32,7 +32,7 @@
     import { onMounted, ref, computed, watch, nextTick } from 'vue';
     import { newInstance, ready } from "@jsplumb/browser-ui";
     const props = defineProps(['main_workspace_items', 'workspace_items']);
-    const emit = defineEmits(['changeSelectedElement', 'openPropertyWindow', 'update:workspace_items']);  
+    const emit = defineEmits(['changeSelectedElement', 'openPropertyWindow', 'update:workspace_items', 'saveWorkspace']);  
     const workspaceContentRef = ref(null)
     const jsplumbInstance = ref(null) //the jsplumb instance, this is a library which handles the drag and drop as well as the connections
     const jsplumbElements = ref([])
@@ -176,7 +176,7 @@
             item.amount = {} // set to obj so that input field in property window can be bound to "amount.valueString" etc
             computedWorkspaceItems.value.push(item);
             console.log("dragged from sidebar, dropped in workspace at absolute position: " + x + " " + y);
-            console.log(props.workspace_items);
+            emit("saveWorkspace")
         }
     }
 
@@ -401,6 +401,10 @@
                 // Recursively search in child items
                 collectIds(item.processElement);
             }
+            if (item.materials && item.materials.length > 0) {
+                // Recursively search in child items
+                collectIds(item.materials);
+            }
             }
         }
         console.log("test1")
@@ -436,7 +440,8 @@
         addConnections,
         deleteElement,
         getConnections,
-        createUniqueId
+        createUniqueId,
+        findNextAvailableId
     });
 </script>
 

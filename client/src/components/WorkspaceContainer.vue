@@ -19,6 +19,7 @@
       v-show="showSecondaryWorkspace"
       :main_workspace_items="main_workspace_items"
       :workspace_items="secondary_workspace_items"
+      @saveWorkspace="saveSecondaryWorkspace"
       @changeSelectedElement="selectedElement = $event"
       @openPropertyWindow="openPropertyWindow"
       @update:workspace_items="secondary_workspace_items = $event"
@@ -140,9 +141,9 @@
       console.debug("no child materials: ", selectedElement.value.materials)
       //if no materials exist yet add an input and output knot
       selectedElement.value.materials = [];
-      let unique_id = secondaryWorkspaceContent.value.createUniqueId()
+      let unique_id = secondaryWorkspaceContent.value.findNextAvailableId(main_workspace_items.value, "Eingangsmaterial")
       selectedElement.value.materials.push({ id: unique_id, name: "Eingangsmaterial", type: "material", x: 300, y: 100 })
-      unique_id = secondaryWorkspaceContent.value.createUniqueId()
+      unique_id = secondaryWorkspaceContent.value.findNextAvailableId(main_workspace_items.value, "Endprodukt")
       selectedElement.value.materials.push({ id: unique_id, name: "Endprodukt", type: "material", x: 300, y: 400 })
     }
 
