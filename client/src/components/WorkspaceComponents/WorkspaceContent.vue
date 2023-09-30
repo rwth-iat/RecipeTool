@@ -12,15 +12,17 @@
         >
             <!--If it is a material we need to display it as an extra label-->
             <div v-if="item.type=='material'" class="flowChartLabel" style="float: right;">
-                {{ item.description }}
+                <span>{{ item.materialId }} - {{ item.description }}</span>
             </div>
             <div :class="item.type + 'visual ' +item.type + ' ' + item.materialType">
                 <!--If its a process display name inside the process flowchart element-->
-                <span class="processName" v-if="item.type=='process'">{{ item.name }}</span>
+                <span class="processName" v-if="item.type=='process'">
+                    {{ item.name }} - {{ item.id }}
+                </span>
             </div>
             <!--If it is a material we need to display it as an extra label-->
             <div v-if="item.type=='material'" class="flowChartLabelSpacer">
-                {{ item.description }}
+                <span>{{ item.materialId }} - {{ item.description }}</span> 
             </div>
         </div>
     </div>
@@ -430,13 +432,14 @@
     }
     .flowChartLabel{
         border: 1px solid black;
+        background-color: white;
         border-radius: 5px;
         padding: 5px;
         display: flex;
         text-align: center;
     }
     .flowChartLabelSpacer{
-        color: white; /*this label is only for centering the material*/
+        color: white; /*this label is only for centering the material therefore text_color white*/
         padding: 6px;
         display: flex;
         text-align: center;
@@ -448,7 +451,7 @@
         justify-content: center;
         background-color:#fff;
         width: 200px;
-        height: 30px;
+        height: 50px;
         border-radius: 5px;
         border-width: 1px;
         border-style: solid;
