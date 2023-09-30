@@ -174,11 +174,10 @@
   }
   .property-window-content {
       overflow-y: scroll;
-      height: calc(100vh - var(--topbar-height));
+      height: 100%;
       float:right;
       background-color: var(--dark);
       color: var(--light);
-      /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
       box-sizing: border-box;
       display: flex;
       flex-direction: column; /* Arrange children vertically */

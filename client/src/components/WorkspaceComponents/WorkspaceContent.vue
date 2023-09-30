@@ -489,7 +489,7 @@
         text-align: center;
     }
     .flowChartLabelSpacer{
-        color: white; /*this label is only for centering the material therefore text_color white*/
+        color: transparent; /*this label is only for centering the material therefore text_color white*/
         padding: 6px;
         display: flex;
         text-align: center;
