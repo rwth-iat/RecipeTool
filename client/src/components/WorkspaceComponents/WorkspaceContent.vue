@@ -11,16 +11,16 @@
             @click="handleClick(item)"
         >
             <!--If it is a material we need to display it as an extra label-->
-            <div v-if="item.type=='material'" class="flowChartLabelSpacer">
-                {{ item.name }}
+            <div v-if="item.type=='material'" class="flowChartLabel" style="float: right;">
+                {{ item.description }}
             </div>
             <div :class="item.type + 'visual ' +item.type + ' ' + item.materialType">
                 <!--If its a process display name inside the process flowchart element-->
                 <span class="processName" v-if="item.type=='process'">{{ item.name }}</span>
             </div>
             <!--If it is a material we need to display it as an extra label-->
-            <div v-if="item.type=='material'" class="flowChartLabel" style="float: right;">
-                {{ item.name }}
+            <div v-if="item.type=='material'" class="flowChartLabelSpacer">
+                {{ item.description }}
             </div>
         </div>
     </div>
@@ -412,8 +412,8 @@
     .material{ 
         text-align: center; /* Centers the content horizontally */
         background-color:white; 
-        height:100px;
-        width:100px; 
+        height:50px;
+        width:50px; 
         border-radius:50%;
         -moz-border-radius:50%;
         -webkit-border-radius:50%;
@@ -433,14 +433,12 @@
         border-radius: 5px;
         padding: 5px;
         display: flex;
-        margin-left: 10px; /* Spacing between child A and child B */
         text-align: center;
     }
     .flowChartLabelSpacer{
         color: white; /*this label is only for centering the material*/
-        padding: 5px;
+        padding: 6px;
         display: flex;
-        margin-left: 10px; /* Spacing between child A and child B */
         text-align: center;
     }
     .processvisual{
