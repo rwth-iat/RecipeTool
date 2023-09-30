@@ -10,6 +10,10 @@
             :id="item.id"
             @click="handleClick(item)"
         >
+            <!--If it is a material we need to display it as an extra label-->
+            <div v-if="item.type=='material'" class="flowChartLabelSpacer">
+                {{ item.name }}
+            </div>
             <div :class="item.type + 'visual ' +item.type + ' ' + item.materialType">
                 <!--If its a process display name inside the process flowchart element-->
                 <span class="processName" v-if="item.type=='process'">{{ item.name }}</span>
@@ -395,7 +399,8 @@
         z-index: 1;
     }
     .workspace_element {
-        display: flex;
+        grid-template-columns: auto 1fr auto; /* Three columns: auto spacer, 1fr (child A), auto (child B) */
+        display: grid;
         position: absolute;
         text-align: center;
         align-items: center;
@@ -409,8 +414,11 @@
         -webkit-border-radius:50%;
         width:100px;
     }*/
+    .spacer{
+        flex-grow:1;
+
+    }
    .Input{
-        flex: 1; /* Prevent child A from expanding */
         text-align: center; /* Centers the content horizontally */
         background-color:white;
         border:1px solid black;    
@@ -422,7 +430,6 @@
         box-shadow: inset 0 0 0 1px black, inset 0 0 0 5px white, inset 0 0 0 7px black;
     }
    .Output{
-        flex: 1; /* Prevent child A from expanding */
         text-align: center; /* Centers the content horizontally */
         background-color:#fff;
         border:5px solid black;    
@@ -433,7 +440,6 @@
         width:100px;
     } 
     .Intermediate{
-        flex: 1; /* Prevent child A from expanding */
         text-align: center; /* Centers the content horizontally */
         background-color:white;
         border:1px solid black;    
@@ -444,9 +450,15 @@
         -webkit-border-radius:50%;
     }
     .flowChartLabel{
-        float: right;
         border: 1px solid black;
         border-radius: 5px;
+        padding: 5px;
+        display: flex;
+        margin-left: 10px; /* Spacing between child A and child B */
+        text-align: center;
+    }
+    .flowChartLabelSpacer{
+        color: white; /*this label is only for centering the material*/
         padding: 5px;
         display: flex;
         margin-left: 10px; /* Spacing between child A and child B */
