@@ -142,18 +142,21 @@
         let classes = event.dataTransfer.getData("itemClasses");
         
         let type 
+        let x_offset
         console.log(classes)
         if (classes.includes("material_element")){
             type = "material"
+            x_offset = 200;
         }else if (classes.includes("process_element")){
             type = "process"
+            x_offset = 100;
         }else{
-            console.log("neither material nor process")
+            console.error("neither material nor process dropped into workspace")
         }
 
         //get mouse postion and substrac workspace position to get relative position as workspace elemenets are positioned relative (is needed for jsplumb)
         let rect = event.target.getBoundingClientRect();
-        let x = event.clientX - rect.left; //+ "px"  x position within the element.
+        let x = event.clientX - rect.left -x_offset; //+ "px"  x position within the element.
         let y = event.clientY - rect.top;
 
         // if it is a sidebar element add new item to workspace list. Drag and drop of workspace elements is handled by jsplumb
@@ -405,49 +408,24 @@
         text-align: center;
         align-items: center;
     }
-    /*.material{
-        background-color:#fff;
-        border:1px solid black;    
-        height:100px;
-        border-radius:50%;
-        -moz-border-radius:50%;
-        -webkit-border-radius:50%;
-        width:100px;
-    }*/
-    .spacer{
-        flex-grow:1;
-
-    }
-   .Input{
+    .material{ 
         text-align: center; /* Centers the content horizontally */
-        background-color:white;
-        border:1px solid black;    
+        background-color:white; 
         height:100px;
         width:100px; 
         border-radius:50%;
         -moz-border-radius:50%;
         -webkit-border-radius:50%;
+    }
+   .Input{
+        border:1px solid black;    
         box-shadow: inset 0 0 0 1px black, inset 0 0 0 5px white, inset 0 0 0 7px black;
     }
    .Output{
-        text-align: center; /* Centers the content horizontally */
-        background-color:#fff;
         border:5px solid black;    
-        height:100px;
-        border-radius:50%;
-        -moz-border-radius:50%;
-        -webkit-border-radius:50%;
-        width:100px;
     } 
     .Intermediate{
-        text-align: center; /* Centers the content horizontally */
-        background-color:white;
         border:1px solid black;    
-        height:100px;
-        width:100px;
-        border-radius:50%;
-        -moz-border-radius:50%;
-        -webkit-border-radius:50%;
     }
     .flowChartLabel{
         border: 1px solid black;
