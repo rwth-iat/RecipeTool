@@ -12,17 +12,17 @@
         >
             <!--If it is a material we need to display it as an extra label-->
             <div v-if="item.type=='material'" class="flowChartLabel" style="float: right;">
-                <span>{{ item.materialId }} - {{ item.description }}</span>
+                <span>{{ item.materialId }} - {{ item.id }}</span>
             </div>
             <div :class="item.type + 'visual ' +item.type + ' ' + item.materialType">
                 <!--If its a process display name inside the process flowchart element-->
                 <span class="processName" v-if="item.type=='process'">
-                    {{ item.name }} - {{ item.id }}
+                    {{ item.id }}
                 </span>
             </div>
             <!--If it is a material we need to display it as an extra label-->
             <div v-if="item.type=='material'" class="flowChartLabelSpacer">
-                <span>{{ item.materialId }} - {{ item.description }}</span> 
+                <span>{{ item.materialId }} - {{ item.id }}</span> 
             </div>
         </div>
     </div>
@@ -31,7 +31,7 @@
 <script setup>
     import { onMounted, ref, computed, watch, nextTick } from 'vue';
     import { newInstance, ready } from "@jsplumb/browser-ui";
-    const props = defineProps(['workspace_items']);
+    const props = defineProps(['main_workspace_items', 'workspace_items']);
     const emit = defineEmits(['changeSelectedElement', 'openPropertyWindow', 'update:workspace_items']);  
     const workspaceContentRef = ref(null)
     const jsplumbInstance = ref(null) //the jsplumb instance, this is a library which handles the drag and drop as well as the connections
@@ -165,7 +165,8 @@
         console.debug("clientY", event.clientY, " - rect Left ", rect.top, " = ", y)
         // if it is a sidebar element add new item to workspace list. Drag and drop of workspace elements is handled by jsplumb
         if (classes.includes("sidebar_element")) {
-            let uniqueId = createUniqueId()
+            console.debug(props)
+            let uniqueId = findNextAvailableId(props.main_workspace_items, item.name)
             //var unique_id = id;
             item.x=x
             item.y=y
@@ -380,6 +381,50 @@
     }
     function createUniqueId(){
         return Date.now().toString(36) + Math.random().toString(36).substring(2);
+    }
+    function findNextAvailableId(nestedList, basename){
+        // Create an array to store existing IDs for the given basename
+        const existingIds = [];
+
+        // Recursive function to collect existing IDs
+        function collectIds(list) {
+            for (const item of list) {
+            if (item.id.startsWith(basename)) {
+                // Extract the number part of the ID and push it to the existingIds array
+                const idNumber = parseInt(item.id.slice(basename.length), 10);
+                if (!isNaN(idNumber)) {
+                    existingIds.push(idNumber);
+                }
+
+            }
+            if (item.processElement && item.processElement.length > 0) {
+                // Recursively search in child items
+                collectIds(item.processElement);
+            }
+            }
+        }
+        console.log("test1")
+        // Call the recursive function to collect existing IDs
+        collectIds(nestedList);
+        console.log("test2")
+        
+        console.log("existing ids:",existingIds)
+
+        // If the nestedList is empty, create an initial element
+        if (existingIds.length === 0) {
+            const initialId = `${basename}001`;
+            return initialId;
+        }
+        
+        console.log("test3")
+        // Find the next available ID by incrementing the maximum existing ID by 1
+        const maxId = Math.max(...existingIds, 0);
+        const nextIdNumber = maxId + 1;
+
+        // Format the next ID with leading zeros (e.g., "combining003")
+        const nextId = `${basename}${nextIdNumber.toString().padStart(3, '0')}`;
+
+        return nextId;
     }
 
     //expose this funciton so that i can be called from the Topbar export button
