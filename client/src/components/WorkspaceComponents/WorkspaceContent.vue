@@ -220,41 +220,56 @@
     // add source and target endpoint. That way the element is automatically added to jsplumb
     // if elements are managed by js plumb that also does the drag/drop functionality 
     if (element) {
-      let sourceEndpoint = {}
-      let targetEndpoint = {}
+      let sourceEndpoints = []
+      let targetEndpoints = []
       if(item.type === "material"){
         if(item.name === "Eingangsmaterial"){
           item.materialType ="Input"
-          sourceEndpoint = addEndpoint(instance, element, {source: true, target: false})
-          targetEndpoint = {id: ''}
+          sourceEndpoints.push(addEndpoint(instance, element, {source: true, target: false}))
+          targetEndpoints.push({id: ''})
           console.log("added SourceEndpoint to Eingangsmaterial")
         }else if(item.name === "Zwischenprodukt"){
           item.materialType = "Intermediate"
-          sourceEndpoint = addEndpoint(instance, element, {source: true, target: false})
-          targetEndpoint = addEndpoint(instance, element, {source: false, target: true})
+          sourceEndpoints.push(addEndpoint(instance, element, {source: true, target: false}))
+          targetEndpoints.push(addEndpoint(instance, element, {source: false, target: true}))
           console.debug("added Source- and Target-Endpoint to Zwischenprodukt")
         }else if(item.name === "Endprodukt"){
           item.materialType = "Output"
-          sourceEndpoint = {id: ''}
-          targetEndpoint = addEndpoint(instance, element, {source: false, target: true})
+          sourceEndpoints.push({id: ''})
+          targetEndpoints.push(addEndpoint(instance, element, {source: false, target: true}))
           console.log("added TargetEndpoint to Endprodukt")
         }else{
           console.error("unknown material type: " + item.name)
         }
       }else if(item.type === "process"){
-        sourceEndpoint = addEndpoint(instance, element, {source: true, target: false})
-        targetEndpoint = addEndpoint(instance, element, {source: false, target: true})
+        sourceEndpoints.push(addEndpoint(instance, element, {source: true, target: false}))
+        targetEndpoints.push(addEndpoint(instance, element, {source: false, target: true}))
         console.log("added Source and Target Endpoint to process")
       }else{
           console.warn("unknown type: " + item.type)
       }
       // Save the endpoint IDs to the workspace_items list That way exporting the xml is easier as all connections can be easily read
       if (item) {
-        item.sourceEndpoint = sourceEndpoint;
-        item.targetEndpoint = targetEndpoint;
+        item.sourceEndpoints = sourceEndpoints;
+        item.targetEndpoints = targetEndpoints;
       }
     }
   }
+    function checkEndpoints(item){
+        //this function checks if the input/output endpoints of a given item are still correct and adds/deletes some if needed
+
+        if(item.type==="material"){
+            //for materials we check the materialType and and add/delete accordingly
+            if(item.materialType==="Input"){
+                if (item.endpoints){
+                    console.log(item.endpoints)
+                }
+            }
+        }else if(item.type==="process"){
+
+        }
+
+    }
 
     function createUpdateItemListHandler(instance, jsplumbElements, managedElements) {
         return async (newItems) => {
@@ -277,6 +292,7 @@
 
                 if (managedElements.value[pushedItem.id]===true) {
                     console.debug("pushed element already managed: ", pushedItem);
+                    //checkEndpoints(pushedItem)
                     return;
                 }
 
@@ -371,12 +387,12 @@
                 console.warn("either sourceElement: ", sourceElementRef, " or targetElement:", targetElementRef, " is undefined")
                 return
             }
-            if(!sourceElementRef.sourceEndpoint || !targetElementRef.targetEndpoint){
-                console.warn("either sourceEndpoint: ", sourceElementRef.sourceEndpoint, " or targetEndpoint:", targetElementRef.targetEndpoint, " is undefined")
+            if(!sourceElementRef.sourceEndpoints || !targetElementRef.targetEndpoints){
+                console.warn("either sourceEndpoint: ", sourceElementRef.sourceEndpoints, " or targetEndpoint:", targetElementRef.targetEndpoints, " is undefined")
                 return
             }
             nextTick()
-            jsplumbInstance.value.connect({ source:sourceElementRef.sourceEndpoint, target:targetElementRef.targetEndpoint})
+            jsplumbInstance.value.connect({ source:sourceElementRef.sourceEndpoints[0], target:targetElementRef.targetEndpoints[0]})
         }
     }
     function createUniqueId(){
