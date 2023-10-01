@@ -226,7 +226,7 @@
         if(item.name === "Eingangsmaterial"){
           item.materialType ="Input"
           sourceEndpoints.push(addEndpoint(instance, element, {source: true, target: false}))
-          targetEndpoints.push({id: ''})
+          //targetEndpoints.push({id: ''})
           console.log("added SourceEndpoint to Eingangsmaterial")
         }else if(item.name === "Zwischenprodukt"){
           item.materialType = "Intermediate"
@@ -235,7 +235,7 @@
           console.debug("added Source- and Target-Endpoint to Zwischenprodukt")
         }else if(item.name === "Endprodukt"){
           item.materialType = "Output"
-          sourceEndpoints.push({id: ''})
+          //sourceEndpoints.push({id: ''})
           targetEndpoints.push(addEndpoint(instance, element, {source: false, target: true}))
           console.log("added TargetEndpoint to Endprodukt")
         }else{
@@ -255,20 +255,52 @@
       }
     }
   }
-    function checkEndpoints(item){
+    function checkEndpoints(instance, elementRef, item){
         //this function checks if the input/output endpoints of a given item are still correct and adds/deletes some if needed
-
+        console.debug("check endpoints")
         if(item.type==="material"){
+            console.debug("element is material")
             //for materials we check the materialType and and add/delete accordingly
             if(item.materialType==="Input"){
-                if (item.endpoints){
-                    console.log(item.endpoints)
+                console.debug("element is input material")
+                if (item.targetEndpoints.length !== 0){
+                    console.debug("deleting endpoints of source element:", item.id)
+                    for (let endpoint of item.targetEndpoints){
+                        console.debug("delete endpoint:", endpoint)
+                        deleteEndpoint(item, endpoint)
+                        item.targetEndpoints = item.targetEndpoints.filter(listEndpoint=> listEndpoint.id !== endpoint.id);
+                    }
                 }
-            }
-        }else if(item.type==="process"){
-
+                if(item.sourceEndpoints.length === 0){
+                    console.debug("add endpoint:")
+                    item.sourceEndpoints.push(addEndpoint(instance, elementRef, {source: true, target: false}))
+                }
+            }else if(item.materialType==="Intermediate"){
+                console.debug("element is intermediate material")
+                if(item.sourceEndpoints.length === 0){
+                    console.debug("add Endpoint")
+                    item.sourceEndpoints.push(addEndpoint(instance, elementRef, {source: true, target: false}))
+                }
+                if(item.targetEndpoints.length === 0){
+                    console.debug("add Endpoint:")
+                    item.targetEndpoints.push(addEndpoint(instance, elementRef, {source: false, target: true}))
+                }
+            }else if(item.materialType==="Output"){
+                console.debug("element is output material")
+                if (item.sourceEndpoints.length !== 0){
+                    console.log("deleting endpoints of source element:", item.id)
+                    for (let endpoint of item.sourceEndpoints){
+                        console.debug("delete Endpoint:", endpoint)
+                        deleteEndpoint(item, endpoint)
+                        item.sourceEndpoints = item.sourceEndpoints.filter(listEndpoint=> listEndpoint.id !== endpoint.id);
+                    }
+                }
+                if(item.targetEndpoints.length === 0){
+                    console.debug("add endpoint:")
+                    item.targetEndpoints.push(addEndpoint(instance, elementRef, {source: false, target: true}))
+                }
+            } 
         }
-
     }
 
     function createUpdateItemListHandler(instance, jsplumbElements, managedElements) {
@@ -292,7 +324,7 @@
 
                 if (managedElements.value[pushedItem.id]===true) {
                     console.debug("pushed element already managed: ", pushedItem);
-                    //checkEndpoints(pushedItem)
+                    checkEndpoints(instance.value, elementRef, pushedItem)
                     return;
                 }
 
@@ -366,6 +398,14 @@
         let index = computedWorkspaceItems.value.findIndex(element => element.id === item.id);
         if(index !== -1){
             computedWorkspaceItems.value.splice(index, 1);
+        }
+    }
+    function deleteEndpoint(item, endpoint){
+        const elementRef = jsplumbElements.value.find(
+            (element) => element.id === item.id
+        );
+        if(elementRef!==undefined){
+            jsplumbInstance.value.deleteEndpoint(endpoint);
         }
     }
 
