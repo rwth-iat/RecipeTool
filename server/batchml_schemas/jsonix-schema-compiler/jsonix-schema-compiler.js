@@ -1,1 +1,0 @@
-// No JavaScript here as the sole purpose of this package is to provide lib/jsonix-schema-compiler-full.jar

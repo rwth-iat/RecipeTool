@@ -9,7 +9,7 @@
     </button>
     -->
     <button class="button-with-border" style="float:left;" @click="triggerExportInWorkspace">Export</button>
-    <h3>Verfahrensrezept-Editor</h3>
+    <h3>General Recipe Editor</h3>
   </div>
 </template>
 
