@@ -224,17 +224,17 @@
       let sourceEndpoints = []
       let targetEndpoints = []
       if(item.type === "material"){
-        if(item.name === "Eingangsmaterial"){
+        if(item.name === "Educt"){
           item.materialType ="Input"
           sourceEndpoints.push(addEndpoint(instance, element, {source: true, target: false}))
           //targetEndpoints.push({id: ''})
           console.log("added SourceEndpoint to Eingangsmaterial")
-        }else if(item.name === "Zwischenprodukt"){
+        }else if(item.name === "Intermediate"){
           item.materialType = "Intermediate"
           sourceEndpoints.push(addEndpoint(instance, element, {source: true, target: false}))
           targetEndpoints.push(addEndpoint(instance, element, {source: false, target: true}))
           console.debug("added Source- and Target-Endpoint to Zwischenprodukt")
-        }else if(item.name === "Endprodukt"){
+        }else if(item.name === "Product"){
           item.materialType = "Output"
           //sourceEndpoints.push({id: ''})
           targetEndpoints.push(addEndpoint(instance, element, {source: false, target: true}))
@@ -518,6 +518,19 @@
         text-align: center;
         align-items: center;
     }
+
+    /*
+    ################## here is the visual appearance of the material elements defined ############################
+        the process visual is the normal process element and sets a normal border
+        -all materials are circles
+        -inputs have two borders realized by border shadow
+        -intermediates have one thin border
+        -outputs have one thick border
+        
+        label
+        -on the left there is a label with a rectangular border
+        -we put the same on the right but invisible(spacer) so that the jsplumb endpoint is still at the material circle
+    */
     .material{ 
         text-align: center; /* Centers the content horizontally */
         background-color:white; 
@@ -551,6 +564,13 @@
         display: flex;
         text-align: center;
     }
+
+
+    /*
+    ################## here is the visual appearance of the process element defined ############################
+        the process visual is the normal process element and sets a normal border
+        with the ::before and :: after we are able to set the other two horizontal lines
+    */
     .processvisual{
         display: flex;
         text-align: center;
@@ -558,10 +578,30 @@
         justify-content: center;
         background-color:#fff;
         width: 200px;
-        height: 50px;
-        border-radius: 5px;
+        height: 80px;
         border-width: 1px;
         border-style: solid;
         border-color: black;
+    }
+    .processvisual::before,
+    .processvisual::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 1px; /* Adjust the thickness of the lines */
+        background-color: #000; /* Line color */
+    }
+    .processvisual::before {
+        top: 0;
+    }
+    .processvisual::after {
+        bottom: 0;
+    }
+    /* Optional: Add spacing between the lines and the content */
+    .processvisual::before {
+        margin-top: 10px; /* Adjust as needed */
+    }
+    .processvisual::after {
+        margin-bottom: 10px; /* Adjust as needed */
     }
 </style>

@@ -85,20 +85,20 @@
     }else if (element_type.value ==="Materials"){
         element_class = "material_element sidebar_element"
         element_packages.value = [{
-                            name:"Grundmaterialien",
+                            name:"Basic-Materials",
                             type: "material",
                             children:[
                                 {
                                     type: "material",
-                                    name: "Eingangsmaterial"
+                                    name: "Educt"
                                 },
                                 {
                                     type: "material",
-                                    name: "Zwischenprodukt"
+                                    name: "Intermediate"
                                 },
                                 {
                                     type: "material",
-                                    name: "Endprodukt"
+                                    name: "Product"
                                 }
                             ]
                         }]
