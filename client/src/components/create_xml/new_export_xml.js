@@ -47,13 +47,23 @@ function createValueType(valueType){
     return newValueType
 }
 
-function create_material(id, description){
+function createAmount(valueType){
+    let newAmount = {
+        "b2mml:QuantityString": valueType.valueString,
+        "b2mml:DataType": valueType.dataType,
+        "b2mml:UnitOfMeasure": valueType.unitOfMeasure,
+        "b2mml:Key": valueType.key
+    }
+    return newAmount
+}
+
+function create_material(item){
     let materials = {
-        "b2mml:ID": id,
-        "b2mml:Description": [description],
-        "b2mml:MaterialID": "",
-        "b2mml:Order": "",
-        "b2mml:Amount": {}
+        "b2mml:ID": item.id,
+        "b2mml:Description": [item.description],
+        "b2mml:MaterialID": item.materialID,
+        "b2mml:Order": item.order,
+        "b2mml:Amount": createAmount(item.amount)
         }
     return materials
 }
@@ -78,39 +88,24 @@ function create_formula(workspace_items, jsplumb_connections){
     }
 
     //get list of input and output materials
-    const [input_materials, output_materials] = list_source_target(jsplumb_connections)
-    
-    //add input materials and intermediates
-    input_materials.forEach(function (item) {
-        if(item.type == "material"){
-            //check if material is also output
-            if(!output_materials.includes(item)){ 
-                formula["b2mml:ProcessInputs"].material.push(
-                    create_material(item.id, item.description)
-                )
-            }
-            //if also output material than add to intermediate
-            else{
-                formula["b2mml:ProcessIntermediates"].material.push(
-                    create_material(item.id, item.description)
-                )
+    for(let item of workspace_items){
+        if(item.type === "material"){
+            if(item.materialType === "Input"){
+                formula["b2mml:ProcessInputs"]["b2mml:Material"].push(
+                    create_material(item)
+                    );
+            }else if(item.materialType === "Input"){
+                formula["b2mml:ProcessIntermediates"]["b2mml:Material"].push(
+                    create_material(item)
+                    );
+            }else if(item.materialType === "Output"){
+                formula["b2mml:ProcessOutputs"]["b2mml:Material"].push(
+                    create_material(item)
+                    );
             }
         }
-    });
-
-    //add output materials
-    output_materials.forEach(function (item) {
-        if(item.type == "material"){ 
-            //check if material is only output
-            if(!input_materials.includes(item)){ 
-                formula["b2mml:ProcessOutputs"].material.push(
-                    create_material(item.id, item.description)
-                )
-            }
-            //here we dont add the intermediates, as they were already added with the process inputs
-        }
-    });
-    return formula
+    }
+    return formula;
 }
 function create_process_element_parameter(item){
     let parameter = {
@@ -255,17 +250,32 @@ export function generate_batchml(workspace_items, jsplumb_connections){
     }}
 
 
+    //function to delete all ["", null, undefined, {}, []] values
     function cleanUp(obj) {
         for (var attrKey in obj) {
             var attrValue = obj[attrKey];
-            if (attrValue === null || attrValue === "" || attrValue === undefined) {
+            if (attrValue === null || attrValue === "" || attrValue === undefined) {//delete "", null, undefined
                 delete obj[attrKey];
             } else if (Object.prototype.toString.call(attrValue) === "[object Object]") {
-                cleanUp(attrValue);
+                if(Object.keys(attrValue).length === 0){ //delete empty objects
+                    delete obj[attrKey]
+                }else{
+                    cleanUp(attrValue); //if not empty recursivly check children
+                    if (Object.keys(attrValue).length === 0) { //check if all children were deleted and object is empty now
+                        delete obj[attrKey];
+                      }
+                }
             } else if (Array.isArray(attrValue)) {
-                attrValue.forEach(function (arrayValue) {
-                    cleanUp(arrayValue);
-                });
+                if(attrValue.length===0){ //delete empty arrays
+                    delete obj[attrKey]
+                }else{
+                    attrValue.forEach(function (arrayValue) { //if not empty go through elements
+                        cleanUp(arrayValue);
+                    });
+                    if(attrValue.length===0){ //check if every element was deleted and list is empty now
+                        delete obj[attrKey]
+                    }
+                }
             }
         }
     }
