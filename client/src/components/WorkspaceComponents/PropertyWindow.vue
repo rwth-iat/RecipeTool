@@ -45,8 +45,8 @@
     <!--Process Properties-->
     <div v-show='computedSelectedElement.type=="process"'>
       <label for="processElementType">processElementType:</label>
-      <select id="processElementType" v-model="computedSelectedElement.processElementType">
-        <option value="Process">Process</option>
+      <select id="processElementType" v-model="computedSelectedElement.processElementType" >
+        <option value="Process" selected>Process</option> <!-- via the selected property this is marked as default -->
         <option value="Process Stage">Process Stage</option>
         <option value="Process Operation">Process Operation</option>
         <option value="Process Action">Process Action</option>

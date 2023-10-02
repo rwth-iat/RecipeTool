@@ -29,8 +29,8 @@
                                                             description:["testDescription"],
                                                             otherValue:[{
                                                                 valueString:"test value string",
-                                                                //dataType:"test datatype",
-                                                                //unitOfMeasure:"",
+                                                                dataType:"Text",
+                                                                unitOfMeasure:"KG",
                                                                 key:"testkey"
                                                             }]
                                             }],
@@ -43,8 +43,8 @@
                                                     description:["testDescription"],
                                                     otherValue:[{
                                                         valueString:"test value string",
-                                                        //dataType:"test datatype",
-                                                        //unitOfMeasure:"",
+                                                        dataType:"Text",
+                                                        unitOfMeasure:"KG",
                                                         key:"testkey"
                                                     }]
                                                 }],
@@ -57,8 +57,8 @@
                                                             description:["testDescription"],
                                                             otherValue:[{
                                                                 valueString:"test value string",
-                                                                //dataType:"test datatype",
-                                                                //unitOfMeasure:"",
+                                                                dataType:"Text",
+                                                                unitOfMeasure:"KG",
                                                                 key:"testkey"
                                                             }]
                                                         }]
@@ -74,8 +74,8 @@
                                                             description:["testDescription"],
                                                             otherValue:[{
                                                                 valueString:"test value string",
-                                                                //dataType:"test datatype",
-                                                                //unitOfMeasure:"",
+                                                                dataType:"Text",
+                                                                unitOfMeasure:"KG",
                                                                 key:"testkey"
                                                             }]
                                                 }]

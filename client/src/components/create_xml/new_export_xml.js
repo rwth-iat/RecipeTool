@@ -1,5 +1,9 @@
+import { Builder } from 'xml2js';
 import { Jsonix } from 'jsonix-issue-238-fixed';
 import { org_mesa_xml_b2mml} from './org_mesa_xml_b2mml_edited.js';
+import { Draft04 } from "json-schema-library";
+import allSchemas  from './AllSchemas.json';
+
 
 /*
 This function is mainly used to determine input, output and intermediate materials for the "formula" object.
@@ -36,61 +40,60 @@ function list_source_target(jsplumb_connections) {
   }
 
 function createValueType(valueType){
-    let newValueType = {}
-    newValueType.valueString = valueType.valueString 
-    //newValueType.dataType = valueType.dataType
-    //newValueType.unitOfMeasure = valueType.unitOfMeasure
-    newValueType.key = valueType.key
+    let newValueType = {
+        "b2mml:ValueString": valueType.valueString,
+        "b2mml:DataType": valueType.dataType,
+        "b2mml:UnitOfMeasure": valueType.unitOfMeasure,
+        "b2mml:Key": valueType.key
+    }
     return newValueType
 }
 
 function create_material(id, description){
     let materials = {
-        id: id,
-        description: [description],
-        materialID: "",
-        order: "",
-        amount: {}
+        "b2mml:ID": id,
+        "b2mml:Description": [description],
+        "b2mml:MaterialID": "",
+        "b2mml:Order": "",
+        "b2mml:Amount": {}
         }
     return materials
 }
 
 function create_materials(id, description, materials_type){
     let materials = {
-            id: id, 
-            description:[description],
-            materialsType:materials_type,
-            material:[]
+            "b2mml:ID": id, 
+            "b2mml:Description":[description],
+            "b2mml:MaterialsType":materials_type,
+            "b2mml:Material":[]
         }
     return materials
 }
 
 function create_formula(workspace_items, jsplumb_connections){
     let formula = {
-        description:["The formula defines the Inputs, Intermediates and Outputs of the Procedure"],
-        processInputs:{},
-        processOutputs:{},
-        processIntermediates:{},
-        processElementParameter:[]
+        "b2mml:Description":["The formula defines the Inputs, Intermediates and Outputs of the Procedure"],
+        "b2mml:ProcessInputs": create_materials("inputid", "List of Process Inputs", "Input"),
+        "b2mml:ProcessOutputs": create_materials("outputsid", "List of Process Outputs", "Output"),
+        "b2mml:ProcessIntermediates": create_materials("intermediateid", "List of Process Intermediates", "Intermediate"),
+        "b2mml:ProcessElementParameter":[]
     }
 
     //get list of input and output materials
     const [input_materials, output_materials] = list_source_target(jsplumb_connections)
     
     //add input materials and intermediates
-    formula.processInputs = create_materials("inputid", "List of Process Inputs", "Input")
-    formula.processIntermediates = create_materials("intermediateid", "List of Process Intermediates", "Intermediate")
     input_materials.forEach(function (item) {
         if(item.type == "material"){
             //check if material is also output
             if(!output_materials.includes(item)){ 
-                formula.processInputs.material.push(
+                formula["b2mml:ProcessInputs"].material.push(
                     create_material(item.id, item.description)
                 )
             }
             //if also output material than add to intermediate
             else{
-                formula.processIntermediates.material.push(
+                formula["b2mml:ProcessIntermediates"].material.push(
                     create_material(item.id, item.description)
                 )
             }
@@ -98,12 +101,11 @@ function create_formula(workspace_items, jsplumb_connections){
     });
 
     //add output materials
-    formula.processOutputs = create_materials("outputsid", "List of Process Outputs", "Output")
     output_materials.forEach(function (item) {
         if(item.type == "material"){ 
             //check if material is only output
             if(!input_materials.includes(item)){ 
-                formula.processOutputs.material.push(
+                formula["b2mml:ProcessOutputs"].material.push(
                     create_material(item.id, item.description)
                 )
             }
@@ -122,18 +124,10 @@ function create_process_element_parameter(item){
     return parameter
 }
 function createOtherInformation(item){
-    let otherInformation = {}
-    otherInformation.otherInfoID = item.otherInfoID;
-    if(Array.isArray(item.description)){
-        otherInformation.description = item.description;
-    }else if(typeof item.description === "string"){
-        otherInformation.description = [item.description]
-    }else{
-        console.error("otherinformation.description is of unknown type", item)
-    }
-    otherInformation.otherValue = [];
-    for(let otherValue of item.otherValue){
-        otherInformation.otherValue.push(createValueType(otherValue));    
+    let otherInformation = {
+        "b2mml:OtherInfoID": item.otherInfoID,
+        "b2mml:Description": item.description,
+        "b2mml:OtherValue": [createValueType(item.otherValue[0])]
     }
     return otherInformation;
 }
@@ -157,32 +151,32 @@ export function create_process_element_type(item, workspace_items, jsplumb_conne
     //     - sequenceOrder: {},
     //     - sequencePath: {},
     let process_element = {
-        id: item.id,
-        description: [item.description],
-        processElementType: item.processElementType,
-        materials: [],
-        directedLink: [],
-        procedureChartElement: [],
-        processElement: [],
-        processElementParameter: [],
-        resourceConstraint: [],
-        otherInformation: []
+        "b2mml:ID": item.id,
+        "b2mml:Description": [item.description],
+        "b2mml:ProcessElementType": item.processElementType,
+        "b2mml:Materials": [],
+        "b2mml:DirectedLink": [],
+        "b2mml:ProcedureChartElement": [],
+        "b2mml:ProcessElement": [],
+        "b2mml:ProcessElementParameter": [],
+        "b2mml:ResourceConstraint": [],
+        "b2mml:OtherInformation": []
     }
 
     // Parameters
     if (item.processElementParameter){
         item.processElementParameter.forEach(function(parameter){
-            process_element.processElementParameter.push(create_process_element_parameter(parameter))
+            process_element["b2mml:ProcessElementParameter"].push(create_process_element_parameter(parameter))
         })
     }
 
     //add materials
     workspace_items.forEach(function (child_item) {
         if(child_item.type == "material"){  
-            process_element.materials.push(
+            process_element["b2mml:Materials"].push(
             {
-                id: child_item.id,
-                description: [child_item.description]
+                "b2mml:ID": child_item.id,
+                "b2mml:Description": [child_item.description]
             }
             //materialsType: ""
             )
@@ -192,14 +186,14 @@ export function create_process_element_type(item, workspace_items, jsplumb_conne
     //add directed links
     for (let connectionId in jsplumb_connections) {
         let connection = jsplumb_connections[connectionId]
-        process_element.directedLink.push({
-            id: connectionId,
-            description: [],
-            fromID: connection.sourceId,
-            toID: connection.targetId
+        process_element["b2mml:DirectedLink"].push({
+            "b2mml:ID": connectionId,
+            "b2mml:Description": [],
+            "b2mml:FromID": connection.sourceId,
+            "b2mml:ToID": connection.targetId
         })
     }
-
+    
     //add Process Elements
     workspace_items.forEach(function (child_item) {
         if(child_item.type == "process"){
@@ -211,30 +205,32 @@ export function create_process_element_type(item, workspace_items, jsplumb_conne
                 child_workspace_items.push(...child_item.processElement)
             }
 
-            process_element.processElement.push(
+            process_element["b2mml:ProcessElement"].push(
                 //add child itemlist and connections here here to enable makro steps 
                 create_process_element_type(child_item, child_workspace_items, child_item.directedLink)
             )
         } 
     });
-
+    
     //add Other Information
     if(item.otherInformation !== undefined){
         for (let otherInformation of item.otherInformation) {
-            process_element.otherInformation.push(createOtherInformation(otherInformation))
+            process_element["b2mml:OtherInformation"].push(createOtherInformation(otherInformation))
         }
     }
     console.debug(item)
-    console.debug("otherInformation: ", process_element.otherInformation)
+
+    console.debug("otherInformation: ", process_element["b2mml:OtherInformation"])
     
     //add resourceConstraints
     if(item.resourceConstraint !== undefined){
         for (let resourceConstraint of item.resourceConstraint) {
-            process_element.resourceConstraint.push(createResourceConstraint(resourceConstraint))
+            process_element["b2mml:ResourceConstraint"].push(createResourceConstraint(resourceConstraint))
         }
     }
-    console.debug(process_element.resourceConstraint)
+    console.debug(process_element["b2mml:ResourceConstraint"])
  
+
     //return the created Object
     return process_element
 }
@@ -242,36 +238,53 @@ export function create_process_element_type(item, workspace_items, jsplumb_conne
 
 
 export function generate_batchml(workspace_items, jsplumb_connections){
-    // Create a Jsonix context
-    const context = new Jsonix.Context([org_mesa_xml_b2mml]);
-
     // Create a JavaScript object representing the XML structure
     // removed not yet implemented fiels in "value" to make batchml valid
     //    - lifeCycleState:{},
     //    - header:{},
-    const gRecipe ={
-        name: {
-            key: "{http://www.mesa.org/xml/B2MML}GRecipe",
-            localPart: "GRecipe",
-            namespaceURI: "http://www.mesa.org/xml/B2MML",
-            prefix: "",
-            string: "{http://www.mesa.org/xml/B2MML}GRecipe"
-        },
-        value: {
-            id: {},
-            description: [{}],
-            gRecipeType: "General",
-            formula: create_formula(workspace_items, jsplumb_connections),
-            processProcedure: create_process_element_type({id:"Procedure1", description:"This is the top level ProcessElement", processElementType:"Process", processElementParameter:[], otherInformation:[], resourceConstraint:[]}, workspace_items, jsplumb_connections),
-            resourceConstraint:[{}],
-            otherInformation:[{}]
+    let gRecipe ={
+        "b2mml:GRecipe":{
+            "$": {
+                        "xmlns:b2mml": "http://www.mesa.org/xml/B2MML"
+            },
+            "b2mml:ID": "testID",
+            "b2mml:Description": [""],
+            "b2mml:GRecipeType": "General",
+            "b2mml:Formula": create_formula(workspace_items, jsplumb_connections),
+            "b2mml:ProcessProcedure": create_process_element_type({id:"Procedure1", description:"This is the top level ProcessElement", processElementType:"Process", processElementParameter:[], otherInformation:[], resourceConstraint:[]}, workspace_items, jsplumb_connections),
+            "b2mml:ResourceConstraint":[],
+            "b2mml:OtherInformation":[]
+    }}
+
+
+    function cleanUp(obj) {
+        for (var attrKey in obj) {
+            var attrValue = obj[attrKey];
+            if (attrValue === null || attrValue === "" || attrValue === undefined) {
+                delete obj[attrKey];
+            } else if (Object.prototype.toString.call(attrValue) === "[object Object]") {
+                cleanUp(attrValue);
+            } else if (Array.isArray(attrValue)) {
+                attrValue.forEach(function (arrayValue) {
+                    cleanUp(arrayValue);
+                });
+            }
         }
     }
+    cleanUp(gRecipe)
+
+    const jsonSchema = new Draft04(allSchemas);
+    const errors = jsonSchema.validate(gRecipe);
+    console.log("json schema validation errors: ", errors)
+
+    // Convert JSON to XML
+    const builder = new Builder();
+    const xmlString = builder.buildObject(gRecipe);
+    console.log("json to xml g-recipe: ", gRecipe)
+
+    console.log("xml String", xmlString)
+
     console.debug("JSON G-Secipe: ", gRecipe)
-    console.debug("rigth before marschalling")
-    // Marshal the JavaScript object to XML
-    const marshaller = context.createMarshaller();
-    const xmlString = marshaller.marshalString(gRecipe);
     return xmlString
 }
 

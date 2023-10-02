@@ -12,7 +12,7 @@
         >
             <!--If it is a material we need to display it as an extra label-->
             <div v-if="item.type=='material'" class="flowChartLabel" style="float: right;">
-                <span>{{ item.materialId }} - {{ item.id }}</span>
+                <span><!-- [Order] --> {{ item.id }} {{ item.materialId }} = {{ item.amount.valueString }} {{ item.amount.unitOfMeasure }}</span>
             </div>
             <div :class="item.type + 'visual ' +item.type + ' ' + item.materialType">
                 <!--If its a process display name inside the process flowchart element-->
@@ -22,7 +22,7 @@
             </div>
             <!--If it is a material we need to display it as an extra label-->
             <div v-if="item.type=='material'" class="flowChartLabelSpacer">
-                <span>{{ item.materialId }} - {{ item.id }}</span> 
+                <span><!-- [Order] --> {{ item.id }} {{ item.materialId }} = {{ item.amount.valueString }} {{ item.amount.unitOfMeasure }}</span> 
             </div>
         </div>
     </div>
@@ -173,6 +173,7 @@
             item.type=type
             item.description = item.name
             item.id=uniqueId
+            item.processElementType="Process"
             item.amount = {} // set to obj so that input field in property window can be bound to "amount.valueString" etc
             computedWorkspaceItems.value.push(item);
             console.log("dragged from sidebar, dropped in workspace at absolute position: " + x + " " + y);

@@ -28,10 +28,11 @@ def validate(xml_string: str, xsd_path: str) -> bool:
     xmlschema_doc = etree.parse(xsd_path)
     xmlschema = etree.XMLSchema(xmlschema_doc)
 
-    xml_doc = etree.parse(StringIO(xml_string))
+    xml_doc = etree.fromstring(xml_string.encode('utf-8'))
     result = xmlschema.validate(xml_doc)
+    error = xmlschema.assertValid(xml_doc) 
 
-    return result
+    return result, error
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -46,9 +47,9 @@ def recursivly_add_subclasses(super_class):
                             "description":["Iri referencing the Ontology Class definition"],
                             "otherValue":[{
                                 "valueString": super_class.iri,
-                                #"dataType":"URL",
-                                #"unitOfMeasure":"",
-                                "key":"testkey"
+                                "dataType":"Text",
+                                "unitOfMeasure":"url",
+                                "key":str(super_class)
                             }]
                         }],
                 "children": []
@@ -347,13 +348,15 @@ def create_app():
         args = request.args
         xml_string = args.get("xml_string", type=str)
         print(xml_string)
-        if validate(xml_string, "batchml_schemas/schemas/BatchML-GeneralRecipe.xsd"):
+
+        valid, error = validate(xml_string, "batchml_schemas/schemas/BatchML-GeneralRecipe.xsd")   
+        if valid:
           print('Valid! :)')
           response = make_response("valid!", 200)
           return response
         else:
           print('Not valid! :(')
-          response = make_response("not valid!", 400)
+          response = make_response(error, 400)
           return response
     
     ontologies = load_ontologies()

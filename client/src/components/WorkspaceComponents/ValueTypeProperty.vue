@@ -3,7 +3,7 @@
     <label :for="'valueString'">ValueString:</label>
     <input type="text" :id="'valueString'" v-model="computedValueType.valueString" />
     <label :for="'dataType'">DataType:</label>
-    <input type="text" :id="'dataType'" v-model="computedValueType.dataType" />
+    <input type="text" :id="'dataType'" v-model="computedValueType.dataType" default="Text"/>
     <label :for="'unitOfMeasure'">UnitOfMeasure:</label>
     <input type="text" :id="'unitOfMeasure'" v-model="computedValueType.unitOfMeasure" />
     <label :for="'key'">Key:</label>
