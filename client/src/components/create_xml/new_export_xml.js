@@ -157,17 +157,9 @@ export function create_process_element_type(item, workspace_items, jsplumb_conne
     }
 
     //add materials
-    workspace_items.forEach(function (child_item) {
-        if(child_item.type == "material"){  
-            process_element["b2mml:Materials"].push(
-            {
-                "b2mml:ID": child_item.id,
-                "b2mml:Description": [child_item.description]
-            }
-            //materialsType: ""
-            )
-        }
-        });
+    process_element["b2mml:Materials"].push(create_materials(workspace_items, item.id+"InputMaterials", "Input Materials of Process"+ item.id, "Input"))
+    process_element["b2mml:Materials"].push(create_materials(workspace_items, item.id+"IntermediateMaterials", "Intermediate Materials of Process"+ item.id, "Intermediate"))
+    process_element["b2mml:Materials"].push(create_materials(workspace_items, item.id+"OutputMaterials", "Output Materials of Process"+ item.id, "Output"))
     
     //add directed links
     for (let connectionId in jsplumb_connections) {
