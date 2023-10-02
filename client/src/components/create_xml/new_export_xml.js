@@ -68,12 +68,22 @@ function create_material(item){
     return materials
 }
 
-function create_materials(id, description, materials_type){
+function create_materials(workspace_items, id, description, materials_type){
     let materials = {
             "b2mml:ID": id, 
             "b2mml:Description":[description],
             "b2mml:MaterialsType":materials_type,
             "b2mml:Material":[]
+        }
+        //get list of input and output materials
+        for(let item of workspace_items){
+            if(item.type === "material"){
+                if(item.materialType === materials_type){
+                    materials["b2mml:Material"].push(
+                        create_material(item)
+                        );
+                }
+            }
         }
     return materials
 }
@@ -81,30 +91,13 @@ function create_materials(id, description, materials_type){
 function create_formula(workspace_items, jsplumb_connections){
     let formula = {
         "b2mml:Description":["The formula defines the Inputs, Intermediates and Outputs of the Procedure"],
-        "b2mml:ProcessInputs": create_materials("inputid", "List of Process Inputs", "Input"),
-        "b2mml:ProcessOutputs": create_materials("outputsid", "List of Process Outputs", "Output"),
-        "b2mml:ProcessIntermediates": create_materials("intermediateid", "List of Process Intermediates", "Intermediate"),
+        "b2mml:ProcessInputs": create_materials(workspace_items, "inputid", "List of Process Inputs", "Input"),
+        "b2mml:ProcessOutputs": create_materials(workspace_items, "outputsid", "List of Process Outputs", "Output"),
+        "b2mml:ProcessIntermediates": create_materials(workspace_items, "intermediateid", "List of Process Intermediates", "Intermediate"),
         "b2mml:ProcessElementParameter":[]
     }
 
-    //get list of input and output materials
-    for(let item of workspace_items){
-        if(item.type === "material"){
-            if(item.materialType === "Input"){
-                formula["b2mml:ProcessInputs"]["b2mml:Material"].push(
-                    create_material(item)
-                    );
-            }else if(item.materialType === "Input"){
-                formula["b2mml:ProcessIntermediates"]["b2mml:Material"].push(
-                    create_material(item)
-                    );
-            }else if(item.materialType === "Output"){
-                formula["b2mml:ProcessOutputs"]["b2mml:Material"].push(
-                    create_material(item)
-                    );
-            }
-        }
-    }
+
     return formula;
 }
 function create_process_element_parameter(item){
