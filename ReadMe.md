@@ -1,9 +1,11 @@
 # general info
-[![Python application](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/python-app.yml/badge.svg)](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/python-app.yml)
+This is the Project of my Master Thesis. It is a Grpahicl Editor for General Recipes in the BatchML standard.
 
-[![Node.js CI](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/node.js.yml/badge.svg)](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/node.js.yml)
+These Badges show the Test results of the current Code.
 
-# Running the Server
+[![Python application](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/python-app.yml/badge.svg)](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/python-app.yml) [![Node.js CI](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/node.js.yml/badge.svg)](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/node.js.yml)
+
+## Running the Server
 To run the server Python (3.10 at best) needs to be installed.
 The following lines make sure you are in the "server" subfolder, install needed python packages using pip and runs the app:
 
