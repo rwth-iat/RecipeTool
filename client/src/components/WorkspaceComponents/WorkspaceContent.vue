@@ -258,11 +258,22 @@
       }else if(item.type === "process"){
         sourceEndpoints.push(addEndpoint(instance, element, {source: true, target: false}))
         targetEndpoints.push(addEndpoint(instance, element, {source: false, target: true}))
-        console.log("added Source and Target Endpoint to process")
+        console.debug("added Source and Target Endpoint to process")
       }else if(item.type === "chart_element"){
-        sourceEndpoints.push(addEndpoint(instance, element, {source: true, target: false}))
-        targetEndpoints.push(addEndpoint(instance, element, {source: false, target: true}))
-        console.log("added Source and Target Endpoint to chart_element")
+        if(item.procedureChartElementType==="Previous Operation Indicator"){
+            sourceEndpoints.push(addEndpoint(instance, element, {source: true, target: false}))
+            console.debug("added Source Endpoint to previous Operation Indicator")
+        }else if(item.procedureChartElementType==="Next Operation Indicator"){
+            targetEndpoints.push(addEndpoint(instance, element, {source: false, target: true}))
+            console.debug("added Target Endpoint to Next operation Indicator")
+        }else if(item.procedureChartElementType==="Annotation"){
+            sourceEndpoints.push(addEndpoint(instance, element, {source: true, target: false}))
+            console.debug("added Source Endpoint to Annotation")
+        }else{
+            sourceEndpoints.push(addEndpoint(instance, element, {source: true, target: false}))
+            targetEndpoints.push(addEndpoint(instance, element, {source: false, target: true}))
+            console.debug("added Source and Target Endpoint to chart_element of type:", item.procedureChartElementType)
+        }
       }else{
           console.warn("unknown type: " + item.type)
       }
