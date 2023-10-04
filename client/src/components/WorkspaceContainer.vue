@@ -47,7 +47,6 @@
       <div v-show="isPropertyWindowOpen" >
         <PropertyWindowContent
         v-model:selectedElement="selectedElement"
-        @update:selectedElement="selectedElement = $event"
         @close="closePropertyWindow"
         @openInWorkspace="openInWorkspace"
         @deleteElement="deleteElement($event)"/>
@@ -225,7 +224,7 @@
     background-color: white;
   }
   #secondary_workspace{
-    background-color: grey;
+    background-color: white;
   }
   .property-window-container {
     display: flex;

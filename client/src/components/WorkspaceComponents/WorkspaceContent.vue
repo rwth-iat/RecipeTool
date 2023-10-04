@@ -20,8 +20,11 @@
             -->
             <div :class="item.type + ' ' + item.materialType + ' ' + item.processElementType.replace(/\s+/g, '') + ' ' + item.procedureChartElementType.replace(/\s+/g, '')">
                 <!--If its a process display name inside the process flowchart element-->
-                <span class="processName" v-if="item.type=='process'">
+                <span v-if="item.type=='process'">
                     {{ item.id }}
+                </span>
+                <span id="AnnotationSpan" v-if="item.procedureChartElementType=='Annotation'">
+                    {{ item.description }}
                 </span>
             </div>
             <!--If it is a material we need to create an extra label on the right side which is invisible for spacing-->
@@ -714,15 +717,19 @@
         border-bottom: 2px dashed #000; /* Change the color to your desired color */
         background-color: white;
     }
-    .Annotation{
-        min-width: 100px;
+    .Annotation {
         min-height: 20px;
         border: 1px solid black;
         background-color: white;
-        border-radius: 5px;
         padding: 5px;
-        display: flex;
-        text-align: center;
+        display: inline-block;
+        white-space: normal; /* Allow text to wrap */
+    }
+
+    #AnnotationSpan {
+        display: inline-block;
+        width: 200px; /* Adjust the width to your desired fixed width */
+        white-space: normal; /* Allow text to wrap */
     }
     .Other{
         min-width: 100px;
