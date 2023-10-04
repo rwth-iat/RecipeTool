@@ -18,7 +18,7 @@
                 Add type, material type and procedure chart element type to classes
                 As procedureChartElementTypes contin spaces we need to remove them with replace function
             -->
-            <div :class="item.type + ' ' + item.materialType + ' ' + item.procedureChartElementType.replace(/\s+/g, '')">
+            <div :class="item.type + ' ' + item.materialType + ' ' + item.processElementType.replace(/\s+/g, '') + ' ' + item.procedureChartElementType.replace(/\s+/g, '')">
                 <!--If its a process display name inside the process flowchart element-->
                 <span class="processName" v-if="item.type=='process'">
                     {{ item.id }}
@@ -181,8 +181,11 @@
             item.description = item.name
             item.id=uniqueId
             item.processElementType="Process"
-            if(item.procedureChartElementType===undefined){
+            if(item.procedureChartElementType === undefined){
                item.procedureChartElementType = ""; 
+            }
+            if(item.processElementType === undefined){
+                item.processElementType = "";
             }
             item.amount = {} // set to obj so that input field in property window can be bound to "amount.valueString" etc
             computedWorkspaceItems.value.push(item);
@@ -607,18 +610,24 @@
     }
     .process::before {
         top: 0;
-    }
-    .process::after {
-        bottom: 0;
-    }
-    /* Optional: Add spacing between the lines and the content */
-    .process::before {
         margin-top: 10px; /* Adjust as needed */
     }
     .process::after {
+        bottom: 0;
         margin-bottom: 10px; /* Adjust as needed */
     }
 
+    .ProcessOperation::after {
+        display: none; /* Hide the bottom line */
+    }
+
+    .ProcessAction::before,
+    .ProcessAction::after {
+        display: none; /* Hide both lines */
+    }
+
+
+    /*######### css for procedure chart elements ##################*/
     /* PreviousOperationIndicator */
     .PreviousOperationIndicator {
         position: relative;
@@ -667,6 +676,7 @@
         height: 20px; /* Adjust the height as needed */
         border-top: 2px dashed #000; /* Change the color to your desired color */
         border-bottom: 2px dashed #000; /* Change the color to your desired color */
+        background-color: white;
     }
     /* StartParallelIndicator */
     .EndParallelIndicator {
@@ -674,6 +684,7 @@
         height: 20px; /* Adjust the height as needed */
         border-top: 2px dashed #000; /* Change the color to your desired color */
         border-bottom: 2px dashed #000; /* Change the color to your desired color */
+        background-color: white;
     }
 
      /* StartParallelIndicator */
@@ -682,6 +693,7 @@
         height: 20px; /* Adjust the height as needed */
         border-top: 2px dashed #000; /* Change the color to your desired color */
         border-bottom: 2px dashed #000; /* Change the color to your desired color */
+        background-color: white;
     }
     /* StartParallelIndicator */
     .EndOptionalParallelIndicator {
@@ -689,6 +701,7 @@
         height: 20px; /* Adjust the height as needed */
         border-top: 2px dashed #000; /* Change the color to your desired color */
         border-bottom: 2px dashed #000; /* Change the color to your desired color */
+        background-color: white;
     }
     .Annotation{
         min-width: 100px;

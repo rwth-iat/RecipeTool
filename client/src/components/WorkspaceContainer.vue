@@ -142,9 +142,9 @@
       //if no materials exist yet add an input and output knot
       selectedElement.value.materials = [];
       let unique_id = secondaryWorkspaceContent.value.findNextAvailableId(main_workspace_items.value, "Educt")
-      selectedElement.value.materials.push({ id: unique_id, description: unique_id, name: "Educt", type: "material", x: 300, y: 100 , amount:{}, processElementType:"Process", procedureChartElementType:""})
+      selectedElement.value.materials.push({ id: unique_id, description: unique_id, name: "Educt", type: "material", x: 300, y: 100 , amount:{}, processElementType:"", procedureChartElementType:""})
       unique_id = secondaryWorkspaceContent.value.findNextAvailableId(main_workspace_items.value, "Product")
-      selectedElement.value.materials.push({ id: unique_id, description: unique_id, name: "Product", type: "material", x: 300, y: 400, amount:{}, processElementType: "Process", procedureChartElementType:""})
+      selectedElement.value.materials.push({ id: unique_id, description: unique_id, name: "Product", type: "material", x: 300, y: 400, amount:{}, processElementType: "", procedureChartElementType:""})
     }
 
     await nextTick();
