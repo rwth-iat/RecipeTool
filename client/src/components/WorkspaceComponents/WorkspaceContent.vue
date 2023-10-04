@@ -12,7 +12,7 @@
         >
             <!--If it is a material we need to display it as an extra label-->
             <div v-if="item.type=='material'" class="flowChartLabel" style="float: right;">
-                <span><!-- [Order] --> {{ item.id }} {{ item.materialId }} = {{ item.amount.valueString }} {{ item.amount.unitOfMeasure }}</span>
+                <span><!-- [Order] --> {{ item.id }} {{ item.materialID }} = {{ item.amount.valueString }} {{ item.amount.unitOfMeasure }}</span>
             </div>
             <div :class="item.type + 'visual ' +item.type + ' ' + item.materialType">
                 <!--If its a process display name inside the process flowchart element-->
@@ -22,7 +22,7 @@
             </div>
             <!--If it is a material we need to display it as an extra label-->
             <div v-if="item.type=='material'" class="flowChartLabelSpacer">
-                <span><!-- [Order] --> {{ item.id }} {{ item.materialId }} = {{ item.amount.valueString }} {{ item.amount.unitOfMeasure }}</span> 
+                <span><!-- [Order] --> {{ item.id }} {{ item.materialID }} = {{ item.amount.valueString }} {{ item.amount.unitOfMeasure }}</span> 
             </div>
         </div>
     </div>

@@ -28,8 +28,8 @@
         <option value="Output">Output</option>
       </select>
 
-      <label for="materialId">MaterialId:</label>
-      <input type="text" id="materialId" v-model="computedSelectedElement.materialId"/>
+      <label for="materialID">MaterialID:</label>
+      <input type="text" id="materialID" v-model="computedSelectedElement.materialID"/>
       
       <label for="order">Order:</label>
       <input type="text" id="order" v-model="computedSelectedElement.order"/>
