@@ -711,7 +711,7 @@
     }
     /* StartParallelIndicator */
     .EndOptionalParallelIndicator {
-        width: 300px;
+        width: 400px;
         height: 20px; /* Adjust the height as needed */
         border-top: 2px dashed #000; /* Change the color to your desired color */
         border-bottom: 2px dashed #000; /* Change the color to your desired color */
