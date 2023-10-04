@@ -142,9 +142,9 @@
       //if no materials exist yet add an input and output knot
       selectedElement.value.materials = [];
       let unique_id = secondaryWorkspaceContent.value.findNextAvailableId(main_workspace_items.value, "Educt")
-      selectedElement.value.materials.push({ id: unique_id, description: unique_id, name: "Educt", type: "material", x: 300, y: 100 , amount:{}, processElementType:"Process"})
+      selectedElement.value.materials.push({ id: unique_id, description: unique_id, name: "Educt", type: "material", x: 300, y: 100 , amount:{}, processElementType:"Process", procedureChartElementType:""})
       unique_id = secondaryWorkspaceContent.value.findNextAvailableId(main_workspace_items.value, "Product")
-      selectedElement.value.materials.push({ id: unique_id, description: unique_id, name: "Product", type: "material", x: 300, y: 400, amount:{}, processElementType: "Process"})
+      selectedElement.value.materials.push({ id: unique_id, description: unique_id, name: "Product", type: "material", x: 300, y: 400, amount:{}, processElementType: "Process", procedureChartElementType:""})
     }
 
     await nextTick();
@@ -178,6 +178,7 @@
     console.debug("Saving secondary Workspace: ", secondary_workspace_items.value)
     secondaryWorkspaceParent.value.materials = []
     secondaryWorkspaceParent.value.processElement = []
+    secondaryWorkspaceParent.value.procedureChartElement = []
     for(let element of secondary_workspace_items.value){
       console.debug("adding element: ", element)
       if (element.type == "material"){ // add materials
@@ -186,6 +187,9 @@
       }else if(element.type == "process"){ // add processes
         console.debug("adding as process")
         secondaryWorkspaceParent.value.processElement.push(element)
+      }else if(element.type == "chart_element"){ // add processes
+        console.debug("adding as procedure chart element")
+        secondaryWorkspaceParent.value.procedureChartElement.push(element)
       }else{
         console.debug("type not known")
       }
