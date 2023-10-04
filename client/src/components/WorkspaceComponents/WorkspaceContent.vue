@@ -14,13 +14,17 @@
             <div v-if="item.type=='material'" class="flowChartLabel" style="float: right;">
                 <span><!-- [Order] --> {{ item.id }} {{ item.materialID }} = {{ item.amount.valueString }} {{ item.amount.unitOfMeasure }}</span>
             </div>
-            <div :class="item.type + 'visual ' +item.type + ' ' + item.materialType">
+            <!--actual element
+                Add type, material type and procedure chart element type to classes
+                As procedureChartElementTypes contin spaces we need to remove them with replace function
+            -->
+            <div :class="item.type + ' ' + item.materialType + ' ' + item.procedureChartElementType.replace(/\s+/g, '')">
                 <!--If its a process display name inside the process flowchart element-->
                 <span class="processName" v-if="item.type=='process'">
                     {{ item.id }}
                 </span>
             </div>
-            <!--If it is a material we need to display it as an extra label-->
+            <!--If it is a material we need to create an extra label on the right side which is invisible for spacing-->
             <div v-if="item.type=='material'" class="flowChartLabelSpacer">
                 <span><!-- [Order] --> {{ item.id }} {{ item.materialID }} = {{ item.amount.valueString }} {{ item.amount.unitOfMeasure }}</span> 
             </div>
@@ -143,14 +147,17 @@
         let item = JSON.parse(event.dataTransfer.getData("item"));
         let classes = event.dataTransfer.getData("itemClasses");
         
-        let type 
-        let x_offset
-        console.log(classes)
+        let type ;
+        let x_offset;
+        console.log(classes);
         if (classes.includes("material_element")){
-            type = "material"
+            type = "material";
             x_offset = 200;
         }else if (classes.includes("process_element")){
-            type = "process"
+            type = "process";
+            x_offset = 100;
+        }else if(classes.includes("chart_element")){
+            type = "chart_element";
             x_offset = 100;
         }else{
             console.error("neither material nor process dropped into workspace")
@@ -174,6 +181,9 @@
             item.description = item.name
             item.id=uniqueId
             item.processElementType="Process"
+            if(item.procedureChartElementType===undefined){
+               item.procedureChartElementType = ""; 
+            }
             item.amount = {} // set to obj so that input field in property window can be bound to "amount.valueString" etc
             computedWorkspaceItems.value.push(item);
             console.log("dragged from sidebar, dropped in workspace at absolute position: " + x + " " + y);
@@ -246,6 +256,10 @@
         sourceEndpoints.push(addEndpoint(instance, element, {source: true, target: false}))
         targetEndpoints.push(addEndpoint(instance, element, {source: false, target: true}))
         console.log("added Source and Target Endpoint to process")
+      }else if(item.type === "chart_element"){
+        sourceEndpoints.push(addEndpoint(instance, element, {source: true, target: false}))
+        targetEndpoints.push(addEndpoint(instance, element, {source: false, target: true}))
+        console.log("added Source and Target Endpoint to chart_element")
       }else{
           console.warn("unknown type: " + item.type)
       }
@@ -571,7 +585,7 @@
         the process visual is the normal process element and sets a normal border
         with the ::before and :: after we are able to set the other two horizontal lines
     */
-    .processvisual{
+    .process{
         display: flex;
         text-align: center;
         align-items: center;
@@ -583,25 +597,83 @@
         border-style: solid;
         border-color: black;
     }
-    .processvisual::before,
-    .processvisual::after {
+    .process::before,
+    .process::after {
         content: "";
         position: absolute;
         width: 100%;
         height: 1px; /* Adjust the thickness of the lines */
         background-color: #000; /* Line color */
     }
-    .processvisual::before {
+    .process::before {
         top: 0;
     }
-    .processvisual::after {
+    .process::after {
         bottom: 0;
     }
     /* Optional: Add spacing between the lines and the content */
-    .processvisual::before {
+    .process::before {
         margin-top: 10px; /* Adjust as needed */
     }
-    .processvisual::after {
+    .process::after {
         margin-bottom: 10px; /* Adjust as needed */
     }
+
+    /* PreviousOperationIndicator */
+    .PreviousOperationIndicator {
+        position: relative;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 50px 50px 0 50px;
+        border-color: white transparent transparent transparent;
+    }
+    .PreviousOperationIndicator::before {
+        content: '';
+        position: absolute;
+        left: -60px;
+        top: -54px;
+        width: 0;
+        z-index: -1;
+        height: 0;
+        border-style: solid;
+        border-width: 60px 60px 0 60px;
+        border-color: black transparent transparent transparent;
+    }
+    .NextOperationIndicator {
+        position: relative;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 50px 50px 50px;
+        border-color: transparent transparent white transparent;
+    }
+    .NextOperationIndicator::before {
+        content: '';
+        position: absolute;
+        left: -60px;
+        top: -6px;
+        width: 0;
+        z-index: -1;
+        height: 0;
+        border-style: solid;
+        border-width: 0 60px 60px 60px;
+        border-color: transparent transparent black transparent;
+    }
+
+    /* StartParallelIndicator */
+    .StartParallelIndicator {
+        width: 300px;
+        height: 20px; /* Adjust the height as needed */
+        border-top: 2px dashed #000; /* Change the color to your desired color */
+        border-bottom: 2px dashed #000; /* Change the color to your desired color */
+    }
+    /* StartParallelIndicator */
+    .EndParallelIndicator {
+        width: 300px;
+        height: 20px; /* Adjust the height as needed */
+        border-top: 2px dashed #000; /* Change the color to your desired color */
+        border-bottom: 2px dashed #000; /* Change the color to your desired color */
+    }
+    
 </style>
