@@ -102,6 +102,42 @@
                                 }
                             ]
                         }]
+    }else if (element_type.value ==="ChartElements"){
+        element_class = "chart_element sidebar_element"
+        element_packages.value = [{
+                            name:"Basic",
+                            type: "chart_element",
+                            children:[
+                                {
+                                    type: "chart_element",
+                                    name: "Previous Operation Indicator"
+                                },
+                                {
+                                    type: "chart_element",
+                                    name: "Next Operation Indicator"
+                                },
+                                {
+                                    type: "chart_element",
+                                    name: "Start Parallel Indicator"
+                                },
+                                {
+                                    type: "chart_element",
+                                    name: "End Parallel Indicator"
+                                },
+                                {
+                                    type: "chart_element",
+                                    name: "Start Optional Parallel Indicator"
+                                },
+                                {
+                                    type: "chart_element",
+                                    name: "End Optional Parallel Indicator"
+                                },
+                                {
+                                    type: "chart_element",
+                                    name: "Annotation"
+                                }
+                            ]
+                        }]
     }else{
         console.log("unknown element type: " + element_type.value)
     }
