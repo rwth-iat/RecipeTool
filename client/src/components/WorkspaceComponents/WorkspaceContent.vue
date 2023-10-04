@@ -675,5 +675,40 @@
         border-top: 2px dashed #000; /* Change the color to your desired color */
         border-bottom: 2px dashed #000; /* Change the color to your desired color */
     }
+
+     /* StartParallelIndicator */
+    .StartOptionalParallelIndicator {
+        width: 300px;
+        height: 20px; /* Adjust the height as needed */
+        border-top: 2px dashed #000; /* Change the color to your desired color */
+        border-bottom: 2px dashed #000; /* Change the color to your desired color */
+    }
+    /* StartParallelIndicator */
+    .EndOptionalParallelIndicator {
+        width: 300px;
+        height: 20px; /* Adjust the height as needed */
+        border-top: 2px dashed #000; /* Change the color to your desired color */
+        border-bottom: 2px dashed #000; /* Change the color to your desired color */
+    }
+    .Annotation{
+        min-width: 100px;
+        min-height: 20px;
+        border: 1px solid black;
+        background-color: white;
+        border-radius: 5px;
+        padding: 5px;
+        display: flex;
+        text-align: center;
+    }
+    .Other{
+        min-width: 100px;
+        min-height: 20px;
+        border: 1px solid black;
+        background-color: white;
+        border-radius: 5px;
+        padding: 5px;
+        display: flex;
+        text-align: center;
+    }
     
 </style>
