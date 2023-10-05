@@ -35,21 +35,20 @@ After that the server is running under:
 - [X] delete elements
 - [X] open macro steps in new workspace
 - [X] add Ressource Constraints
- 
-## under development
-- [ ] change element styles to oficial Chart elements
-- [ ] add creation of macro Steps 
+- [X] add parallel process logic
+- [X] change element styles to oficial Chart elements
+- [X] add creation of macro Steps
+
+## under development 
 - [ ] add macro processParameters (only simple ones possible yet)
 - [ ] add possibillity to save current workspace
 - [ ] multiple workspace tabs (one for main process, others for opened subprocesses)
 - [ ] extend generated BatchML
 - [ ] Capability Matching
-- [ ] add parallel process logic
 
 ## Outlook
 - [ ] extend capability matching
 - [ ] extend BatchML creation
-- [ ] add chartelements
 - [ ] import material library
 - [ ] import BatchML into workspace
 
