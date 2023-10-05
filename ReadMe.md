@@ -3,7 +3,7 @@ This is the Project of my Master Thesis. It is a Grpahicl Editor for General Rec
 
 These Badges show the Test results of the current Code.
 
-[![Python application](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/python-app.yml/badge.svg)](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/python-app.yml) [![Client Test](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/client-test.yml/badge.svg)](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/client-test.yml)
+[![Server Test](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/server-test.yml/badge.svg)](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/server-test.yml) [![Client Test](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/client-test.yml/badge.svg)](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/client-test.yml)
 
 ## Running the Server
 To run the server Python (3.10 at best) needs to be installed.
