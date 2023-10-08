@@ -18,7 +18,8 @@
 			<elementWindow element_type="Materials"/>
 			<div class="element_spacer"></div>
 			<elementWindow element_type="Processes"/>
-		</div>
+			<div class="element_spacer"></div>
+			<elementWindow element_type="ChartElements"/></div>
 	</aside>
 </template>
 
@@ -40,6 +41,9 @@
 
 
 <style lang="scss" scoped>
+.element_spacer{
+	height: 10px;
+}
 aside {
 	z-index: 2;
 	display: flex;

@@ -3,7 +3,7 @@ This is the Project of my Master Thesis. It is a Grpahicl Editor for General Rec
 
 These Badges show the Test results of the current Code.
 
-[![Python application](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/python-app.yml/badge.svg)](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/python-app.yml) [![Node.js CI](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/node.js.yml/badge.svg)](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/node.js.yml)
+[![Server Test](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/server-test.yml/badge.svg)](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/server-test.yml) [![Client Test](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/client-test.yml/badge.svg)](https://github.com/ReggaeUlli/Masterarbeit-code/actions/workflows/client-test.yml)
 
 ## Running the Server
 To run the server Python (3.10 at best) needs to be installed.
@@ -35,21 +35,20 @@ After that the server is running under:
 - [X] delete elements
 - [X] open macro steps in new workspace
 - [X] add Ressource Constraints
- 
-## under development
-- [ ] change element styles to oficial Chart elements
-- [ ] add creation of macro Steps 
+- [X] add parallel process logic
+- [X] change element styles to oficial Chart elements
+- [X] add creation of macro Steps
+
+## under development 
 - [ ] add macro processParameters (only simple ones possible yet)
 - [ ] add possibillity to save current workspace
 - [ ] multiple workspace tabs (one for main process, others for opened subprocesses)
 - [ ] extend generated BatchML
 - [ ] Capability Matching
-- [ ] add parallel process logic
 
 ## Outlook
 - [ ] extend capability matching
 - [ ] extend BatchML creation
-- [ ] add chartelements
 - [ ] import material library
 - [ ] import BatchML into workspace
 

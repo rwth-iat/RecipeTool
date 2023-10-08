@@ -18,70 +18,48 @@
     let element_class = "" 
     if(element_type.value === "Processes"){
         element_class = "process_element sidebar_element"
-        element_packages.value = [{
-                                    name: "GeneralCapabilityEffecting",
-                                    type:"process",
-                                    children:[{
-                                            name: "Draining",
-                                            type:"process",
-                                            otherInformation:[{
-                                                            otherInfoID:"testOtherInfoID",
-                                                            description:["testDescription"],
-                                                            otherValue:[{
-                                                                valueString:"test value string",
-                                                                dataType:"Text",
-                                                                unitOfMeasure:"KG",
-                                                                key:"testkey"
-                                                            }]
-                                            }],
-                                            children:[
-                                                {
-                                                type:"process",
-                                                name:"test1",
-                                                otherInformation:[{
-                                                    otherInfoID:"testOtherInfoID",
-                                                    description:["testDescription"],
-                                                    otherValue:[{
-                                                        valueString:"test value string",
-                                                        dataType:"Text",
-                                                        unitOfMeasure:"KG",
-                                                        key:"testkey"
-                                                    }]
-                                                }],
-                                                children:[
-                                                    {
-                                                        name:"test2",
-                                                        type:"process",
-                                                        otherInformation:[{
-                                                            otherInfoID:"testOtherInfoID",
-                                                            description:["testDescription"],
-                                                            otherValue:[{
-                                                                valueString:"test value string",
-                                                                dataType:"Text",
-                                                                unitOfMeasure:"KG",
-                                                                key:"testkey"
-                                                            }]
-                                                        }]
-                                                    }
-                                                ]}
-                                                ]
-                                            },
-                                            {
-                                                type: "process",
-                                                name: "Pumping",
-                                                otherInformation:[{
-                                                            otherInfoID:"testOtherInfoID",
-                                                            description:["testDescription"],
-                                                            otherValue:[{
-                                                                valueString:"test value string",
-                                                                dataType:"Text",
-                                                                unitOfMeasure:"KG",
-                                                                key:"testkey"
-                                                            }]
-                                                }]
-                                            }
-                                        ]
-                                }]
+        element_packages.value = [
+                                {
+                                    name: "Dosage Prep Stage:",
+                                    type: "process",
+                                    processElementType: "Process Stage"
+                                },
+                                {
+                                    name: "Packaging Stage:",
+                                    type: "process",
+                                    processElementType: "Process Stage"
+                                },
+                                {
+                                    name: "Wet Mixing Operation:",
+                                    type: "process",
+                                    processElementType: "Process Operation"
+                                },
+                                {
+                                    name: "Dry Mixing Operation:",
+                                    type: "process",
+                                    processElementType: "Process Operation"
+                                },
+                                {
+                                    name: "Tableting Operation:",
+                                    type: "process",
+                                    processElementType: "Process Operation"
+                                },
+                                {
+                                    name: "Charge:",
+                                    type: "process",
+                                    processElementType: "Process Action"
+                                },
+                                {
+                                    name: "Charge with Agitation:",
+                                    type: "process",
+                                    processElementType: "Process Action"
+                                },
+                                {
+                                    name: "Charge to adjust pH:",
+                                    type: "process",
+                                    processElementType: "Process Action"
+                                }
+                            ]
     }else if (element_type.value ==="Materials"){
         element_class = "material_element sidebar_element"
         element_packages.value = [{
@@ -99,6 +77,54 @@
                                 {
                                     type: "material",
                                     name: "Product"
+                                }
+                            ]
+                        }]
+    }else if (element_type.value ==="ChartElements"){
+        element_class = "chart_element sidebar_element"
+        element_packages.value = [{
+                            name:"Basic",
+                            type: "chart_element",
+                            children:[
+                                {
+                                    type: "chart_element",
+                                    name: "Previous Operation Indicator",
+                                    procedureChartElementType: "Previous Operation Indicator"
+                                },
+                                {
+                                    type: "chart_element",
+                                    name: "Next Operation Indicator",
+                                    procedureChartElementType: "Next Operation Indicator"
+                                },
+                                {
+                                    type: "chart_element",
+                                    name: "Start Parallel Indicator",
+                                    procedureChartElementType: "Start Parallel Indicator"
+                                },
+                                {
+                                    type: "chart_element",
+                                    name: "End Parallel Indicator",
+                                    procedureChartElementType: "End Parallel Indicator"
+                                },
+                                {
+                                    type: "chart_element",
+                                    name: "Start Optional Parallel Indicator",
+                                    procedureChartElementType: "Start Optional Parallel Indicator"
+                                },
+                                {
+                                    type: "chart_element",
+                                    name: "End Optional Parallel Indicator",
+                                    procedureChartElementType: "End Optional Parallel Indicator"
+                                },
+                                {
+                                    type: "chart_element",
+                                    name: "Annotation",
+                                    procedureChartElementType: "Annotation"
+                                },
+                                {
+                                    type: "chart_element",
+                                    name: "Other",
+                                    procedureChartElementType: "Other"
                                 }
                             ]
                         }]

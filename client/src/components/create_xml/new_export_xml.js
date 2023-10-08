@@ -88,6 +88,14 @@ function create_materials(workspace_items, id, description, materials_type){
     return materials
 }
 
+function createProcedureChartElement(item){
+    let chartElement = {
+        "b2mml:ID":item.id,
+        "b2mml:Description":[item.description]
+    }
+    return chartElement;
+}
+
 function create_formula(workspace_items, jsplumb_connections){
     let formula = {
         "b2mml:Description":["The formula defines the Inputs, Intermediates and Outputs of the Procedure"],
@@ -182,6 +190,9 @@ export function create_process_element_type(item, workspace_items, jsplumb_conne
             if(child_item.processElement){
                 child_workspace_items.push(...child_item.processElement)
             }
+            if(child_item.procedureChartElement){
+                child_workspace_items.push(...child_item.procedureChartElement)
+            }
 
             process_element["b2mml:ProcessElement"].push(
                 //add child itemlist and connections here here to enable makro steps 
@@ -208,6 +219,16 @@ export function create_process_element_type(item, workspace_items, jsplumb_conne
     }
     console.debug(process_element["b2mml:ResourceConstraint"])
  
+    //add proccessChartElements
+    workspace_items.forEach(function (child_item) {
+        if(child_item.type == "chart_element"){
+            process_element["b2mml:ProcedureChartElement"].push(
+                //add child itemlist and connections here here to enable makro steps 
+                createProcedureChartElement(child_item)
+            )
+        } 
+    });
+
 
     //return the created Object
     return process_element
