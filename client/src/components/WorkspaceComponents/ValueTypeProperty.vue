@@ -4,6 +4,7 @@
     <input type="text" :id="'valueString'" v-model="computedValueType.valueString" />
     <label :for="'dataType'">DataType:</label>
     <input type="text" :id="'dataType'" v-model="computedValueType.dataType" default="Text"/>
+    <!--allowed Datatypes['Amount', 'BinaryObject', 'Code', 'DateTime', 'Identifier', 'Indicator', 'Measure', 'Numeric', 'Quantity', 'Text', 'string', 'byte', 'unsignedByte', 'binary', 'integer', 'positiveInteger', 'negativeInteger', 'nonNegativeInteger', 'nonPositiveInteger', 'int', 'unsignedInt', 'long', 'unsignedLong', 'short', 'unsignedShort', 'decimal', 'float', 'double', 'boolean', 'time', 'timeInstant', 'timePeriod', 'duration', 'date', 'dateTime', 'month', 'year', 'century', 'recurringDay', 'recurringDate', 'recurringDuration', 'Name', 'QName', 'NCName', 'uriReference', 'language', 'ID', 'IDREF', 'IDREFS', 'ENTITY', 'ENTITIES', 'NOTATION', 'NMTOKEN', 'NMTOKENS', 'Enumeration', 'SVG', 'Other']-->
     <label :for="'unitOfMeasure'">UnitOfMeasure:</label>
     <input type="text" :id="'unitOfMeasure'" v-model="computedValueType.unitOfMeasure" />
     <label :for="'key'">Key:</label>
