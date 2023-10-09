@@ -1,13 +1,14 @@
 <template>
     <div id="addElements" class="settings">
-        <div style="display: flex;">
+        
+        <div style="display: flex; width: 100%; justify-content: space-between;">
             <h3 style="float:left;">Add {{ element_type }}</h3>
             <button @click="close" style="float:right;">
                 <span class="material-icons-red">x</span>
             </button>
         </div>
         <br/>
-        <form>
+        <form style="width:fit-content">
             <span>Select Ontology: </span>
             
             <!--Drop down list of availible ontologys on the server-->
@@ -201,8 +202,7 @@
         //position absolute on top of all
         position: absolute;
         z-index: 5;
-
-        width: 60vw;
+        padding:10px;
         height: auto;
 
         //position in middle
