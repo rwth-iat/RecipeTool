@@ -264,7 +264,7 @@ def create_app():
             examples:
               rgb: ['red', 'green', 'blue']
         """
-        response = make_response(send_from_directory(app.config["UPLOAD_FOLDER"], ONTO_FOLDER, filename))
+        response = make_response(send_from_directory(os.path.join(app.config["UPLOAD_FOLDER"], ONTO_FOLDER), filename))
         mimetype, _ = mimetypes.guess_type(filename)
         response.headers['Content-Type'] = mimetype
         return response
@@ -410,12 +410,23 @@ def create_app():
             default: all
         responses:
           200:
-            description: A list of the classes in given Ontology.
+            description: A list of the capabilities in the aas.
+            examples: [{
+                        "idShort": "Stirring",
+                        "semanticId": {
+                          "keys": {
+                            "key": "http://www.acplt.de/Capability#Stirring"
+                          }
+                        }
+                      }]
         """
         # returns a generator therefore we need list()
         root = aas[aas_name]
         capabilities = []
-        ns='{http://www.admin-shell.io/aas/2/0}'
+        #the tag name has a namespace "<aas:capability>"
+        #therefore we need to take the namespace definiton from the first lines of the xml
+        #xmlns:aas='{http://www.admin-shell.io/aas/2/0}'
+        ns='{http://www.admin-shell.io/aas/2/0}' #namespace definition
         
         for capability in root.iter(ns+'capability'):
           capabilities.append({"idShort" : capability.find(ns+'idShort').text,
@@ -427,8 +438,8 @@ def create_app():
                               })
         response = make_response(capabilities)
         return response
-    
-    
+  
+    #on initializing app we load the ontologies ans aas present at the server
     ontologies = load_ontologies()
     aas = load_aas()
     #ontologies = {}  #uncomment this is for offline development
