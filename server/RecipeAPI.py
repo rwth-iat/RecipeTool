@@ -1,11 +1,7 @@
-from flask import Blueprint, request, make_response
+from flask import Blueprint, request, make_response, flash
 import os
 import xml.etree.ElementTree as ET
-from Functions import upload_file
 from lxml import etree
-
-RECIPE_FOLDER = "recipes/"
-UPLOAD_FOLDER = './upload/'
 
 recipe_api = Blueprint('recipe_api', __name__)
 
@@ -20,37 +16,6 @@ def validate(xml_string: str, xsd_path: str) -> bool:
 
     return result, error
 
-def load_recipes():
-  recipes = {}
-  for filename in os.listdir(os.path.join(UPLOAD_FOLDER, RECIPE_FOLDER)):
-      if filename.endswith('.xml'):
-          # with open(os.path.join(UPLOAD_FOLDER, filename), 'r') as file:
-          #    ontologies[filename] = file.read()
-          complete_path = os.path.join(UPLOAD_FOLDER, RECIPE_FOLDER, filename)
-          recipes[filename] = ET.parse(complete_path)
-  return recipes
-
-
-
-@recipe_api.route('/recipe', methods=['POST'])
-def upload_recipe():
-    """Endpoint to upload a new recipe to the server.
-    ---
-    tags:
-      - Recipes 
-    parameters:
-      - name: file
-        in: formData
-        type: file
-        required: true
-    responses:
-      200:
-        description: An ackknowledgement that the upload worked.
-        examples:
-            rgb: ['red', 'green', 'blue']
-    """
-    return upload_file(request, "recipes")
-    
 @recipe_api.route('/validate')
 def validate_batchml():
     """Endpoint to validate a xml string against BatchML xsd schema.
@@ -83,29 +48,32 @@ def validate_batchml():
         response = make_response(error, 400)
         return response
 
-@recipe_api.route('/recipes/<recipe_name>/capabilities')
-def get_required_capabilities(recipe_name, methods=['GET']):
-    """Endpoint returning the list of capabilities present in given recipe.
+@recipe_api.route('/recipes/capabilities', methods=['POST']) 
+def get_recipe_capabilities():
+    """Endpoint to get capabilitys form a server.
     ---
     tags:
-      - Recipes
+      - Recipes 
     parameters:
-      - name: recipe_name
-        in: path
-        type: string
+      - name: file
+        in: formData
+        type: file
         required: true
-        default: all
     responses:
       200:
-        description: A list of the capabilities in the recipe.
-        examples: [{
-                    "ID": "Stirring",
-                    "IRI": "http://www.acplt.de/Capability#Stirring"
-                    }]
+        description: An ackknowledgement that the upload worked.
+        examples:
+            rgb: ['red', 'green', 'blue']
     """
-    # returns a generator therefore we need list()
-    recipes = load_recipes()
-    root = recipes[recipe_name]
+    # check if the post request has the file part
+    if 'file' not in request.files:
+      print("no file given")
+      flash('No file part')
+      return make_response(request.url, 400)
+    file = request.files['file']
+    file_content = file.read()
+    root = ET.fromstring(file_content)
+    
     capabilities = []
     #the tag name has a namespace "<aas:capability>"
     #therefore we need to take the namespace definiton from the first lines of the xml

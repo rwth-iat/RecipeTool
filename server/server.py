@@ -92,6 +92,29 @@ def create_app():
         response.headers['Content-Type'] = mimetype
         return response
 
+    @app.route('/check/capabilities/basic')
+    def check_capabilities_basic(filename):
+        """Endpoint to serve the static files to the server.
+            This is needed in order for the Graphical Editor to work, as index.html links to the css and JS file in static folder.
+        ---
+        tags:
+          - Check Capabilitys
+        parameters:
+          - name: filename
+            in: path
+            type: string
+            required: true
+            default: /assets/index-4ed49a4e.css
+        responses:
+          200:
+            description: The requested File
+            examples:
+              rgb: ['red', 'green', 'blue']
+        """
+        response = make_response(send_from_directory(app.static_folder, filename))
+        mimetype, _ = mimetypes.guess_type(filename)
+        response.headers['Content-Type'] = mimetype
+        return response
     
     app.register_blueprint(ontology_api)
     app.register_blueprint(recipe_api)

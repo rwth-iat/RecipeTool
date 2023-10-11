@@ -1,26 +1,12 @@
-from flask import Blueprint, request, make_response
-import os
+from flask import Blueprint, request, make_response, flash
 import xml.etree.ElementTree as ET
-from Functions import upload_file
 
-AAS_FOLDER = "aasx/"
-UPLOAD_FOLDER = './upload/'
-
-def load_aas():
-  aas = {}
-  for filename in os.listdir(os.path.join(UPLOAD_FOLDER, AAS_FOLDER)):
-      if filename.endswith('.aas.xml'):
-          # with open(os.path.join(UPLOAD_FOLDER, filename), 'r') as file:
-          #    ontologies[filename] = file.read()
-          complete_path = os.path.join(UPLOAD_FOLDER, AAS_FOLDER, filename)
-          aas[filename] = ET.parse(complete_path)
-  return aas
 
 aas_api = Blueprint('aas_api', __name__)
 
-@aas_api.route('/AASX', methods=['POST'])
-def upload_aasx():
-    """Endpoint to upload a new ontologie to the server.
+@aas_api.route('/AASX/capabilities', methods=['POST'])
+def get_aasx_capabilities():
+    """Endpoint to get availible Capabilities from a AASX.
     ---
     tags:
       - AAS
@@ -35,35 +21,14 @@ def upload_aasx():
         examples:
             rgb: ['red', 'green', 'blue']
     """
-    return upload_file(request, "aasx")
-
-@aas_api.route('/aas/<aas_name>/capabilities')
-def get_availible_capabilities(aas_name, methods=['GET']):
-    """Endpoint returning the list of capabilities specified in <aas> with given name.
-    ---
-    tags:
-      - AAS
-    parameters:
-      - name: aas_name
-        in: path
-        type: string
-        required: true
-        default: all
-    responses:
-      200:
-        description: A list of the capabilities in the aas.
-        examples: [{
-                    "idShort": "Stirring",
-                    "semanticId": {
-                        "keys": {
-                        "key": "http://www.acplt.de/Capability#Stirring"
-                        }
-                    }
-                    }]
-    """
-    # returns a generator therefore we need list()
-    aas = load_aas()
-    root = aas[aas_name]
+        # check if the post request has the file part
+    if 'file' not in request.files:
+      print("no file given")
+      flash('No file part')
+      return make_response(request.url, 400)
+    file = request.files['file']
+    file_content = file.read()
+    root = ET.fromstring(file_content)
     capabilities = []
     #the tag name has a namespace "<aas:capability>"
     #therefore we need to take the namespace definiton from the first lines of the xml
@@ -77,3 +42,5 @@ def get_availible_capabilities(aas_name, methods=['GET']):
                             })
     response = make_response(capabilities)
     return response
+
+ 
