@@ -121,7 +121,7 @@ def download_onto(filename):
         examples:
             rgb: ['red', 'green', 'blue']
     """
-    response = make_response(send_from_directory(os.path.join(app.config["UPLOAD_FOLDER"], ONTO_FOLDER), filename))
+    response = make_response(send_from_directory(os.path.join(UPLOAD_FOLDER, ONTO_FOLDER), filename))
     mimetype, _ = mimetypes.guess_type(filename)
     response.headers['Content-Type'] = mimetype
     return response
