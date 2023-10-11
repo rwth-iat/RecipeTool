@@ -16,6 +16,27 @@ def validate(xml_string: str, xsd_path: str) -> bool:
 
     return result, error
 
+def get_all_recipe_capabilities(file_content):
+  root = ET.fromstring(file_content)
+  capabilities = []
+  #the tag name has a namespace "<aas:capability>"
+  #therefore we need to take the namespace definiton from the first lines of the xml
+  #xmlns:aas='{http://www.admin-shell.io/aas/2/0}'
+  ns='{http://www.mesa.org/xml/B2MML}' #namespace definition
+  
+  for processElement in root.iter(ns+'ProcessElement'):
+      otherInfos = processElement.findall(ns+'OtherInformation') 
+      if otherInfos is None or []:
+          continue
+      for otherInfo in otherInfos:
+          otherInfoId = otherInfo.find(ns+'OtherInfoID')
+          if otherInfoId.text == "OntologyIRI":
+              capabilities.append({
+                              "ID": processElement.find(ns+'ID').text,                   
+                              "IRI":otherInfo.find(ns+'OtherValue').find(ns+'ValueString').text
+                          })
+  return capabilities
+
 @recipe_api.route('/validate')
 def validate_batchml():
     """Endpoint to validate a xml string against BatchML xsd schema.
@@ -72,24 +93,6 @@ def get_recipe_capabilities():
       return make_response(request.url, 400)
     file = request.files['file']
     file_content = file.read()
-    root = ET.fromstring(file_content)
-    
-    capabilities = []
-    #the tag name has a namespace "<aas:capability>"
-    #therefore we need to take the namespace definiton from the first lines of the xml
-    #xmlns:aas='{http://www.admin-shell.io/aas/2/0}'
-    ns='{http://www.mesa.org/xml/B2MML}' #namespace definition
-    
-    for processElement in root.iter(ns+'ProcessElement'):
-        otherInfos = processElement.findall(ns+'OtherInformation') 
-        if otherInfos is None or []:
-            continue
-        for otherInfo in otherInfos:
-            otherInfoId = otherInfo.find(ns+'OtherInfoID')
-            if otherInfoId.text == "OntologyIRI":
-                capabilities.append({
-                                "ID": processElement.find(ns+'ID').text,                   
-                                "IRI":otherInfo.find(ns+'OtherValue').find(ns+'ValueString').text
-                            })
+    capabilities = get_all_recipe_capabilities(file_content)
     response = make_response(capabilities)
     return response

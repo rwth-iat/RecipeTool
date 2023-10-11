@@ -1,5 +1,5 @@
 # webserver
-from flask import Flask, send_from_directory, make_response, redirect
+from flask import Flask, send_from_directory, make_response, redirect, request, flash
 from waitress import serve #this is for the production server
 from flasgger import Swagger
 # utils
@@ -7,9 +7,9 @@ import mimetypes
 mimetypes.add_type('application/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
 
-from RecipeAPI import recipe_api
+from RecipeAPI import recipe_api, get_all_recipe_capabilities
 from OntologyAPI import ontology_api
-from AasAPI import aas_api
+from AasAPI import aas_api, get_all_aasx_capabilities
 
 ontologies = {}
 aas = {}
@@ -92,29 +92,59 @@ def create_app():
         response.headers['Content-Type'] = mimetype
         return response
 
-    @app.route('/check/capabilities/basic')
-    def check_capabilities_basic(filename):
+    @app.route('/check/capabilities/basic', methods=['POST'])
+    def check_capabilities_basic():
         """Endpoint to serve the static files to the server.
-            This is needed in order for the Graphical Editor to work, as index.html links to the css and JS file in static folder.
         ---
         tags:
           - Check Capabilitys
         parameters:
-          - name: filename
-            in: path
-            type: string
+          - name: aasx
+            in: formData
+            type: file
             required: true
-            default: /assets/index-4ed49a4e.css
+          - name: recipe
+            in: formData
+            type: file
         responses:
           200:
             description: The requested File
             examples:
               rgb: ['red', 'green', 'blue']
         """
-        response = make_response(send_from_directory(app.static_folder, filename))
-        mimetype, _ = mimetypes.guess_type(filename)
-        response.headers['Content-Type'] = mimetype
-        return response
+        if 'aasx' not in request.files:
+          print("no file given")
+          flash('No file part')
+          return make_response(request.url, 400)
+        aasx = request.files['aasx']
+        aasx_content = aasx.read()
+        aasx_capabilities = get_all_aasx_capabilities(aasx_content) 
+
+
+        if 'recipe' not in request.files:
+          print("no file given")
+          flash('No file part')
+          return make_response(request.url, 400)
+        recipe = request.files['recipe']
+        recipe_content = recipe.read()
+        recipe_capabilities = get_all_recipe_capabilities(recipe_content)
+        
+        # Extract unique IDs from list A and list B
+        unique_aasx_capabilities = set(item['IRI'] for item in aasx_capabilities)
+        unique_recipe_capabilities = set(item['IRI'] for item in recipe_capabilities)
+
+        print(unique_recipe_capabilities)
+        print(unique_aasx_capabilities)
+        
+        # Check if all IDs in recipe are in aasx
+        if unique_recipe_capabilities.issubset(unique_aasx_capabilities):
+            string = "Every Capability IRI that occurs in Recipe is also in AASX (positive case)."
+            print(string)
+            return make_response(string, 200)
+        else:
+            string = "There are Capability IRIS in Recipe  that are not in AASX (negative case)." 
+            print(string)        
+            return make_response(string + str(unique_recipe_capabilities.difference(unique_aasx_capabilities)), 400)
     
     app.register_blueprint(ontology_api)
     app.register_blueprint(recipe_api)

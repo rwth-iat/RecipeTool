@@ -1,7 +1,21 @@
 from flask import Blueprint, request, make_response, flash
 import xml.etree.ElementTree as ET
 
-
+def get_all_aasx_capabilities(file_content):
+  root = ET.fromstring(file_content)
+  capabilities = []
+  #the tag name has a namespace "<aas:capability>"
+  #therefore we need to take the namespace definiton from the first lines of the xml
+  #xmlns:aas='{http://www.admin-shell.io/aas/2/0}'
+  ns='{http://www.admin-shell.io/aas/2/0}' #namespace definition
+  
+  for capability in root.iter(ns+'capability'):
+      capabilities.append({
+                          "ID" : capability.find(ns+'idShort').text,
+                          "IRI":capability.find(ns+'semanticId').find(ns+'keys').find(ns+'key').text
+                          })
+  return capabilities
+        
 aas_api = Blueprint('aas_api', __name__)
 
 @aas_api.route('/AASX/capabilities', methods=['POST'])
@@ -28,19 +42,7 @@ def get_aasx_capabilities():
       return make_response(request.url, 400)
     file = request.files['file']
     file_content = file.read()
-    root = ET.fromstring(file_content)
-    capabilities = []
-    #the tag name has a namespace "<aas:capability>"
-    #therefore we need to take the namespace definiton from the first lines of the xml
-    #xmlns:aas='{http://www.admin-shell.io/aas/2/0}'
-    ns='{http://www.admin-shell.io/aas/2/0}' #namespace definition
-    
-    for capability in root.iter(ns+'capability'):
-        capabilities.append({
-                            "ID" : capability.find(ns+'idShort').text,
-                            "IRI":capability.find(ns+'semanticId').find(ns+'keys').find(ns+'key').text
-                            })
-    response = make_response(capabilities)
-    return response
+    capabilities = get_all_aasx_capabilities(file_content)
+    return capabilities
 
  
