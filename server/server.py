@@ -14,14 +14,18 @@ mimetypes.add_type('application/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
 # xml validation
 from lxml import etree
+import xml.etree.ElementTree as ET
 from io import StringIO
 
 
 ontologies = {}
+aas = {}
 
 
-UPLOAD_FOLDER = './ontologies/'
-ALLOWED_EXTENSIONS = {'owl'}
+UPLOAD_FOLDER = './upload/'
+ONTO_FOLDER = "ontologies/"
+AAS_FOLDER = "aasx/"
+ALLOWED_EXTENSIONS = {'owl', 'aasx', 'xml'}
 
 def validate(xml_string: str, xsd_path: str) -> bool:
 
@@ -82,13 +86,54 @@ def add_subclasses(input_object, children_classes_list, super_class_name):
 
 def load_ontologies():
     ontologies = {}
-    for filename in os.listdir(UPLOAD_FOLDER):
+    for filename in os.listdir(os.path.join(UPLOAD_FOLDER, ONTO_FOLDER)):
         if filename.endswith('.owl'):
             # with open(os.path.join(UPLOAD_FOLDER, filename), 'r') as file:
             #    ontologies[filename] = file.read()
-            complete_path = os.path.join(UPLOAD_FOLDER, filename)
+            complete_path = os.path.join(UPLOAD_FOLDER, ONTO_FOLDER, filename)
             ontologies[filename] = owlready2.get_ontology(complete_path).load()
     return ontologies
+  
+def load_aas():
+  aas = {}
+  for filename in os.listdir(os.path.join(UPLOAD_FOLDER, AAS_FOLDER)):
+      if filename.endswith('.aas.xml'):
+          # with open(os.path.join(UPLOAD_FOLDER, filename), 'r') as file:
+          #    ontologies[filename] = file.read()
+          complete_path = os.path.join(UPLOAD_FOLDER, AAS_FOLDER, filename)
+          aas[filename] = ET.parse(complete_path)
+  return aas
+
+def upload_file(app, request, subfolder):
+  print("upload startet")
+  # check if the post request has the file part
+  if 'file' not in request.files:
+      print("no file given")
+      flash('No file part')
+      # return redirect(request.url)
+      return make_response(request.url, 400)
+  file = request.files['file']
+  # If the user does not select a file, the browser submits an
+  # empty file without a filename.
+  if file.filename == '':
+      print("filename is empty string")
+      flash('No selected file')
+      # return redirect(request.url)
+      return make_response(request.url, 400)
+  if file and allowed_file(file.filename):
+      print("file allowed")
+      filename = secure_filename(file.filename)
+      filepath = os.path.join(app.config['UPLOAD_FOLDER'], subfolder, filename)
+      file.save(filepath)
+
+      # add to ontologies dict
+      onto = owlready2.get_ontology(filepath).load()
+      ontologies[filename] = onto
+      # return redirect(url_for('download_file', name=filename))
+      return make_response(request.url, 200)
+  print("file not allowed")
+  make_response("file not allowed or no post request")
+  return make_response(request.url, 400)
 
 
 def create_app():
@@ -164,14 +209,14 @@ def create_app():
         return response
 
     @app.route('/onto', methods=['POST'])
-    def upload_file():
+    def upload_onto():
         """Endpoint to upload a new ontologie to the server.
         ---
         tags:
           - Ontology Management 
         parameters:
           - name: file
-            in: path
+            in: formData
             type: file
             required: true
         responses:
@@ -180,35 +225,8 @@ def create_app():
             examples:
               rgb: ['red', 'green', 'blue']
         """
-        print("upload startet")
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            print("no file given")
-            flash('No file part')
-            # return redirect(request.url)
-            return make_response(request.url, 400)
-        file = request.files['file']
-        # If the user does not select a file, the browser submits an
-        # empty file without a filename.
-        if file.filename == '':
-            print("filename is empty string")
-            flash('No selected file')
-            # return redirect(request.url)
-            return make_response(request.url, 400)
-        if file and allowed_file(file.filename):
-            print("file allowed")
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
-
-            # add to ontologies dict
-            onto = owlready2.get_ontology(filepath).load()
-            ontologies[filename] = onto
-            # return redirect(url_for('download_file', name=filename))
-            return make_response(request.url, 200)
-        print("file not allowed")
-        make_response("file not allowed or no post request")
-        return make_response(request.url, 400)
+        upload_file(app, request, "ontologies")
+        
 
     # Method to load an ontology
     @app.route('/onto', methods=['GET'])
@@ -246,7 +264,7 @@ def create_app():
             examples:
               rgb: ['red', 'green', 'blue']
         """
-        response = make_response(send_from_directory(app.config["UPLOAD_FOLDER"], filename))
+        response = make_response(send_from_directory(app.config["UPLOAD_FOLDER"], ONTO_FOLDER, filename))
         mimetype, _ = mimetypes.guess_type(filename)
         response.headers['Content-Type'] = mimetype
         return response
@@ -358,11 +376,63 @@ def create_app():
           print('Not valid! :(')
           response = make_response(error, 400)
           return response
+        
+    @app.route('/AASX', methods=['POST'])
+    def upload_aasx():
+        """Endpoint to upload a new ontologie to the server.
+        ---
+        tags:
+          - AAS Management 
+        parameters:
+          - name: file
+            in: formData
+            type: file
+            required: true
+        responses:
+          200:
+            description: An ackknowledgement that the upload worked.
+            examples:
+              rgb: ['red', 'green', 'blue']
+        """
+        return upload_file(app, request, "aasx")
+
+    @app.route('/aas/<aas_name>/capabilities')
+    def get_capabilities(aas_name, methods=['GET']):
+        """Endpoint returning the list of capabilities specified in <aas> with given name.
+        ---
+        tags:
+          - AAS Operations
+        parameters:
+          - name: aas_name
+            in: path
+            type: string
+            required: true
+            default: all
+        responses:
+          200:
+            description: A list of the classes in given Ontology.
+        """
+        # returns a generator therefore we need list()
+        root = aas[aas_name]
+        capabilities = []
+        ns='{http://www.admin-shell.io/aas/2/0}'
+        
+        for capability in root.iter(ns+'capability'):
+          capabilities.append({"idShort" : capability.find(ns+'idShort').text,
+                               "semanticId":{ 
+                                 "keys": {
+                                   "key":capability.find(ns+'semanticId').find(ns+'keys').find(ns+'key').text
+                                  }
+                               }
+                              })
+        response = make_response(capabilities)
+        return response
+    
     
     ontologies = load_ontologies()
+    aas = load_aas()
     #ontologies = {}  #uncomment this is for offline development
     return app
-
 
 # debug is for testing to make this production ready read:
 # https://zhangtemplar.github.io/flask/
