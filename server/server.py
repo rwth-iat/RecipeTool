@@ -25,6 +25,7 @@ aas = {}
 UPLOAD_FOLDER = './upload/'
 ONTO_FOLDER = "ontologies/"
 AAS_FOLDER = "aasx/"
+RECIPE_FOLDER = "recipes/"
 ALLOWED_EXTENSIONS = {'owl', 'aasx', 'xml'}
 
 def validate(xml_string: str, xsd_path: str) -> bool:
@@ -103,6 +104,16 @@ def load_aas():
           complete_path = os.path.join(UPLOAD_FOLDER, AAS_FOLDER, filename)
           aas[filename] = ET.parse(complete_path)
   return aas
+
+def load_recipes():
+  recipes = {}
+  for filename in os.listdir(os.path.join(UPLOAD_FOLDER, RECIPE_FOLDER)):
+      if filename.endswith('.xml'):
+          # with open(os.path.join(UPLOAD_FOLDER, filename), 'r') as file:
+          #    ontologies[filename] = file.read()
+          complete_path = os.path.join(UPLOAD_FOLDER, RECIPE_FOLDER, filename)
+          recipes[filename] = ET.parse(complete_path)
+  return recipes
 
 def upload_file(app, request, subfolder):
   print("upload startet")
@@ -213,7 +224,7 @@ def create_app():
         """Endpoint to upload a new ontologie to the server.
         ---
         tags:
-          - Ontology Management 
+          - Ontologies
         parameters:
           - name: file
             in: formData
@@ -234,7 +245,7 @@ def create_app():
         """Endpoint returning the list of Ontology names currently present at the server.
         ---
         tags:
-          - Ontology Management
+          - Ontologies
         responses:
           200:
             description: A list of the currently available Ontologies
@@ -251,7 +262,7 @@ def create_app():
         """Endpoint to download an ontologie from the server.
         ---
         tags:
-          - Ontology Management
+          - Ontologies
         parameters:
           - name: filename
             in: path
@@ -274,7 +285,7 @@ def create_app():
         """Endpoint returning the list of classes present at the Ontology specified in <onto_name>.
         ---
         tags:
-          - Ontology Operations
+          - Ontologies
         parameters:
           - name: onto_name
             in: path
@@ -301,7 +312,7 @@ def create_app():
         """Endpoint to get all subclasses of a class in the given ontology.
         ---
         tags:
-          - Ontology Operations
+          - Ontologies
         parameters:
           - name: onto_name
             in: path
@@ -350,7 +361,7 @@ def create_app():
         """Endpoint to validate a xml string against BatchML xsd schema.
         ---
         tags:
-          - General Recipe Editor
+          - Recipes
         parameters:
           - name: xml_string
             in: query
@@ -382,7 +393,7 @@ def create_app():
         """Endpoint to upload a new ontologie to the server.
         ---
         tags:
-          - AAS Management 
+          - AAS
         parameters:
           - name: file
             in: formData
@@ -397,11 +408,11 @@ def create_app():
         return upload_file(app, request, "aasx")
 
     @app.route('/aas/<aas_name>/capabilities')
-    def get_capabilities(aas_name, methods=['GET']):
+    def get_availible_capabilities(aas_name, methods=['GET']):
         """Endpoint returning the list of capabilities specified in <aas> with given name.
         ---
         tags:
-          - AAS Operations
+          - AAS
         parameters:
           - name: aas_name
             in: path
@@ -429,21 +440,83 @@ def create_app():
         ns='{http://www.admin-shell.io/aas/2/0}' #namespace definition
         
         for capability in root.iter(ns+'capability'):
-          capabilities.append({"idShort" : capability.find(ns+'idShort').text,
-                               "semanticId":{ 
-                                 "keys": {
-                                   "key":capability.find(ns+'semanticId').find(ns+'keys').find(ns+'key').text
-                                  }
-                               }
+          capabilities.append({
+                              "ID" : capability.find(ns+'idShort').text,
+                              "IRI":capability.find(ns+'semanticId').find(ns+'keys').find(ns+'key').text
                               })
         response = make_response(capabilities)
         return response
-  
+   
+    @app.route('/recipe', methods=['POST'])
+    def upload_recipe():
+        """Endpoint to upload a new recipe to the server.
+        ---
+        tags:
+          - Recipes 
+        parameters:
+          - name: file
+            in: formData
+            type: file
+            required: true
+        responses:
+          200:
+            description: An ackknowledgement that the upload worked.
+            examples:
+              rgb: ['red', 'green', 'blue']
+        """
+        return upload_file(app, request, "recipes")
+      
+    
+    @app.route('/recipes/<recipe_name>/capabilities')
+    def get_required_capabilities(recipe_name, methods=['GET']):
+        """Endpoint returning the list of capabilities present in given recipe.
+        ---
+        tags:
+          - Recipes
+        parameters:
+          - name: recipe_name
+            in: path
+            type: string
+            required: true
+            default: all
+        responses:
+          200:
+            description: A list of the capabilities in the recipe.
+            examples: [{
+                        "ID": "Stirring",
+                        "IRI": "http://www.acplt.de/Capability#Stirring"
+                      }]
+        """
+        # returns a generator therefore we need list()
+        root = recipes[recipe_name]
+        capabilities = []
+        #the tag name has a namespace "<aas:capability>"
+        #therefore we need to take the namespace definiton from the first lines of the xml
+        #xmlns:aas='{http://www.admin-shell.io/aas/2/0}'
+        ns='{http://www.mesa.org/xml/B2MML}' #namespace definition
+        
+        for processElement in root.iter(ns+'ProcessElement'):
+          otherInfos = processElement.findall(ns+'OtherInformation') 
+          if otherInfos is None or []:
+            continue
+          for otherInfo in otherInfos:
+            otherInfoId = otherInfo.find(ns+'OtherInfoID')
+            if otherInfoId.text == "OntologyIRI":
+              capabilities.append({
+                                    "ID": processElement.find(ns+'ID').text,                   
+                                    "IRI":otherInfo.find(ns+'OtherValue').find(ns+'ValueString').text
+                              })
+        response = make_response(capabilities)
+        return response
+      
+    
     #on initializing app we load the ontologies ans aas present at the server
     ontologies = load_ontologies()
     aas = load_aas()
+    recipes = load_recipes()
     #ontologies = {}  #uncomment this is for offline development
     return app
+
 
 # debug is for testing to make this production ready read:
 # https://zhangtemplar.github.io/flask/
