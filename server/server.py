@@ -2,6 +2,9 @@
 from flask import Flask, send_from_directory, make_response, redirect, request, flash
 from waitress import serve #this is for the production server
 from flasgger import Swagger
+from zipfile import ZipFile
+from StringIO import StringIO
+
 # utils
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
@@ -19,6 +22,10 @@ UPLOAD_FOLDER = './upload/'
 ONTO_FOLDER = "ontologies/"
 AAS_FOLDER = "aasx/"
 RECIPE_FOLDER = "recipes/"
+
+def extract_zip(input_zip):
+    input_zip=ZipFile(input_zip)
+    return {name: input_zip.read(name) for name in input_zip.namelist()}
 
 def create_app():
     app = Flask(__name__)
@@ -94,7 +101,7 @@ def create_app():
 
     @app.route('/check/capabilities/basic', methods=['POST'])
     def check_capabilities_basic():
-        """Endpoint to serve the static files to the server.
+        """Endpoint to check if all needed capabilities of a recipe can be realized by a given AAS.
         ---
         tags:
           - Check Capabilitys
@@ -106,6 +113,7 @@ def create_app():
           - name: recipe
             in: formData
             type: file
+            required: true
         responses:
           200:
             description: The requested File
@@ -146,6 +154,64 @@ def create_app():
             print(string)        
             return make_response(string + str(unique_recipe_capabilities.difference(unique_aasx_capabilities)), 400)
     
+    @app.route('/check/capabilities/complex', methods=['POST'])
+    def check_capabilities_complex():
+        """Endpoint to check which ProcessElements of a given could be realized by which resources.
+        ---
+        tags:
+          - Check Capabilitys
+        parameters:
+          - name: aasx
+            in: formData
+            type: file
+            required: true
+            description: aasx or zip file of aasx files
+          - name: recipe
+            in: formData
+            type: file
+            required: true
+        responses:
+          200:
+            description: The requested File
+            examples:
+              rgb: ['red', 'green', 'blue']
+        """
+        if 'aasx' not in request.files:
+          print("no file given")
+          flash('No file part')
+          return make_response(request.url, 400)
+        aasx = request.files['aasx']
+        aasx_content = aasx.read()
+        aasx_capabilities = get_all_aasx_capabilities(aasx_content) 
+
+
+        if 'recipe' not in request.files:
+          print("no file given")
+          flash('No file part')
+          return make_response(request.url, 400)
+        recipe = request.files['recipe']
+        recipe_content = recipe.read()
+        recipe_capabilities = get_all_recipe_capabilities(recipe_content)
+        
+        # Extract unique IDs from list A and list B
+        unique_aasx_capabilities = set(item['IRI'] for item in aasx_capabilities)
+        unique_recipe_capabilities = set(item['IRI'] for item in recipe_capabilities)
+
+        print(unique_recipe_capabilities)
+        print(unique_aasx_capabilities)
+        
+        # Check if all IDs in recipe are in aasx
+        if unique_recipe_capabilities.issubset(unique_aasx_capabilities):
+            string = "Every Capability IRI that occurs in Recipe is also in AASX (positive case)."
+            print(string)
+            return make_response(string, 200)
+        else:
+            string = "There are Capability IRIS in Recipe  that are not in AASX (negative case)." 
+            print(string)        
+            return make_response(string + str(unique_recipe_capabilities.difference(unique_aasx_capabilities)), 400)
+        
+
+
     app.register_blueprint(ontology_api)
     app.register_blueprint(recipe_api)
     app.register_blueprint(aas_api)
