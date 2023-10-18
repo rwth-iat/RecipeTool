@@ -1,6 +1,18 @@
 from flask import Blueprint, request, make_response, flash
 import xml.etree.ElementTree as ET
 
+
+def get_aasx_id(file_content):
+  root = ET.fromstring(file_content)
+  #the tag name has a namespace "<aas:capability>"
+  #therefore we need to take the namespace definiton from the first lines of the xml
+  #xmlns:aas='{http://www.admin-shell.io/aas/2/0}'
+  ns='{http://www.admin-shell.io/aas/2/0}' #namespace definition
+  aasids = []
+  for aas in root.iter(ns+'assetAdministrationShell'):
+      aasids.append(aas.find(ns+'identification').text)
+  return aasids
+
 def get_all_aasx_capabilities(file_content):
   root = ET.fromstring(file_content)
   capabilities = []

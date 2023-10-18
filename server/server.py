@@ -3,7 +3,6 @@ from flask import Flask, send_from_directory, make_response, redirect, request, 
 from waitress import serve #this is for the production server
 from flasgger import Swagger
 from zipfile import ZipFile
-from StringIO import StringIO
 
 # utils
 import mimetypes
@@ -12,7 +11,7 @@ mimetypes.add_type('text/css', '.css')
 
 from RecipeAPI import recipe_api, get_all_recipe_capabilities
 from OntologyAPI import ontology_api
-from AasAPI import aas_api, get_all_aasx_capabilities
+from AasAPI import aas_api, get_all_aasx_capabilities, get_aasx_id
 
 ontologies = {}
 aas = {}
@@ -176,15 +175,8 @@ def create_app():
             examples:
               rgb: ['red', 'green', 'blue']
         """
-        if 'aasx' not in request.files:
-          print("no file given")
-          flash('No file part')
-          return make_response(request.url, 400)
-        aasx = request.files['aasx']
-        aasx_content = aasx.read()
-        aasx_capabilities = get_all_aasx_capabilities(aasx_content) 
-
-
+        found_capabilities = []
+        
         if 'recipe' not in request.files:
           print("no file given")
           flash('No file part')
@@ -192,23 +184,41 @@ def create_app():
         recipe = request.files['recipe']
         recipe_content = recipe.read()
         recipe_capabilities = get_all_recipe_capabilities(recipe_content)
-        
-        # Extract unique IDs from list A and list B
-        unique_aasx_capabilities = set(item['IRI'] for item in aasx_capabilities)
         unique_recipe_capabilities = set(item['IRI'] for item in recipe_capabilities)
+        
+        if 'aasx' not in request.files:
+          print("no file given")
+          flash('No file part')
+          return make_response(request.url, 400)
+        aasx_zip = request.files['aasx']
+        aasx_files = extract_zip(aasx_zip)
+        for element in unique_recipe_capabilities:
+          for filename in aasx_files:
+            aasx = aasx_files[filename] 
+            aasx_capabilities = get_all_aasx_capabilities(aasx)
+            unique_aasx_capabilities = set(item['IRI'] for item in aasx_capabilities)
+            if element in unique_aasx_capabilities:
+              print("found capability: " + element)
+              aasxids = get_aasx_id(aasx)
+              found_capabilities.append("capability: "+element+" can be realized by aas: " + str(aasxids)) 
+            else:
+              print("did not find capability"+ element)
 
-        print(unique_recipe_capabilities)
-        print(unique_aasx_capabilities)
+        # Extract unique IDs from list A and list B
+        #unique_aasx_capabilities = set(item['IRI'] for item in aasx_capabilities)
+        #unique_recipe_capabilities = set(item['IRI'] for item in recipe_capabilities)
         
         # Check if all IDs in recipe are in aasx
-        if unique_recipe_capabilities.issubset(unique_aasx_capabilities):
-            string = "Every Capability IRI that occurs in Recipe is also in AASX (positive case)."
+        if len(found_capabilities)>0:
+            string=""
+            for capability in found_capabilities:
+              string = string + capability + "\r\n"
             print(string)
             return make_response(string, 200)
         else:
-            string = "There are Capability IRIS in Recipe  that are not in AASX (negative case)." 
+            string = "There are no Capability IRIS in Recipe that can be realized by an given AAS." 
             print(string)        
-            return make_response(string + str(unique_recipe_capabilities.difference(unique_aasx_capabilities)), 400)
+            return make_response(string, 400)
         
 
 
