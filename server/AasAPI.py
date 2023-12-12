@@ -152,5 +152,43 @@ def validate_aasx():
         os.remove(temp_file_path) 
     return make_response("True", 200)
     
-
+@aas_api.route('/AAS/validate', methods=['POST'])
+def validate_aas():
+    """Endpoint to validate a AAS.
+    ---
+    tags:
+      - AAS
+    parameters:
+      - name: file
+        in: formData
+        type: file
+        required: true
+    responses:
+      200:
+        description: Boolean showing if AAS is valid or not.
+        examples:
+            rgb: True
+    """
+    if 'file' not in request.files:
+      print("no file given")
+      flash('No file part')
+      return make_response(request.url, 400)
+    file = request.files['file']
+    file_content = file.read()
+    stateManager = ComplianceToolStateManager()
+    
+    with tempfile.NamedTemporaryFile(mode='wb+', delete=False) as temp_file:
+        temp_file.write(file_content)
+        temp_file_path = temp_file.name
+    try:
+        compliance_tool_xml.check_schema(temp_file_path, stateManager) 
+    except Exception as e:
+      # Handle the exception here
+      print(f"An error occurred: {e}")
+      # You can also log the error or take any other appropriate action
+      return make_response(str(e), 400)
+    finally:
+        # Clean up: delete the temporary file
+        os.remove(temp_file_path) 
+    return make_response("True", 200)
  
