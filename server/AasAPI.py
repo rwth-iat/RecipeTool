@@ -4,8 +4,11 @@ from basyx.aas.compliance_tool import compliance_check_aasx
 from basyx.aas.compliance_tool import compliance_check_xml as compliance_tool_xml, \
     compliance_check_json as compliance_tool_json, compliance_check_aasx as compliance_tool_aasx
 from basyx.aas.adapter.json import write_aas_json_file
+from basyx.aas.adapter.xml import write_aas_xml_file
+from basyx.aas.adapter.aasx import AASXReader, DictSupplementaryFileContainer
 from basyx.aas.examples.data import create_example, create_example_aas_binding, TEST_PDF_FILE
 from basyx.aas.compliance_tool.state_manager import ComplianceToolStateManager, Status
+from basyx.aas.model import DictObjectStore
 import tempfile
 import os
 
@@ -20,7 +23,7 @@ def get_aasx_id(file_content):
       aasids.append(aas.find(ns+'identification').text)
   return aasids
 
-def get_all_aasx_capabilities(file_content):
+def get_all_aas_capabilities(file_content):
   root = ET.fromstring(file_content)
   capabilities = []
   #the tag name has a namespace "<aas:capability>"
@@ -35,10 +38,55 @@ def get_all_aasx_capabilities(file_content):
                           })
   return capabilities
         
+def get_all_aasx_capabilities(file_contents):
+    with tempfile.NamedTemporaryFile(mode='wb+', delete=False) as temp_file:
+        temp_file.write(file_contents)
+        temp_file_path = temp_file.name
+    objects = DictObjectStore()
+    files = DictSupplementaryFileContainer()
+    with AASXReader(temp_file_path) as reader:
+        meta_data = reader.get_core_properties()
+        reader.read_into(objects, files)
+        with tempfile.NamedTemporaryFile(mode='wb+', delete=False) as temp_file:
+          write_aas_xml_file(temp_file, objects)
+          temp_file_path = temp_file.name
+          print(temp_file_path)
+          file_content = temp_file.read()
+        print("###########################################")
+        print(file_content)
+    capabilities = get_all_aas_capabilities(file_content)
+    return capabilities
 aas_api = Blueprint('aas_api', __name__)
 
 @aas_api.route('/AASX/capabilities', methods=['POST'])
 def get_aasx_capabilities():
+    """Endpoint to get availible Capabilities from a AASX.
+    ---
+    tags:
+      - AAS
+    parameters:
+      - name: file
+        in: formData
+        type: file
+        required: true
+    responses:
+      200:
+        description: An ackknowledgement that the upload worked.
+        examples:
+            rgb: ['red', 'green', 'blue']
+    """
+        # check if the post request has the file part
+    if 'file' not in request.files:
+      print("no file given")
+      flash('No file part')
+      return make_response(request.url, 400)
+    file = request.files['file']
+    file_content = file.read()
+    capabilities = get_all_aasx_capabilities(file_content)
+    return capabilities
+  
+@aas_api.route('/AAS/capabilities', methods=['POST'])
+def get_aas_capabilities():
     """Endpoint to get availible Capabilities from a AASX.
     ---
     tags:
