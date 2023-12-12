@@ -11,7 +11,7 @@ mimetypes.add_type('text/css', '.css')
 
 from RecipeAPI import recipe_api, get_all_recipe_capabilities
 from OntologyAPI import ontology_api
-from AasAPI import aas_api, get_all_aasx_capabilities, get_aasx_id
+from AasAPI import aas_api, get_all_aasx_capabilities, get_all_aas_capabilities, get_aasx_id
 
 ontologies = {}
 aas = {}
@@ -195,7 +195,7 @@ def create_app():
         for element in unique_recipe_capabilities:
           for filename in aasx_files:
             aasx = aasx_files[filename] 
-            aasx_capabilities = get_all_aasx_capabilities(aasx)
+            aasx_capabilities = get_all_aas_capabilities(aasx)
             unique_aasx_capabilities = set(item['IRI'] for item in aasx_capabilities)
             if element in unique_aasx_capabilities:
               print("found capability: " + element)
@@ -218,7 +218,7 @@ def create_app():
         else:
             string = "There are no Capability IRIS in Recipe that can be realized by an given AAS." 
             print(string)        
-            return make_response(string, 400)
+            return make_response(string, 200)
         
 
 

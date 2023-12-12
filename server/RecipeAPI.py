@@ -30,7 +30,7 @@ def get_all_recipe_capabilities(file_content):
           continue
       for otherInfo in otherInfos:
           otherInfoId = otherInfo.find(ns+'OtherInfoID')
-          if otherInfoId.text == "OntologyIRI":
+          if otherInfoId.text == "SemanticDescription":
               capabilities.append({
                               "ID": processElement.find(ns+'ID').text,                   
                               "IRI":otherInfo.find(ns+'OtherValue').find(ns+'ValueString').text

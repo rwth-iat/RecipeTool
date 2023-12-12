@@ -15,12 +15,11 @@ def recursivly_add_subclasses(super_class):
     output_obj = {
                 "name": str(super_class).split(".")[-1],
                 "otherInformation":[{
-                            "otherInfoID":"OntologyIRI",
-                            "description":["Iri referencing the Ontology Class definition"],
+                            "otherInfoID":"SemanticDescription",
+                            "description":["URI referencing the Ontology Class definition"],
                             "otherValue":[{
                                 "valueString": super_class.iri,
-                                "dataType":"Text",
-                                "unitOfMeasure":"url",
+                                "dataType":"uriReference",
                                 "key":str(super_class)
                             }]
                         }],
