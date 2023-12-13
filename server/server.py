@@ -162,7 +162,7 @@ def create_app():
         tags:
           - Capability Matching
         parameters:
-          - name: aasx
+          - name: aas
             in: formData
             type: file
             required: true
@@ -188,11 +188,11 @@ def create_app():
         recipe_capabilities = get_all_recipe_capabilities(recipe_content)
         unique_recipe_capabilities = set(item['IRI'] for item in recipe_capabilities)
         
-        if 'aasx' not in request.files:
+        if 'aas' not in request.files:
           print("no file given")
           flash('No file part')
           return make_response(request.url, 400)
-        aasx_zip = request.files['aasx']
+        aasx_zip = request.files['aas']
         aasx_files = extract_zip(aasx_zip)
         for element in unique_recipe_capabilities:
           for filename in aasx_files:
