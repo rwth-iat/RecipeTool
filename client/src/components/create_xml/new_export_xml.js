@@ -110,9 +110,9 @@ function create_formula(workspace_items, jsplumb_connections){
 }
 function create_process_element_parameter(item){
     let parameter = {
-        id: item.id,
-        description: item.description,
-        value: [createValueType(item.value)]
+        "b2mml:ID": item.id,
+        "b2mml:Description": [item.description],
+        "b2mml:Value": createValueType(item.value)
     }
     console.debug("processParameter:", parameter)
     return parameter
@@ -129,12 +129,12 @@ function createOtherInformation(item){
 
 function createResourceConstraint(item){
     let resourceConstraint = {
-        constraintID: item.id,
-        description: [item.description[0]], // put in array as array input is not implemented in editor yet
-        constraintType: [item.constraintType],
-        lifeCycleState: {},
-        range: [createValueType(item.range)], //put in array as array input is not implemented in editor yet 
-        resourceContraintProperty: [{}] //put it in array as array inputs are not implemented into editor yet. Object not implemented yet 
+        "b2mml:ConstraintID": item.id,
+        "b2mml:Description": [item.description[0]], // put in array as array input is not implemented in editor yet
+        //"b2mml:ConstraintType": [item.constraintType],
+        "b2mml:LifeCycleState": {},
+        "b2mml:Range": createValueType(item.range), //put in array as array input is not implemented in editor yet 
+        //"b2mml:ResourceConstraintProperty": [{}] //put it in array as array inputs are not implemented into editor yet. Object not implemented yet 
     }
     return resourceConstraint
 }
