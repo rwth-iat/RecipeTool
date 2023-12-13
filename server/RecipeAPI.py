@@ -38,8 +38,40 @@ def get_all_recipe_capabilities(file_content):
                           })
   return capabilities
 
-@recipe_api.route('/validate')
+@recipe_api.route('/grecipe/validate')
 def validate_batchml():
+    """Endpoint to validate a xml string against BatchML xsd schema.
+    ---
+    tags:
+      - Recipes
+    parameters:
+      - name: xml_string
+        in: query
+        type: string
+        required: true
+        default: ""
+    responses:
+      200:
+        description: Given String is valid.
+        400:
+        description: Given String is not valid.
+    """
+    args = request.args
+    xml_string = args.get("xml_string", type=str)
+    print(xml_string)
+
+    valid, error = validate(xml_string, "batchml_schemas/schemas/BatchML-GeneralRecipe.xsd")   
+    if valid:
+        print('Valid! :)')
+        response = make_response("valid!", 200)
+        return response
+    else:
+        print('Not valid! :(')
+        response = make_response(error, 400)
+        return response
+      
+@recipe_api.route('/mrecipe/validate')
+def validate_mrecipe():
     """Endpoint to validate a xml string against BatchML xsd schema.
     ---
     tags:

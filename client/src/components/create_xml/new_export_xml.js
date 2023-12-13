@@ -317,7 +317,7 @@ export function start_download(filename, file_string){
 
 export function create_validate_download_batchml(items, jsplumb_connections, client){
     let xml_string = generate_batchml(items, jsplumb_connections)
-    client.get('/validate', {
+    client.get('/grecipe/validate', {
             params: {
               "xml_string": xml_string
             }
