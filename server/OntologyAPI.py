@@ -6,6 +6,7 @@ mimetypes.add_type('text/css', '.css')
 from Functions import upload_file
 import owlready2
 import json
+from django.utils.encoding import iri_to_uri, uri_to_iri
 
 ONTO_FOLDER = "ontologies/"
 UPLOAD_FOLDER = './upload/'
@@ -18,7 +19,7 @@ def recursivly_add_subclasses(super_class):
                             "otherInfoID":"SemanticDescription",
                             "description":["URI referencing the Ontology Class definition"],
                             "otherValue":[{
-                                "valueString": super_class.iri,
+                                "valueString": iri_to_uri(super_class.iri),
                                 "dataType":"uriReference",
                                 "key":str(super_class)
                             }]

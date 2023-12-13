@@ -98,14 +98,15 @@ def create_app():
         response.headers['Content-Type'] = mimetype
         return response
 
-    @app.route('/check/capabilities/basic', methods=['POST'])
+    '''
+    @app.route('/CapabilityMatching/AAS/basic', methods=['POST'])
     def check_capabilities_basic():
         """Endpoint to check if all needed capabilities of a recipe can be realized by a given AAS.
         ---
         tags:
-          - Check Capabilitys
+          - Capability Matching
         parameters:
-          - name: aasx
+          - name: aas
             in: formData
             type: file
             required: true
@@ -152,19 +153,20 @@ def create_app():
             string = "There are Capability IRIS in Recipe  that are not in AASX (negative case)." 
             print(string)        
             return make_response(string + str(unique_recipe_capabilities.difference(unique_aasx_capabilities)), 400)
+    '''
     
-    @app.route('/check/capabilities/complex', methods=['POST'])
+    @app.route('/CapabilityMatching/AAS', methods=['POST'])
     def check_capabilities_complex():
-        """Endpoint to check which ProcessElements of a given could be realized by which resources.
+        """Endpoint to match Capabilities of a zip file with ".xml" AAS files and a general Recipe.
         ---
         tags:
-          - Check Capabilitys
+          - Capability Matching
         parameters:
           - name: aasx
             in: formData
             type: file
             required: true
-            description: aasx or zip file of aasx files
+            description: aas or zip file of aas files
           - name: recipe
             in: formData
             type: file
@@ -219,8 +221,73 @@ def create_app():
             string = "There are no Capability IRIS in Recipe that can be realized by an given AAS." 
             print(string)        
             return make_response(string, 200)
+          
+    @app.route('/CapabilityMatching/AASX', methods=['POST'])
+    def capability_Matching_AASX():
+        """Endpoint to Match Capabilities of an AASX and a General Recipe.
+        ---
+        tags:
+          - Capability Matching
+        parameters:
+          - name: aasx
+            in: formData
+            type: file
+            required: true
+            description: aas or zip file of aas files
+          - name: recipe
+            in: formData
+            type: file
+            required: true
+        responses:
+          200:
+            description: The requested File
+            examples:
+              rgb: ['red', 'green', 'blue']
+        """
+        found_capabilities = []
         
+        if 'recipe' not in request.files:
+          print("no file given")
+          flash('No file part')
+          return make_response(request.url, 400)
+        recipe = request.files['recipe']
+        recipe_content = recipe.read()
+        recipe_capabilities = get_all_recipe_capabilities(recipe_content)
+        unique_recipe_capabilities = set(item['IRI'] for item in recipe_capabilities)
+        
+        if 'aasx' not in request.files:
+          print("no file given")
+          flash('No file part')
+          return make_response(request.url, 400)
+        aasx_zip = request.files['aasx']
+        aasx_files = extract_zip(aasx_zip)
+        for element in unique_recipe_capabilities:
+          for filename in aasx_files:
+            aasx = aasx_files[filename] 
+            aasx_capabilities = get_all_aas_capabilities(aasx)
+            unique_aasx_capabilities = set(item['IRI'] for item in aasx_capabilities)
+            if element in unique_aasx_capabilities:
+              print("found capability: " + element)
+              aasxids = get_aasx_id(aasx)
+              found_capabilities.append("capability: "+element+" can be realized by aas: " + str(aasxids)) 
+            else:
+              print("did not find capability"+ element)
 
+        # Extract unique IDs from list A and list B
+        #unique_aasx_capabilities = set(item['IRI'] for item in aasx_capabilities)
+        #unique_recipe_capabilities = set(item['IRI'] for item in recipe_capabilities)
+        
+        # Check if all IDs in recipe are in aasx
+        if len(found_capabilities)>0:
+            string=""
+            for capability in found_capabilities:
+              string = string + capability + "\r\n"
+            print(string)
+            return make_response(string, 200)
+        else:
+            string = "There are no Capability IRIS in Recipe that can be realized by an given AAS." 
+            print(string)        
+            return make_response(string, 200)
 
     app.register_blueprint(ontology_api)
     app.register_blueprint(recipe_api)

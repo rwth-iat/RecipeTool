@@ -2,6 +2,7 @@ from flask import Blueprint, request, make_response, flash
 import os
 import xml.etree.ElementTree as ET
 from lxml import etree
+from django.utils.encoding import iri_to_uri, uri_to_iri
 
 recipe_api = Blueprint('recipe_api', __name__)
 
@@ -33,7 +34,7 @@ def get_all_recipe_capabilities(file_content):
           if otherInfoId.text == "SemanticDescription":
               capabilities.append({
                               "ID": processElement.find(ns+'ID').text,                   
-                              "IRI":otherInfo.find(ns+'OtherValue').find(ns+'ValueString').text
+                              "IRI": uri_to_iri(otherInfo.find(ns+'OtherValue').find(ns+'ValueString').text)
                           })
   return capabilities
 
