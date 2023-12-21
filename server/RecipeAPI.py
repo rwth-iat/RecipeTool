@@ -92,7 +92,7 @@ def validate_mrecipe():
     xml_string = args.get("xml_string", type=str)
     print(xml_string)
 
-    valid, error = validate(xml_string, "batchml_schemas/schemas/BatchML-GeneralRecipe.xsd")   
+    valid, error = validate(xml_string, "batchml_schemas/schemas/BatchML-BatchInformation.xsd")   
     if valid:
         print('Valid! :)')
         response = make_response("valid!", 200)
