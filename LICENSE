@@ -30,10 +30,23 @@ The following dependencies have licenses that may impose additional restrictions
 1. **Certify**: Licensed under the Mozilla Public License 2.0 (MPL-2.0)
    - URL: https://www.mozilla.org/en-US/MPL/2.0/
    
-2. **owlready2**: Licensed under the GNU General Public License 3.0 (GPL-3.0) and GNU Lesser General Public License 3.0 (LGPL-3.0)
+2. **owlready2**: Licensed under the GNU General Public License 3.0 (GPL-3.0) 
+   and GNU Lesser General Public License 3.0 (LGPL-3.0)
    - GPL-3.0 URL: https://www.gnu.org/licenses/gpl-3.0.en.html
    - LGPL-3.0 URL: https://www.gnu.org/licenses/lgpl-3.0.en.html
 
-Please ensure that you comply with the terms of these licenses when using, distributing, or modifying the code from these dependencies. The full text of these licenses can be found at the respective URLs provided.
+Please ensure that you comply with the terms of these licenses when using, 
+distributing, or modifying the code from these dependencies. 
 
-For other dependencies not listed above, please refer to their respective license terms as indicated in the project's documentation or `requirements.txt`.
+---
+
+Disclaimer:
+
+The list of third-party dependencies provided above may not be exhaustive.
+There may be other dependencies included in this project that have different 
+licensing terms. The licensing of these dependencies may also change over time. 
+You are responsible for ensuring compliance with the licenses of all third-party 
+dependencies used in this project. Please refer to the respective license terms 
+as indicated in the project's documentation, `requirements.txt`, and `package.json` 
+files for a complete and up-to-date list of dependencies. For any legal concerns 
+or detailed license information, it is recommended to consult a legal expert.
