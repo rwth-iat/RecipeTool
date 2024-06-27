@@ -42,11 +42,12 @@ distributing, or modifying the code from these dependencies.
 
 Disclaimer:
 
-The list of third-party dependencies provided above may not be exhaustive.
-There may be other dependencies included in this project that have different 
-licensing terms. The licensing of these dependencies may also change over time. 
-You are responsible for ensuring compliance with the licenses of all third-party 
-dependencies used in this project. Please refer to the respective license terms 
-as indicated in the project's documentation, `requirements.txt`, and `package.json` 
-files for a complete and up-to-date list of dependencies. For any legal concerns 
-or detailed license information, it is recommended to consult a legal expert.
+The list of third-party dependencies which impose additional restrictions
+provided  above may not be exhaustive. There may be other dependencies included
+in this project that have different licensing terms. The licensing of these 
+dependencies may also change over time. You are responsible for ensuring 
+compliance with the licenses of all third-party dependencies used in this 
+project. Please refer to the respective license terms as indicated in the 
+project's documentation, `requirements.txt`, and `package.json` files for 
+a complete and up-to-date list of dependencies. For any legal concerns or 
+detailed license information, it is recommended to consult a legal expert.
