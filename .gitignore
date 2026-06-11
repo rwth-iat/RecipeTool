@@ -16,3 +16,7 @@ server/.pytest_cache
 server/tools/robot/
 server/tools/jre/
 server/tools/*.zip
+
+artifacts/
+
+
