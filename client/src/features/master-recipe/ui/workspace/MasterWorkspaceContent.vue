@@ -7,7 +7,7 @@
             <!-- For procedure, use getProcedureClass for shape (reactive to processElementType) -->
             <template v-if="isProcedureItem(item)">
                 <div :class="getProcedureClass(item)">
-                    <span>{{ item.id }}</span>
+                    <BreakableProcedureLabel :value="item.id" />
                 </div>
             </template>
             <!-- For recipe_element, use getRecipeElementClass for shape -->
@@ -47,6 +47,7 @@ import {
 import { createDefaultDotEndpointDefinition } from "@/services/workspace/core/jsPlumbEndpointUtils";
 import { createJsPlumbElementLayoutObserver } from "@/services/workspace/core/jsPlumbLayoutObserverUtils";
 import { stringifyConditionGroup } from "@/services/recipe/master-recipe/conditions/conditionGroupUtils";
+import BreakableProcedureLabel from "./BreakableProcedureLabel.vue";
 const props = defineProps({
     main_workspace_items: Array,
     workspace_items: Array,
